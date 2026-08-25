@@ -330,6 +330,43 @@ class _ExpenseSummaryProviderElement
   int get dayType => (origin as ExpenseSummaryProvider).dayType;
 }
 
+String _$dailyChartDataHash() => r'd03edda00f4ac00ae453944a8a86aa1b1e838933';
+
+/// ຄິດໄລ່ chart data 14 ວັນລ່າສຸດ ຈາກ transaction ຈິງ
+///
+/// Copied from [dailyChartData].
+@ProviderFor(dailyChartData)
+final dailyChartDataProvider =
+    AutoDisposeProvider<List<DailyChartData>>.internal(
+  dailyChartData,
+  name: r'dailyChartDataProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$dailyChartDataHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef DailyChartDataRef = AutoDisposeProviderRef<List<DailyChartData>>;
+String _$expenseTotalsHash() => r'b4536a6e7deae6ff8646671d81a982f7c99f77d4';
+
+/// ຍອດລວມ income/expense ທັງໝົດ (all-time) - ໃຊ້ໃນ ExpensePage
+///
+/// Copied from [expenseTotals].
+@ProviderFor(expenseTotals)
+final expenseTotalsProvider =
+    AutoDisposeProvider<({double totalIncome, double totalExpense})>.internal(
+  expenseTotals,
+  name: r'expenseTotalsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$expenseTotalsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef ExpenseTotalsRef
+    = AutoDisposeProviderRef<({double totalIncome, double totalExpense})>;
 String _$expenseListHash() => r'91161f3e9ec44567075f0a5e2c169382a41ed2db';
 
 /// List ຂອງ transaction ທັງໝົດ - single source of truth

@@ -1,4 +1,5 @@
 // features/expense/presentation/providers/expense_provider.dart
+import 'package:kipp/features/expense/presentation/models/chart_ui_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../data/datasources/expense_local_datasource.dart';
 import '../../data/repositories/expense_repository_impl.dart';
@@ -64,4 +65,31 @@ List<ExpenseEntity> expensesByDayType(ExpensesByDayTypeRef ref, int dayType) {
   final income = list.where((e) => e.isIncome).fold(0.0, (sum, e) => sum + e.amount);
   final expense = list.where((e) => !e.isIncome).fold(0.0, (sum, e) => sum + e.amount);
   return (income: income, expense: expense);
+}
+
+/// ຄິດໄລ່ chart data 14 ວັນລ່າສຸດ ຈາກ transaction ຈິງ
+@riverpod
+List<DailyChartData> dailyChartData(DailyChartDataRef ref) {
+  final all = ref.watch(expenseListProvider).valueOrNull ?? [];
+  final today = DateTime.now();
+  final startDay = DateTime(today.year, today.month, today.day);
+
+  return List.generate(14, (i) {
+    final day = startDay.subtract(Duration(days: 13 - i));
+    final dayItems = all.where(
+      (e) => e.date.year == day.year && e.date.month == day.month && e.date.day == day.day,
+    );
+    final income = dayItems.where((e) => e.isIncome).fold(0.0, (sum, e) => sum + e.amount);
+    final expense = dayItems.where((e) => !e.isIncome).fold(0.0, (sum, e) => sum + e.amount);
+    return DailyChartData(date: day, income: income, expense: expense);
+  });
+}
+
+/// ຍອດລວມ income/expense ທັງໝົດ (all-time) - ໃຊ້ໃນ ExpensePage
+@riverpod
+({double totalIncome, double totalExpense}) expenseTotals(ExpenseTotalsRef ref) {
+  final all = ref.watch(expenseListProvider).valueOrNull ?? [];
+  final income = all.where((e) => e.isIncome).fold(0.0, (sum, e) => sum + e.amount);
+  final expense = all.where((e) => !e.isIncome).fold(0.0, (sum, e) => sum + e.amount);
+  return (totalIncome: income, totalExpense: expense);
 }

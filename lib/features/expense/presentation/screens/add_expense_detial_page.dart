@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kipp/core/constant/radius.dart';
-import 'package:kipp/core/router/route_paths.dart';
 import 'package:kipp/core/theme/app_theme.dart';
 import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
@@ -302,7 +298,7 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
 
       floatingActionButton: FloatingActionButton(
         backgroundColor: context.colors.primary,
-        child: Icon(Icons.camera_alt_outlined, color: context.colors.onPrimary),
+        child: Icon(CupertinoIcons.photo_camera, color: context.colors.onPrimary),
         onPressed: () {
 
         },

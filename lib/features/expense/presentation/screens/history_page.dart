@@ -1,29 +1,24 @@
 // features/expense/presentation/screens/history_page.dart
 import 'package:flutter/material.dart';
-import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/theme/app_theme.dart';
 import 'package:kipp/core/utils/date_group_formatter.dart';
-
+import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
+import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/widgets/transaction_tile.dart';
 
-class HistoryPage extends StatefulWidget {
+class HistoryPage extends ConsumerStatefulWidget {
   const HistoryPage({super.key});
 
   @override
-  State<HistoryPage> createState() => _HistoryPageState();
+  ConsumerState<HistoryPage> createState() => _HistoryPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
+class _HistoryPageState extends ConsumerState<HistoryPage> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-
-  final List<ExpenseEntity> _allTransactions = [];
-
-  List<ExpenseEntity> _transactionsForDay(DateTime day) {
-    return _allTransactions.where((tx) => isSameDay(tx.date, day)).toList();
-  }
 
   @override
   void initState() {
@@ -31,12 +26,17 @@ class _HistoryPageState extends State<HistoryPage> {
     _selectedDay = DateTime.now();
   }
 
+  List<ExpenseEntity> _transactionsForDay(List<ExpenseEntity> all, DateTime day) {
+    return all.where((tx) => isSameDay(tx.date, day)).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final allExpenses = ref.watch(expenseListProvider).valueOrNull ?? [];
     final selectedList = _selectedDay == null
         ? <ExpenseEntity>[]
-        : _transactionsForDay(_selectedDay!);
+        : _transactionsForDay(allExpenses, _selectedDay!);
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -57,74 +57,39 @@ class _HistoryPageState extends State<HistoryPage> {
                 focusedDay: _focusedDay,
                 currentDay: DateTime.now(),
                 selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                eventLoader: _transactionsForDay,
+                eventLoader: (day) => _transactionsForDay(allExpenses, day),
                 calendarFormat: CalendarFormat.month,
                 availableCalendarFormats: const {CalendarFormat.month: 'Month'},
-
                 onDaySelected: (selectedDay, focusedDay) {
                   setState(() {
                     _selectedDay = selectedDay;
                     _focusedDay = focusedDay;
                   });
                 },
-                onPageChanged: (focusedDay) {
-                  _focusedDay = focusedDay;
-                },
-
-                // ---- ໜ້າຕາ header (< ເດືອນ ປີ >) ----
+                onPageChanged: (focusedDay) => _focusedDay = focusedDay,
                 headerStyle: HeaderStyle(
                   formatButtonVisible: false,
                   titleCentered: true,
-                  titleTextStyle: context.typo.title.copyWith(
-                    color: colors.text,
-                  ),
-                  leftChevronIcon: Icon(
-                    Icons.chevron_left,
-                    color: colors.primary,
-                  ),
-                  rightChevronIcon: Icon(
-                    Icons.chevron_right,
-                    color: colors.primary,
-                  ),
+                  titleTextStyle: context.typo.title.copyWith(color: colors.text),
+                  leftChevronIcon: Icon(Icons.chevron_left, color: colors.primary),
+                  rightChevronIcon: Icon(Icons.chevron_right, color: colors.primary),
                 ),
-
-                // ---- ໜ້າຕາ ຊື່ວັນ (Mon Tue Wed...) ----
                 daysOfWeekStyle: DaysOfWeekStyle(
-                  weekdayStyle: context.typo.caption.copyWith(
-                    color: colors.subtext,
-                  ),
-                  weekendStyle: context.typo.caption.copyWith(
-                    color: colors.subtext,
-                  ),
+                  weekdayStyle: context.typo.caption.copyWith(color: colors.subtext),
+                  weekendStyle: context.typo.caption.copyWith(color: colors.subtext),
                 ),
-
-                // ---- ໜ້າຕາ ຕົວເລກວັນ ----
                 calendarStyle: CalendarStyle(
                   outsideDaysVisible: false,
-                  defaultTextStyle: context.typo.body.copyWith(
-                    color: colors.text,
-                  ),
-                  weekendTextStyle: context.typo.body.copyWith(
-                    color: colors.text,
-                  ),
+                  defaultTextStyle: context.typo.body.copyWith(color: colors.text),
+                  weekendTextStyle: context.typo.body.copyWith(color: colors.text),
                   todayDecoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: colors.primary, width: 1.5),
                   ),
-                  todayTextStyle: context.typo.body.copyWith(
-                    color: colors.primary,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: colors.primary,
-                  ),
-                  selectedTextStyle: context.typo.body.copyWith(
-                    color: colors.onPrimary,
-                  ),
-                  markerDecoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: colors.danger,
-                  ),
+                  todayTextStyle: context.typo.body.copyWith(color: colors.primary),
+                  selectedDecoration: BoxDecoration(shape: BoxShape.circle, color: colors.primary),
+                  selectedTextStyle: context.typo.body.copyWith(color: colors.onPrimary),
+                  markerDecoration: BoxDecoration(shape: BoxShape.circle, color: colors.danger),
                   markersMaxCount: 1,
                   markerSize: 5,
                   markerMargin: const EdgeInsets.only(top: 4),
@@ -132,17 +97,11 @@ class _HistoryPageState extends State<HistoryPage> {
               ),
             ),
             const SizedBox(height: 20),
-
-            // ---- ຫົວຂໍ້ວັນທີເລືອກ ----
             Text(
-              _selectedDay == null
-                  ? 'History'
-                  : DateGroupFormatter.label(_selectedDay!),
+              _selectedDay == null ? 'History' : DateGroupFormatter.label(_selectedDay!),
               style: context.typo.title.copyWith(color: colors.text),
             ),
             const SizedBox(height: 8),
-
-            // ---- List ລາຍການຂອງວັນທີ່ເລືອກ ----
             if (selectedList.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 32),
