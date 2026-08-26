@@ -20,13 +20,12 @@ class AddExpenseDetailPage extends ConsumerStatefulWidget {
 class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
   final _formKey = GlobalKey<FormState>();
 
-  // ຕົວແປສຳລັບເກັບຂໍ້ມູນ
-  bool _isExpense = true; // true = ຣາຍຈ່າຍ, false = ລາຍຮັບ
+  bool _isExpense = true;
+  bool _isSaving = false; // ✅ ເພີ່ມ loading state
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
   String? _selectedType;
 
-  // ຕົວຢ່າງໝວດໝູ່ (ສາມາດປ່ຽນເປັນດຶງຈາກ Database ໄດ້)
   final List<String> _expenseTypes = [
     'Food',
     'Travel',
@@ -46,9 +45,11 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
     super.dispose();
   }
 
-  // ---- Save button ----
   Future<void> _saveTransaction() async {
     if (!_formKey.currentState!.validate()) return;
+    if (_isSaving) return; // ✅ ກັນກົດຊ້ຳຕອນກຳລັງ save ຢູ່
+
+    setState(() => _isSaving = true);
 
     final expense = ExpenseEntity(
       id: const Uuid().v4(),
@@ -60,9 +61,54 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
       date: DateTime.now(),
     );
 
-    await ref.read(expenseListProvider.notifier).add(expense);
-    if (!mounted) return;
-    context.pop();
+    try {
+      await ref.read(expenseListProvider.notifier).add(expense);
+      if (!mounted) return;
+
+      // ✅ ສະແດງ success ກ່ອນ pop
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+          backgroundColor: context.colors.ok,
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.mdAll),
+          content: Row(
+            children: [
+              Icon(
+                CupertinoIcons.check_mark_circled_solid,
+                color: context.colors.onPrimary,
+                size: 20,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                'ບັນທຶກສຳເລັດແລ້ວ',
+                style: context.typo.body.copyWith(
+                  color: context.colors.onPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+      context.pop();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: context.colors.danger,
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.mdAll),
+          content: Text(
+            'ບໍ່ສາມາດບັນທຶກໄດ້: ${e.toString()}',
+            style: context.typo.body.copyWith(color: context.colors.onPrimary),
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
   }
 
   @override
@@ -268,27 +314,36 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
                 width: double.infinity,
                 height: 54,
                 child: ElevatedButton(
-                  onPressed: () {
-                    _saveTransaction();
-                  },
+                  onPressed: _isSaving
+                      ? null
+                      : _saveTransaction, // ✅ disable ຕອນ saving
                   style: ElevatedButton.styleFrom(
                     backgroundColor: context.colors.primary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: AppRadius.xlAll,
                     ),
                     elevation: 0,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Save',
-                        style: context.typo.title.copyWith(
-                          color: context.colors.onPrimary,
+                  child: _isSaving
+                      ? SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: context.colors.onPrimary,
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Save',
+                              style: context.typo.title.copyWith(
+                                color: context.colors.onPrimary,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
                 ),
               ),
             ],
@@ -298,10 +353,11 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
 
       floatingActionButton: FloatingActionButton(
         backgroundColor: context.colors.primary,
-        child: Icon(CupertinoIcons.photo_camera, color: context.colors.onPrimary),
-        onPressed: () {
-
-        },
+        child: Icon(
+          CupertinoIcons.photo_camera,
+          color: context.colors.onPrimary,
+        ),
+        onPressed: () {},
       ),
     );
   }

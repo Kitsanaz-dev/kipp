@@ -50,6 +50,7 @@ dependencies:
   liquid_glass_renderer: ^0.2.0-dev.4
   fl_chart: ^1.2.0
   table_calendar: ^3.2.1
+  hive_ce: ^2.19.3
 
 dev_dependencies:
   hive_generator: ^2.0.1

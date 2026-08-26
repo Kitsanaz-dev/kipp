@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/theme/app_theme.dart';
 import 'package:kipp/features/expense/presentation/models/user_ui_model.dart';
+import 'package:kipp/features/expense/presentation/widgets/theme_mode_sector.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -75,7 +76,7 @@ class ProfilePage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  // const ThemeModeSelector(),
+                  const ThemeModeSelector(),
                 ],
               ),
             ),

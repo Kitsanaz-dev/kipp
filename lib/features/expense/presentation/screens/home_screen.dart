@@ -10,7 +10,7 @@ import 'package:kipp/core/utils/date_group_formatter.dart';
 import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/screens/history_page.dart';
-import 'package:kipp/features/expense/presentation/screens/profile_page.dart';
+import 'package:kipp/features/auth/presentation/screens/profile_page.dart';
 import 'package:kipp/features/expense/presentation/screens/expense_page.dart';
 import 'package:kipp/features/expense/presentation/widgets/bottom_bar.dart';
 import 'package:kipp/features/expense/presentation/widgets/data_section_header.dart';
@@ -70,8 +70,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         setState(() {
                           _currentDayType = value;
                         });
-                        // TODO: ຕອນຕໍ່ data ຈິງ - ໃຫ້ dispatch ໄປ provider ຕົງນີ້ ເຊັ່ນ:
-                        // ref.read(homeSummaryProvider.notifier).changeDayType(value);
                       },
                     ),
 
@@ -131,7 +129,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     });
 
-    // TODO: ຖ້າ transactions ວ່າງເປົ່າ ຄວນສະແດງ empty state ແທນ list ຫວ່າງ
     if (widgets.isEmpty) {
       widgets.add(
         Padding(

@@ -10,13 +10,3 @@ class DailyChartData {
     required this.expense,
   });
 }
-
-// TODO: ລົບ mock ນີ້ອອກຕອນຕໍ່ chartDataProvider ຈິງ (aggregate ຈາກ ExpenseRepository ຕາມວັນ)
-final mockChartData = List.generate(14, (i) {
-  final date = DateTime.now().subtract(Duration(days: 13 - i));
-  return DailyChartData(
-    date: date,
-    income: (i % 4 == 0) ? 300000.0 + (i * 10000) : 0.0,
-    expense: 50000.0 + (i * 15000) % 200000,
-  );
-});
