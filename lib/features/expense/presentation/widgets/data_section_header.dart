@@ -1,6 +1,6 @@
 // features/expense/presentation/widgets/date_section_header.dart
 import 'package:flutter/material.dart';
-import 'package:kipp/core/theme/app_theme.dart';
+import 'package:kipp/core/extensions/build_context_ext.dart';
 
 class DateSectionHeader extends StatelessWidget {
   const DateSectionHeader({super.key, required this.label});

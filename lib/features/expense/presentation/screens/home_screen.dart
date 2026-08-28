@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/router/route_paths.dart';
-import 'package:kipp/core/theme/app_theme.dart';
 import 'package:kipp/core/utils/date_group_formatter.dart';
 import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
@@ -38,9 +38,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: _currentIndex == 1
           ? const KippAppBar(title: 'Expense')
           : _currentIndex == 2
-          ? const KippAppBar(title: 'History')
+          ? KippAppBar(title: context.l10n.history)
           : _currentIndex == 3
-          ? const KippAppBar(title: 'Profile')
+          ? KippAppBar(title: context.l10n.profile)
           : null,
       body: IndexedStack(
         index: _currentIndex,
@@ -55,7 +55,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text(
-                        'Welcome, User',
+                        '${context.l10n.welcomeUser}${", Kitsana"}',
                         style: context.typo.title.copyWith(
                           color: context.colors.text,
                           fontWeight: FontWeight.w400,

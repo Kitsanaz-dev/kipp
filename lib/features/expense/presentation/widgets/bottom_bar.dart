@@ -1,9 +1,9 @@
 // features/expense/presentation/widgets/bottom_bar.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/router/route_paths.dart';
-import 'package:kipp/core/theme/app_theme.dart';
 import 'package:native_glass_navbar/native_glass_navbar.dart';
 
 class BottomBar extends StatelessWidget {
@@ -22,7 +22,7 @@ class BottomBar extends StatelessWidget {
         symbol: 'plus',
         onTap: () => context.push(RoutePaths.addExpense),
       ),
-      tabs: const [
+      tabs: [
         NativeGlassNavBarItem(label: 'Home', symbol: 'house'),
         NativeGlassNavBarItem(label: 'Expense', symbol: 'kipsign.circle'),
         NativeGlassNavBarItem(label: 'History', symbol: 'calendar'),
@@ -38,10 +38,10 @@ class BottomBar extends StatelessWidget {
         duration: const Duration(milliseconds: 400),
         tabBackgroundColor: context.colors.primary,
         tabs: const [
-          GButton(icon: Icons.home, text: 'Home'),
-          GButton(icon: Icons.explore, text: 'Expense'),
-          GButton(icon: Icons.history, text: 'History'),
-          GButton(icon: Icons.person, text: 'Profile'),
+          GButton(icon: CupertinoIcons.home, text: 'Home'),
+          GButton(icon: CupertinoIcons.graph_square, text: 'Expense'),
+          GButton(icon: CupertinoIcons.calendar, text: 'History'),
+          GButton(icon: CupertinoIcons.person, text: 'Profile'),
         ],
         selectedIndex: currentIndex,
         onTabChange: onTap, 

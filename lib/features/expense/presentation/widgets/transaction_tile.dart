@@ -1,6 +1,6 @@
 // features/expense/presentation/widgets/transaction_tile.dart
 import 'package:flutter/material.dart';
-import 'package:kipp/core/theme/app_theme.dart';
+import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/utils/category_icon_mapper.dart';
 import 'package:kipp/core/utils/currency_formatter.dart';
 import 'package:kipp/features/expense/domain/entities/expense_entity.dart'; // ✅ ປ່ຽນ import

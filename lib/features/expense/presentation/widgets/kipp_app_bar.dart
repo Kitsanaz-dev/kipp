@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kipp/core/theme/app_theme.dart';
+import 'package:kipp/core/extensions/build_context_ext.dart';
 
 class KippAppBar extends StatelessWidget implements PreferredSizeWidget {
   const KippAppBar({

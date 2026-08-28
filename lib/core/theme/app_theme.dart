@@ -12,9 +12,3 @@ abstract class AppTheme {
   AppTypo get typo;
   AppDeco get deco;
 }
-
-extension BuildContextExt on BuildContext {
-  AppColor get colors => Theme.of(this).extension<AppColor>()!;
-  AppTypo get typo => Theme.of(this).extension<AppTypo>()!;
-  AppDeco get deco => Theme.of(this).extension<AppDeco>()!;
-}

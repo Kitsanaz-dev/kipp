@@ -1,8 +1,8 @@
 // features/expense/presentation/widgets/day_type_nav_bar.dart
 import 'package:flutter/material.dart';
+import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:kipp/core/constant/radius.dart';
-import 'package:kipp/core/theme/app_theme.dart';
 
 class DayTypeNavBar extends StatelessWidget {
   const DayTypeNavBar({

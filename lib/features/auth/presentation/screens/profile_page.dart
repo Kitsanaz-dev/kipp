@@ -1,9 +1,11 @@
 // features/expense/presentation/screens/profile_page.dart
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kipp/core/constant/radius.dart';
-import 'package:kipp/core/theme/app_theme.dart';
+import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/features/expense/presentation/models/user_ui_model.dart';
 import 'package:kipp/features/expense/presentation/widgets/theme_mode_sector.dart';
+import 'package:kipp/features/settings/presentation/widgets/language_selector.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -38,7 +40,9 @@ class ProfilePage extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         mockUser.email,
-                        style: context.typo.bodySmall.copyWith(color: colors.subtext),
+                        style: context.typo.bodySmall.copyWith(
+                          color: colors.subtext,
+                        ),
                       ),
                     ],
                   ),
@@ -46,18 +50,15 @@ class ProfilePage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            Divider(color: colors.inactiveContainer),
-            const SizedBox(height: 8),
 
             // ---- Edit Profile Info ----
             _ProfileMenuTile(
               icon: Icons.edit_outlined,
-              label: 'Edit Profile Info',
+              label: context.l10n.editProfileInfo,
               onTap: () {
                 // TODO: ໄປໜ້າ EditProfilePage ຕອນສ້າງໜ້ານັ້ນ
               },
             ),
-            Divider(color: colors.inactiveContainer),
 
             // ---- Theme (ຝັງ selector ຢູ່ນຳ ບໍ່ຕ້ອງໄປໜ້າແຍກ) ----
             Padding(
@@ -67,11 +68,17 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.palette_outlined, size: 20, color: colors.text),
+                      Icon(
+                        Icons.palette_outlined,
+                        size: 20,
+                        color: colors.text,
+                      ),
                       const SizedBox(width: 12),
                       Text(
-                        'Theme',
-                        style: context.typo.subtitle.copyWith(color: colors.text),
+                        context.l10n.theme,
+                        style: context.typo.subtitle.copyWith(
+                          color: colors.text,
+                        ),
                       ),
                     ],
                   ),
@@ -80,7 +87,30 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
-            Divider(color: colors.inactiveContainer),
+
+            // ---- Theme (ຝັງ selector ຢູ່ນຳ ບໍ່ຕ້ອງໄປໜ້າແຍກ) ----
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(CupertinoIcons.globe, size: 20, color: colors.text),
+                      const SizedBox(width: 12),
+                      Text(
+                        context.l10n.language,
+                        style: context.typo.subtitle.copyWith(
+                          color: colors.text,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const LanguageSelector(),
+                ],
+              ),
+            ),
 
             const SizedBox(height: 40),
 
@@ -95,7 +125,7 @@ class ProfilePage extends StatelessWidget {
                   shape: RoundedRectangleBorder(borderRadius: AppRadius.xlAll),
                 ),
                 child: Text(
-                  'Log out',
+                  context.l10n.logOut,
                   style: context.typo.subtitle.copyWith(
                     color: colors.danger,
                     fontWeight: FontWeight.w600,
@@ -115,12 +145,12 @@ class ProfilePage extends StatelessWidget {
       context: context,
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: AppRadius.lgAll),
-        title: const Text('Log out'),
-        content: const Text('ທ່ານແນ່ໃຈບໍ່ວ່າຢາກອອກຈາກລະບົບ?'),
+        title: Text(context.l10n.logOut),
+        content: Text(context.l10n.logOutConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text('Cancel', style: TextStyle(color: colors.subtext)),
+            child: Text(context.l10n.cancel, style: TextStyle(color: colors.subtext)),
           ),
           TextButton(
             onPressed: () {
@@ -128,7 +158,13 @@ class ProfilePage extends StatelessWidget {
               // TODO: ref.read(authProvider.notifier).logout();
               // TODO: context.go(RoutePaths.start); ຫຼັງ logout ສຳເລັດ
             },
-            child: Text('Log out', style: TextStyle(color: colors.danger, fontWeight: FontWeight.w600)),
+            child: Text(
+              context.l10n.logOut,
+              style: TextStyle(
+                color: colors.danger,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
       ),
@@ -161,7 +197,10 @@ class _ProfileMenuTile extends StatelessWidget {
             Icon(icon, size: 20, color: colors.text),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(label, style: context.typo.subtitle.copyWith(color: colors.text)),
+              child: Text(
+                label,
+                style: context.typo.subtitle.copyWith(color: colors.text),
+              ),
             ),
             Icon(Icons.chevron_right, size: 20, color: colors.subtext),
           ],

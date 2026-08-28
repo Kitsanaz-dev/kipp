@@ -1,9 +1,11 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:kipp/core/constant/radius.dart';
-import 'package:kipp/core/theme/app_theme.dart';
+import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
@@ -18,14 +20,24 @@ class AddExpenseDetailPage extends ConsumerStatefulWidget {
 }
 
 class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
+  // -------- keys --------
   final _formKey = GlobalKey<FormState>();
 
+  // -------- camera and image picker variables --------
+  late ImagePicker imagePicker;
+  late List<CameraDescription> _camera;
+  late CameraController cameraController;
+  bool isInit = false;
+  bool isPermissionGranted = false;
+
+  // -------- state variables --------
   bool _isExpense = true;
   bool _isSaving = false; // ✅ ເພີ່ມ loading state
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
   String? _selectedType;
 
+  // -------- constants --------
   final List<String> _expenseTypes = [
     'Food',
     'Travel',
@@ -38,11 +50,20 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
   ];
   final List<String> _incomeTypes = ['Salary', 'Business', 'Bonus', 'Other'];
 
+  // -------- lifecycle --------
   @override
   void dispose() {
     _amountController.dispose();
     _descController.dispose();
+    
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    imagePicker = ImagePicker();
+    requestPermissions();
   }
 
   Future<void> _saveTransaction() async {
