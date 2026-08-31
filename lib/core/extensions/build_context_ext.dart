@@ -8,5 +8,5 @@ extension BuildContextExt on BuildContext {
   AppColor get colors => Theme.of(this).extension<AppColor>()!;
   AppTypo get typo => Theme.of(this).extension<AppTypo>()!;
   AppDeco get deco => Theme.of(this).extension<AppDeco>()!;
-  AppLocalizations get l10n => AppLocalizations.of(this)!;
+  AppLocalizations get text => AppLocalizations.of(this)!;
 }

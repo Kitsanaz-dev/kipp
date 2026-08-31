@@ -1,4 +1,6 @@
 // features/auth/presentation/screens/register_screen.dart
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -44,7 +46,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       context.go(RoutePaths.home);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -71,9 +75,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   icon: Icon(CupertinoIcons.back, size: 22, color: colors.text),
                 ),
                 const SizedBox(height: 8),
-                Text('Sign up', style: context.typo.h2.copyWith(color: colors.text)),
+                Text(
+                  'Sign up',
+                  style: context.typo.h2.copyWith(color: colors.text),
+                ),
                 const SizedBox(height: 4),
-                Text('ສ້າງບັນຊີໃໝ່ເພື່ອເລີ່ມຄວບຄຸມການເງິນ', style: context.typo.body.copyWith(color: colors.subtext)),
+                Text(
+                  'ສ້າງບັນຊີໃໝ່ເພື່ອເລີ່ມຄວບຄຸມການເງິນ',
+                  style: context.typo.body.copyWith(color: colors.subtext),
+                ),
                 const SizedBox(height: 28),
 
                 _buildLabel(context, 'Full Name'),
@@ -83,7 +93,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   hint: 'ປ້ອນຊື່ຂອງເຈົ້າ',
                   icon: CupertinoIcons.person,
                   validator: (v) {
-                    if (v == null || v.trim().length < 2) return 'ຊື່ຕ້ອງມີຢ່າງໜ້ອຍ 2 ຕົວອັກສອນ';
+                    if (v == null || v.trim().length < 2)
+                      return 'ຊື່ຕ້ອງມີຢ່າງໜ້ອຍ 2 ຕົວອັກສອນ';
                     return null;
                   },
                 ),
@@ -97,7 +108,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   icon: CupertinoIcons.mail,
                   keyboardType: TextInputType.emailAddress,
                   validator: (v) {
-                    if (v == null || !v.contains('@') || !v.contains('.')) return 'ອີເມວບໍ່ຖືກຕ້ອງ';
+                    if (v == null || !v.contains('@') || !v.contains('.'))
+                      return 'ອີເມວບໍ່ຖືກຕ້ອງ';
                     return null;
                   },
                 ),
@@ -111,12 +123,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   icon: CupertinoIcons.lock,
                   obscureText: _obscurePassword,
                   suffixIcon: IconButton(
-                    icon: Icon(_obscurePassword ? CupertinoIcons.eye_slash : CupertinoIcons.eye,
-                        color: colors.subtext, size: 20),
-                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                    icon: Icon(
+                      _obscurePassword
+                          ? CupertinoIcons.eye_slash
+                          : CupertinoIcons.eye,
+                      color: colors.subtext,
+                      size: 20,
+                    ),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
                   ),
                   validator: (v) {
-                    if (v == null || v.length < 6) return 'ລະຫັດຜ່ານຢ່າງໜ້ອຍ 6 ຕົວອັກສອນ';
+                    if (v == null || v.length < 6)
+                      return 'ລະຫັດຜ່ານຢ່າງໜ້ອຍ 6 ຕົວອັກສອນ';
                     return null;
                   },
                 ),
@@ -130,11 +149,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   icon: CupertinoIcons.lock,
                   obscureText: _obscureConfirm,
                   suffixIcon: IconButton(
-                    icon: Icon(_obscureConfirm ? CupertinoIcons.eye_slash : CupertinoIcons.eye,
-                        color: colors.subtext, size: 20),
-                    onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
+                    icon: Icon(
+                      _obscureConfirm
+                          ? CupertinoIcons.eye_slash
+                          : CupertinoIcons.eye,
+                      color: colors.subtext,
+                      size: 20,
+                    ),
+                    onPressed: () =>
+                        setState(() => _obscureConfirm = !_obscureConfirm),
                   ),
-                  validator: (v) => v != _passCtrl.text ? 'ລະຫັດຜ່ານບໍ່ກົງກັນ' : null,
+                  validator: (v) =>
+                      v != _passCtrl.text ? 'ລະຫັດຜ່ານບໍ່ກົງກັນ' : null,
                 ),
                 const SizedBox(height: 28),
 
@@ -146,15 +172,28 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: colors.primary,
                       elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: AppRadius.xlAll),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: AppRadius.xlAll,
+                      ),
                     ),
                     child: _isLoading
                         ? SizedBox(
                             width: 22,
                             height: 22,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: colors.onPrimary),
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(
+                                    color: colors.onPrimary,
+                                  )
+                                : CupertinoActivityIndicator(
+                                    color: colors.onPrimary,
+                                  ),
                           )
-                        : Text('Sign up', style: context.typo.title.copyWith(color: colors.onPrimary)),
+                        : Text(
+                            'Sign up',
+                            style: context.typo.title.copyWith(
+                              color: colors.onPrimary,
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -162,14 +201,22 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 Center(
                   child: RichText(
                     text: TextSpan(
-                      style: context.typo.bodySmall.copyWith(color: colors.subtext),
+                      style: context.typo.bodySmall.copyWith(
+                        color: colors.subtext,
+                      ),
                       children: [
                         const TextSpan(text: 'ມີບັນຊີແລ້ວ? '),
                         WidgetSpan(
                           alignment: PlaceholderAlignment.middle,
                           child: GestureDetector(
                             onTap: () => context.pop(),
-                            child: Text('Login', style: TextStyle(color: colors.primary, fontWeight: FontWeight.w600)),
+                            child: Text(
+                              'Login',
+                              style: TextStyle(
+                                color: colors.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -186,9 +233,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Widget _buildLabel(BuildContext context, String text) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Text(text, style: context.typo.subtitle.copyWith(color: context.colors.text)),
-      );
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Text(
+      text,
+      style: context.typo.subtitle.copyWith(color: context.colors.text),
+    ),
+  );
 
   Widget _buildTextField({
     required BuildContext context,
@@ -215,8 +265,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         filled: true,
         fillColor: colors.hintContainer,
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
-        border: OutlineInputBorder(borderRadius: AppRadius.lgAll, borderSide: BorderSide.none),
-        errorBorder: OutlineInputBorder(borderRadius: AppRadius.lgAll, borderSide: BorderSide(color: colors.danger)),
+        border: OutlineInputBorder(
+          borderRadius: AppRadius.lgAll,
+          borderSide: BorderSide.none,
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: AppRadius.lgAll,
+          borderSide: BorderSide(color: colors.danger),
+        ),
       ),
     );
   }

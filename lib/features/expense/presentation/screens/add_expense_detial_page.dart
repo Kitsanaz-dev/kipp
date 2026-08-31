@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:kipp/features/expense/data/services/receipt_scanner_service.dart';
 import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
+import 'package:kipp/features/expense/presentation/screens/receipt_capture_screen.dart';
 import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
 import 'package:uuid/uuid.dart';
 
@@ -23,7 +27,8 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
 
   // -------- state variables --------
   bool _isExpense = true;
-  bool _isSaving = false; // ✅ ເພີ່ມ loading state
+  bool _isSaving = false;
+  bool _isScanning = false;
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
   String? _selectedType;
@@ -114,13 +119,78 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
     }
   }
 
+  Future<void> _scanReceipt() async {
+    final capturedFile = await Navigator.push<File?>(
+      context,
+      MaterialPageRoute(builder: (_) => const ReceiptCaptureScreen()),
+    );
+    if (capturedFile == null || !mounted) return;
+
+    setState(() => _isScanning = true);
+    final scanner = ReceiptScannerService();
+
+    try {
+      // ສົ່ງ List ຂອງ Categories ໄປໃຫ້ AI ເພື່ອໃຫ້ມັນເລືອກໄດ້ກົງກັບ Dropdown ຂອງເຮົາ
+      final data = await scanner.scan(capturedFile, _expenseTypes, _incomeTypes);
+      if (!mounted) return;
+
+      if (data != null) {
+        setState(() {
+          // 1. ອັບເດດຈຳນວນເງິນ
+          if (data.amount != null) {
+            _amountController.text = data.amount!.toStringAsFixed(0);
+          }
+
+          // 2. ອັບເດດປະເພດ (Income/Expense)
+          if (data.isIncome != null) {
+            _isExpense = !(data.isIncome!);
+          }
+
+          // 3. ອັບເດດ Category (Dropdown)
+          // ຕ້ອງກວດສອບວ່າ AI ຕອບມາກົງກັບ List ທີ່ເຮົາມີແທ້ບໍ່
+          if (data.category != null) {
+            final activeList = _isExpense ? _expenseTypes : _incomeTypes;
+            if (activeList.contains(data.category)) {
+              _selectedType = data.category;
+            } else {
+              _selectedType = 'Other'; // ຖ້າບໍ່ກົງໃຫ້ເຂົ້າ Other
+            }
+          }
+
+          // 4. ອັບເດດຄຳອະທິບາຍ
+          if (data.description != null) {
+            _descController.text = data.description!;
+          }
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.text.fetchData),
+            backgroundColor: context.colors.ok,
+          ),
+        );
+      } else {
+        throw Exception("AI response is empty");
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.text.fetchDataError),
+          backgroundColor: context.colors.danger,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isScanning = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentTypes = _isExpense ? _expenseTypes : _incomeTypes;
 
     return Scaffold(
       appBar: KippAppBar(
-        title: 'Add Transaction',
+        title: context.text.addTransaction,
         leading: IconButton(
           onPressed: () => context.pop(), // ✅ go_router
           icon: Icon(
@@ -161,9 +231,12 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
                   }),
                   elevation: const WidgetStatePropertyAll(0),
                 ),
-                segments: const [
-                  ButtonSegment(value: true, label: Text('Expense')),
-                  ButtonSegment(value: false, label: Text('Income')),
+                segments: [
+                  ButtonSegment(
+                    value: true,
+                    label: Text(context.text.expenses),
+                  ),
+                  ButtonSegment(value: false, label: Text(context.text.income)),
                 ],
                 selected: {_isExpense},
                 onSelectionChanged: (Set<bool> newSelection) {
@@ -355,12 +428,26 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
       ),
 
       floatingActionButton: FloatingActionButton(
+        shape: const CircleBorder(),
         backgroundColor: context.colors.primary,
-        child: Icon(
-          CupertinoIcons.photo_camera,
-          color: context.colors.onPrimary,
-        ),
-        onPressed: () {},
+        onPressed: _isScanning ? null : _scanReceipt,
+        child: _isScanning
+            ? SizedBox(
+                width: 20,
+                height: 20,
+                child: Platform.isAndroid
+                    ? CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: context.colors.onPrimary,
+                      )
+                    : CupertinoActivityIndicator(
+                        color: context.colors.onPrimary,
+                      ),
+              )
+            : Icon(
+                Platform.isAndroid ? Icons.camera_alt : CupertinoIcons.camera,
+                color: context.colors.onPrimary,
+              ),
       ),
     );
   }

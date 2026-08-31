@@ -1,5 +1,6 @@
 // main.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -12,9 +13,10 @@ import 'package:kipp/features/expense/data/models/expense_model.dart';
 import 'package:kipp/l10n/app_localizations.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // ✅ ຕ້ອງມີ
-  await Hive.initFlutter();                   // ✅ ຕ້ອງມີ ແລະຕ້ອງ await
-  Hive.registerAdapter(ExpenseModelAdapter()); // ✅ ຕ້ອງມີ
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(ExpenseModelAdapter());
+  await dotenv.load(fileName: ".env");
 
   runApp(const ProviderScope(child: KippApp()));
 }

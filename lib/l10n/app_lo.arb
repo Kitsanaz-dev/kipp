@@ -1,6 +1,5 @@
 {
   "@@locale": "lo",
-
   "signIn": "ເຂົ້າສູ່ລະບົບ",
   "signInSubtitle": "ຍິນດີຕ້ອນຮັບກັບມາ",
   "signUp": "ສະໝັກສະມາຊິກ",
@@ -14,7 +13,6 @@
   "alreadyHaveAccount": "ມີບັນຊີແລ້ວ? ",
   "rememberMe": "ຈື່ຂ້ອຍໄວ້",
   "forgotPassword": "ລືມລະຫັດຜ່ານ?",
-
   "welcomeUser": "ຍິນດີຕ້ອນຮັບ",
   "todaysBalance": "ຍອດເງິນມື້ນີ້",
   "thisWeeksBalance": "ຍອດເງິນອາທິດນີ້",
@@ -37,13 +35,17 @@
   "savedSuccessfully": "ບັນທຶກສຳເລັດແລ້ວ",
   "saveFailed": "ບໍ່ສາມາດບັນທຶກໄດ້: {error}",
   "@saveFailed": {
-    "placeholders": { "error": { "type": "String" } }
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   },
+  "deleteSuccess":"ລົບສຳເລັດ",
   "pleaseEnterAmount": "ກະລຸນາປ້ອນຈຳນວນເງິນ",
   "pleaseEnterValidNumber": "ກະລຸນາປ້ອນຕົວເລກທີ່ຖືກຕ້ອງ",
   "amountMustBeGreaterThanZero": "ຈຳນວນເງິນຕ້ອງຫຼາຍກວ່າ 0",
   "pleaseSelectType": "ກະລຸນາເລືອກປະເພດ",
-
   "history": "ປະຫວັດ",
   "profile": "ໂປຣໄຟລ໌",
   "editProfileInfo": "ແກ້ໄຂຂໍ້ມູນໂປຣໄຟລ໌",
@@ -55,7 +57,19 @@
   "logOut": "ອອກຈາກລະບົບ",
   "logOutConfirm": "ທ່ານແນ່ໃຈບໍ່ວ່າຢາກອອກຈາກລະບົບ?",
   "cancel": "ຍົກເລີກ",
-
   "totalIncome": "ລາຍຮັບທັງໝົດ",
-  "totalExpense": "ລາຍຈ່າຍທັງໝົດ"
+  "totalExpense": "ລາຍຈ່າຍທັງໝົດ",
+  "scanReceipt": "ຖ່າຍໃບບິນ",
+  "cameraPermissionRequired": "ຕ້ອງການສິດເຂົ້າໃຊ້ກ້ອງເພື່ອສະແກນໃບບິນ",
+  "amountFoundReview": "ພົບຈຳນວນເງິນ: {amount} - ກະລຸນາກວດຄືນ",
+  "@amountFoundReview": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "amountNotFoundManual": "ບໍ່ພົບຈຳນວນເງິນອັດຕະໂນມັດ, ກະລຸນາປ້ອນເອງ",
+  "fetchDataSuccess" : "ດຶງຂໍ້ມູນສຳເລັດແລ້ວ ກະລຸນາກວດສອບຄວາມຖືກຕ້ອງ",
+  "fetchDataError" : "ບໍ່ສາມາດດຶງຂໍ້ມູນຈາກຮູບພາບໄດ້"
 }

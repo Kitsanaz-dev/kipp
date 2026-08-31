@@ -47,7 +47,7 @@ class TransactionTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    transaction.category,
+                    transaction.description,
                     style: context.typo.caption.copyWith(color: colors.subtext),
                   ),
                 ],

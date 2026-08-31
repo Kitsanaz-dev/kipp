@@ -15,6 +15,7 @@ import 'package:kipp/features/expense/presentation/screens/expense_page.dart';
 import 'package:kipp/features/expense/presentation/widgets/bottom_bar.dart';
 import 'package:kipp/features/expense/presentation/widgets/data_section_header.dart';
 import 'package:kipp/features/expense/presentation/widgets/day_type_nav_bar.dart';
+import 'package:kipp/features/expense/presentation/widgets/expense_detail_bottom_sheet.dart';
 import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
 import 'package:kipp/features/expense/presentation/widgets/expense_card.dart';
 import 'package:kipp/features/expense/presentation/widgets/transaction_tile.dart';
@@ -38,9 +39,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: _currentIndex == 1
           ? const KippAppBar(title: 'Expense')
           : _currentIndex == 2
-          ? KippAppBar(title: context.l10n.history)
+          ? KippAppBar(title: context.text.history)
           : _currentIndex == 3
-          ? KippAppBar(title: context.l10n.profile)
+          ? KippAppBar(title: context.text.profile)
           : null,
       body: IndexedStack(
         index: _currentIndex,
@@ -55,7 +56,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text(
-                        '${context.l10n.welcomeUser}${", Kitsana"}',
+                        '${context.text.welcomeUser}${", Kitsana"}',
                         style: context.typo.title.copyWith(
                           color: context.colors.text,
                           fontWeight: FontWeight.w400,
@@ -109,12 +110,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // ເພີ່ມ method ນີ້ໃນ _HomeScreenState
   List<Widget> _buildGroupedTransactions(
     BuildContext context,
-    List<ExpenseEntity> transactions, // ✅
+    List<ExpenseEntity> transactions,
   ) {
-    // ຈັດກຸ່ມຕາມວັນທີ (label ດຽວກັນ ຢູ່ນຳກັນ)
     final Map<String, List<ExpenseEntity>> grouped = {};
     for (final tx in transactions) {
       final label = DateGroupFormatter.label(tx.date);
@@ -125,7 +124,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     grouped.forEach((label, txList) {
       widgets.add(DateSectionHeader(label: label));
       for (final tx in txList) {
-        widgets.add(TransactionTile(transaction: tx));
+        // ✅ tx ຄືຕົວແປ loop ຂອງ txList ນີ້
+        widgets.add(
+          TransactionTile(
+            transaction: tx,
+            onTap: () => showExpenseDetailBottomSheet(context, tx),
+          ),
+        );
       }
     });
 
@@ -135,7 +140,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           padding: const EdgeInsets.symmetric(vertical: 32),
           child: Center(
             child: Text(
-              'ຍັງບໍ່ມີລາຍການ',
+              context.text.noTransactions,
               style: context.typo.body.copyWith(color: context.colors.subtext),
             ),
           ),

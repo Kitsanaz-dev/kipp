@@ -54,7 +54,7 @@ class ProfilePage extends StatelessWidget {
             // ---- Edit Profile Info ----
             _ProfileMenuTile(
               icon: Icons.edit_outlined,
-              label: context.l10n.editProfileInfo,
+              label: context.text.editProfileInfo,
               onTap: () {
                 // TODO: ໄປໜ້າ EditProfilePage ຕອນສ້າງໜ້ານັ້ນ
               },
@@ -75,7 +75,7 @@ class ProfilePage extends StatelessWidget {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        context.l10n.theme,
+                        context.text.theme,
                         style: context.typo.subtitle.copyWith(
                           color: colors.text,
                         ),
@@ -99,7 +99,7 @@ class ProfilePage extends StatelessWidget {
                       Icon(CupertinoIcons.globe, size: 20, color: colors.text),
                       const SizedBox(width: 12),
                       Text(
-                        context.l10n.language,
+                        context.text.language,
                         style: context.typo.subtitle.copyWith(
                           color: colors.text,
                         ),
@@ -125,7 +125,7 @@ class ProfilePage extends StatelessWidget {
                   shape: RoundedRectangleBorder(borderRadius: AppRadius.xlAll),
                 ),
                 child: Text(
-                  context.l10n.logOut,
+                  context.text.logOut,
                   style: context.typo.subtitle.copyWith(
                     color: colors.danger,
                     fontWeight: FontWeight.w600,
@@ -145,12 +145,12 @@ class ProfilePage extends StatelessWidget {
       context: context,
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: AppRadius.lgAll),
-        title: Text(context.l10n.logOut),
-        content: Text(context.l10n.logOutConfirm),
+        title: Text(context.text.logOut),
+        content: Text(context.text.logOutConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text(context.l10n.cancel, style: TextStyle(color: colors.subtext)),
+            child: Text(context.text.cancel, style: TextStyle(color: colors.subtext)),
           ),
           TextButton(
             onPressed: () {
@@ -159,7 +159,7 @@ class ProfilePage extends StatelessWidget {
               // TODO: context.go(RoutePaths.start); ຫຼັງ logout ສຳເລັດ
             },
             child: Text(
-              context.l10n.logOut,
+              context.text.logOut,
               style: TextStyle(
                 color: colors.danger,
                 fontWeight: FontWeight.w600,

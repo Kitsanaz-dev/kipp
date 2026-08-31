@@ -1,4 +1,6 @@
 // features/auth/presentation/screens/login_screen.dart
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,9 +41,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       context.go(RoutePaths.home);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -62,9 +64,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 24),
-                Text('Sign in', style: context.typo.h2.copyWith(color: colors.text)),
+                Text(
+                  'Sign in',
+                  style: context.typo.h2.copyWith(color: colors.text),
+                ),
                 const SizedBox(height: 4),
-                Text('ຍິນດີຕ້ອນຮັບກັບມາ', style: context.typo.body.copyWith(color: colors.subtext)),
+                Text(
+                  'ຍິນດີຕ້ອນຮັບກັບມາ',
+                  style: context.typo.body.copyWith(color: colors.subtext),
+                ),
                 const SizedBox(height: 32),
 
                 _buildLabel(context, 'Email'),
@@ -91,14 +99,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   obscureText: _obscurePassword,
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? CupertinoIcons.eye_slash : CupertinoIcons.eye,
+                      _obscurePassword
+                          ? CupertinoIcons.eye_slash
+                          : CupertinoIcons.eye,
                       color: colors.subtext,
                       size: 20,
                     ),
-                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
                   ),
                   validator: (v) {
-                    if (v == null || v.length < 6) return 'ລະຫັດຜ່ານຢ່າງໜ້ອຍ 6 ຕົວອັກສອນ';
+                    if (v == null || v.length < 6)
+                      return 'ລະຫັດຜ່ານຢ່າງໜ້ອຍ 6 ຕົວອັກສອນ';
                     return null;
                   },
                 ),
@@ -112,15 +124,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: colors.primary,
                       elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: AppRadius.xlAll),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: AppRadius.xlAll,
+                      ),
                     ),
                     child: _isLoading
                         ? SizedBox(
                             width: 22,
                             height: 22,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: colors.onPrimary),
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: colors.onPrimary,
+                                  )
+                                : CupertinoActivityIndicator(
+                                    color: colors.onPrimary,
+                                  ),
                           )
-                        : Text('Login', style: context.typo.title.copyWith(color: colors.onPrimary)),
+                        : Text(
+                            'Login',
+                            style: context.typo.title.copyWith(
+                              color: colors.onPrimary,
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -128,7 +154,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Center(
                   child: RichText(
                     text: TextSpan(
-                      style: context.typo.bodySmall.copyWith(color: colors.subtext),
+                      style: context.typo.bodySmall.copyWith(
+                        color: colors.subtext,
+                      ),
                       children: [
                         const TextSpan(text: "ຍັງບໍ່ມີບັນຊີ? "),
                         WidgetSpan(
@@ -137,7 +165,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             onTap: () => context.push(RoutePaths.register),
                             child: Text(
                               'Sign up',
-                              style: TextStyle(color: colors.primary, fontWeight: FontWeight.w600),
+                              style: TextStyle(
+                                color: colors.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
@@ -155,9 +186,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildLabel(BuildContext context, String text) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Text(text, style: context.typo.subtitle.copyWith(color: context.colors.text)),
-      );
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Text(
+      text,
+      style: context.typo.subtitle.copyWith(color: context.colors.text),
+    ),
+  );
 
   Widget _buildTextField({
     required BuildContext context,
@@ -184,8 +218,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         filled: true,
         fillColor: colors.hintContainer,
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
-        border: OutlineInputBorder(borderRadius: AppRadius.lgAll, borderSide: BorderSide.none),
-        errorBorder: OutlineInputBorder(borderRadius: AppRadius.lgAll, borderSide: BorderSide(color: colors.danger)),
+        border: OutlineInputBorder(
+          borderRadius: AppRadius.lgAll,
+          borderSide: BorderSide.none,
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: AppRadius.lgAll,
+          borderSide: BorderSide(color: colors.danger),
+        ),
       ),
     );
   }

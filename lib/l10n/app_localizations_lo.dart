@@ -113,6 +113,9 @@ class AppLocalizationsLo extends AppLocalizations {
   }
 
   @override
+  String get deleteSuccess => 'ລົບສຳເລັດ';
+
+  @override
   String get pleaseEnterAmount => 'ກະລຸນາປ້ອນຈຳນວນເງິນ';
 
   @override
@@ -162,4 +165,24 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get totalExpense => 'ລາຍຈ່າຍທັງໝົດ';
+
+  @override
+  String get scanReceipt => 'ຖ່າຍໃບບິນ';
+
+  @override
+  String get cameraPermissionRequired => 'ຕ້ອງການສິດເຂົ້າໃຊ້ກ້ອງເພື່ອສະແກນໃບບິນ';
+
+  @override
+  String amountFoundReview(String amount) {
+    return 'ພົບຈຳນວນເງິນ: $amount - ກະລຸນາກວດຄືນ';
+  }
+
+  @override
+  String get amountNotFoundManual => 'ບໍ່ພົບຈຳນວນເງິນອັດຕະໂນມັດ, ກະລຸນາປ້ອນເອງ';
+
+  @override
+  String get fetchData => 'Fetch Data successfully, Please review';
+
+  @override
+  String get fetchDataError => 'ບໍ່ສາມາດດຶງຂໍ້ມູນຈາກຮູບພາບໄດ້';
 }

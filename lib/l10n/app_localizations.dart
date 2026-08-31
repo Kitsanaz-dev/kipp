@@ -299,6 +299,12 @@ abstract class AppLocalizations {
   /// **'Could not save: {error}'**
   String saveFailed(String error);
 
+  /// No description provided for @deleteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Successfully'**
+  String get deleteSuccess;
+
   /// No description provided for @pleaseEnterAmount.
   ///
   /// In en, this message translates to:
@@ -400,6 +406,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total Expense'**
   String get totalExpense;
+
+  /// No description provided for @scanReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Receipt'**
+  String get scanReceipt;
+
+  /// No description provided for @cameraPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission is required to scan receipts'**
+  String get cameraPermissionRequired;
+
+  /// No description provided for @amountFoundReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount found: {amount} - please review'**
+  String amountFoundReview(String amount);
+
+  /// No description provided for @amountNotFoundManual.
+  ///
+  /// In en, this message translates to:
+  /// **'No amount detected automatically, please enter it manually'**
+  String get amountNotFoundManual;
+
+  /// No description provided for @fetchData.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetch Data successfully, Please review'**
+  String get fetchData;
+
+  /// No description provided for @fetchDataError.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot fetch data from pictures, please try again'**
+  String get fetchDataError;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

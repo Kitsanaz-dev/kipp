@@ -120,8 +120,8 @@ class ThemeModeSelector extends ConsumerWidget {
   };
 
   String _labelFor(BuildContext context, ThemeMode mode) => switch (mode) {
-    ThemeMode.light => context.l10n.themeLight,
-    ThemeMode.dark => context.l10n.themeDark,
-    ThemeMode.system => context.l10n.themeSystem,
+    ThemeMode.light => context.text.themeLight,
+    ThemeMode.dark => context.text.themeDark,
+    ThemeMode.system => context.text.themeSystem,
   };
 }

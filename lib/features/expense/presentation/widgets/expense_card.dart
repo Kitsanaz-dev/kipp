@@ -17,9 +17,9 @@ class ExpenseCard extends StatelessWidget {
   double get balance => income - expense;
 
   List<String> _balanceLabels(BuildContext context) => [
-    context.l10n.todaysBalance,
-    context.l10n.thisWeeksBalance,
-    context.l10n.thisMonthsBalance,
+    context.text.todaysBalance,
+    context.text.thisWeeksBalance,
+    context.text.thisMonthsBalance,
   ];
 
   @override
@@ -80,7 +80,7 @@ class ExpenseCard extends StatelessWidget {
               children: [
                 _SummaryItem(
                   icon: Icons.arrow_downward,
-                  label: context.l10n.income,
+                  label: context.text.income,
                   amount: income,
                   iconColor: context.colors.ok,
                   iconBackgroundColor: context.colors.onPrimary.withValues(
@@ -90,7 +90,7 @@ class ExpenseCard extends StatelessWidget {
                 const Spacer(),
                 _SummaryItem(
                   icon: Icons.arrow_upward,
-                  label: context.l10n.expenses,
+                  label: context.text.expenses,
                   amount: -expense,
                   iconColor: context.colors.danger,
                   iconBackgroundColor: context.colors.onPrimary.withValues(

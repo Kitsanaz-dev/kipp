@@ -29,7 +29,9 @@ class _ExpensePageState extends ConsumerState<ExpensePage> {
     final chartData = ref.watch(dailyChartDataProvider);
     final totals = ref.watch(expenseTotalsProvider);
 
-    final filtered = allExpenses.where((e) => e.isIncome == _showIncome).toList();
+    final filtered = allExpenses
+        .where((e) => e.isIncome == _showIncome)
+        .toList();
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -43,7 +45,7 @@ class _ExpensePageState extends ConsumerState<ExpensePage> {
               children: [
                 Expanded(
                   child: _TotalCard(
-                    label: 'Total Income',
+                    label: context.text.totalIncome,
                     amount: totals.totalIncome,
                     color: colors.ok,
                     icon: Icons.arrow_downward,
@@ -52,7 +54,7 @@ class _ExpensePageState extends ConsumerState<ExpensePage> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: _TotalCard(
-                    label: 'Total Expense',
+                    label: context.text.totalExpense,
                     amount: totals.totalExpense,
                     color: colors.danger,
                     icon: Icons.arrow_upward,
@@ -68,7 +70,7 @@ class _ExpensePageState extends ConsumerState<ExpensePage> {
                 padding: const EdgeInsets.symmetric(vertical: 32),
                 child: Center(
                   child: Text(
-                    'ຍັງບໍ່ມີລາຍການ',
+                    context.text.noTransactions,
                     style: context.typo.body.copyWith(color: colors.subtext),
                   ),
                 ),
@@ -86,7 +88,9 @@ class _ExpensePageState extends ConsumerState<ExpensePage> {
     final maxY = chartData
         .map((d) => d.income > d.expense ? d.income : d.expense)
         .fold(0.0, (a, b) => a > b ? a : b);
-    final safeMaxY = maxY <= 0 ? 100.0 : maxY; // ✅ ກັນ divide by zero ຕອນຍັງບໍ່ມີ transaction ເລີຍ
+    final safeMaxY = maxY <= 0
+        ? 100.0
+        : maxY;
 
     return Container(
       height: 220,
@@ -118,21 +122,29 @@ class _ExpensePageState extends ConsumerState<ExpensePage> {
                 ),
               ),
             ),
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
                 interval: 3,
                 getTitlesWidget: (value, meta) {
                   final index = value.toInt();
-                  if (index < 0 || index >= chartData.length) return const SizedBox();
+                  if (index < 0 || index >= chartData.length) {
+                    return const SizedBox();
+                  }
                   final date = chartData[index].date;
                   return Padding(
                     padding: const EdgeInsets.only(top: 6),
                     child: Text(
                       '${date.day}',
-                      style: context.typo.caption.copyWith(color: colors.subtext),
+                      style: context.typo.caption.copyWith(
+                        color: colors.subtext,
+                      ),
                     ),
                   );
                 },
@@ -144,8 +156,18 @@ class _ExpensePageState extends ConsumerState<ExpensePage> {
             return BarChartGroupData(
               x: i,
               barRods: [
-                BarChartRodData(toY: d.income, color: colors.ok, width: 4, borderRadius: BorderRadius.circular(2)),
-                BarChartRodData(toY: d.expense, color: colors.danger, width: 4, borderRadius: BorderRadius.circular(2)),
+                BarChartRodData(
+                  toY: d.income,
+                  color: colors.ok,
+                  width: 4,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                BarChartRodData(
+                  toY: d.expense,
+                  color: colors.danger,
+                  width: 4,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ],
               barsSpace: 3,
             );
@@ -164,20 +186,26 @@ class _ExpensePageState extends ConsumerState<ExpensePage> {
           return _showIncome ? colors.ok : colors.danger;
         }),
         foregroundColor: WidgetStateProperty.resolveWith((states) {
-          return states.contains(WidgetState.selected) ? colors.onPrimary : colors.text;
+          return states.contains(WidgetState.selected)
+              ? colors.onPrimary
+              : colors.text;
         }),
         elevation: const WidgetStatePropertyAll(0),
       ),
-      segments: const [
-        ButtonSegment(value: true, label: Text('Income')),
-        ButtonSegment(value: false, label: Text('Expense')),
+      segments: [
+        ButtonSegment(value: true, label: Text(context.text.income)),
+        ButtonSegment(value: false, label: Text(context.text.expenses)),
       ],
       selected: {_showIncome},
-      onSelectionChanged: (newSelection) => setState(() => _showIncome = newSelection.first),
+      onSelectionChanged: (newSelection) =>
+          setState(() => _showIncome = newSelection.first),
     );
   }
 
-  List<Widget> _buildGroupedList(BuildContext context, List<ExpenseEntity> list) {
+  List<Widget> _buildGroupedList(
+    BuildContext context,
+    List<ExpenseEntity> list,
+  ) {
     final Map<String, List<ExpenseEntity>> grouped = {};
     for (final tx in list) {
       grouped.putIfAbsent(DateGroupFormatter.label(tx.date), () => []).add(tx);
@@ -221,7 +249,13 @@ class _TotalCard extends StatelessWidget {
             children: [
               Icon(icon, color: color, size: 16),
               const SizedBox(width: 6),
-              Text(label, style: context.typo.caption.copyWith(color: color, fontWeight: FontWeight.w600)),
+              Text(
+                label,
+                style: context.typo.caption.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),

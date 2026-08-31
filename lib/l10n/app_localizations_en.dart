@@ -113,6 +113,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get deleteSuccess => 'Delete Successfully';
+
+  @override
   String get pleaseEnterAmount => 'Please enter an amount';
 
   @override
@@ -162,4 +165,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get totalExpense => 'Total Expense';
+
+  @override
+  String get scanReceipt => 'Scan Receipt';
+
+  @override
+  String get cameraPermissionRequired => 'Camera permission is required to scan receipts';
+
+  @override
+  String amountFoundReview(String amount) {
+    return 'Amount found: $amount - please review';
+  }
+
+  @override
+  String get amountNotFoundManual => 'No amount detected automatically, please enter it manually';
+
+  @override
+  String get fetchData => 'Fetch Data successfully, Please review';
+
+  @override
+  String get fetchDataError => 'Cannot fetch data from pictures, please try again';
 }
