@@ -10,6 +10,7 @@ import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
 import 'package:kipp/features/expense/presentation/models/chart_ui_model.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/widgets/data_section_header.dart';
+import 'package:kipp/features/expense/presentation/widgets/expense_detail_bottom_sheet.dart';
 import 'package:kipp/features/expense/presentation/widgets/transaction_tile.dart';
 
 class ExpensePage extends ConsumerStatefulWidget {
@@ -88,9 +89,7 @@ class _ExpensePageState extends ConsumerState<ExpensePage> {
     final maxY = chartData
         .map((d) => d.income > d.expense ? d.income : d.expense)
         .fold(0.0, (a, b) => a > b ? a : b);
-    final safeMaxY = maxY <= 0
-        ? 100.0
-        : maxY;
+    final safeMaxY = maxY <= 0 ? 100.0 : maxY;
 
     return Container(
       height: 220,
@@ -214,7 +213,14 @@ class _ExpensePageState extends ConsumerState<ExpensePage> {
     final widgets = <Widget>[];
     grouped.forEach((label, txList) {
       widgets.add(DateSectionHeader(label: label));
-      widgets.addAll(txList.map((tx) => TransactionTile(transaction: tx)));
+      widgets.addAll(
+        txList.map(
+          (tx) => TransactionTile(
+            transaction: tx,
+            onTap: () => showExpenseDetailBottomSheet(context, tx),
+          ),
+        ),
+      );
     });
     return widgets;
   }

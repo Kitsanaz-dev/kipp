@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:kipp/features/expense/presentation/widgets/expense_detail_bottom_sheet.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/utils/date_group_formatter.dart';
@@ -26,7 +27,10 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
     _selectedDay = DateTime.now();
   }
 
-  List<ExpenseEntity> _transactionsForDay(List<ExpenseEntity> all, DateTime day) {
+  List<ExpenseEntity> _transactionsForDay(
+    List<ExpenseEntity> all,
+    DateTime day,
+  ) {
     return all.where((tx) => isSameDay(tx.date, day)).toList();
   }
 
@@ -70,26 +74,52 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
                 headerStyle: HeaderStyle(
                   formatButtonVisible: false,
                   titleCentered: true,
-                  titleTextStyle: context.typo.title.copyWith(color: colors.text),
-                  leftChevronIcon: Icon(Icons.chevron_left, color: colors.primary),
-                  rightChevronIcon: Icon(Icons.chevron_right, color: colors.primary),
+                  titleTextStyle: context.typo.title.copyWith(
+                    color: colors.text,
+                  ),
+                  leftChevronIcon: Icon(
+                    Icons.chevron_left,
+                    color: colors.primary,
+                  ),
+                  rightChevronIcon: Icon(
+                    Icons.chevron_right,
+                    color: colors.primary,
+                  ),
                 ),
                 daysOfWeekStyle: DaysOfWeekStyle(
-                  weekdayStyle: context.typo.caption.copyWith(color: colors.subtext),
-                  weekendStyle: context.typo.caption.copyWith(color: colors.subtext),
+                  weekdayStyle: context.typo.caption.copyWith(
+                    color: colors.subtext,
+                  ),
+                  weekendStyle: context.typo.caption.copyWith(
+                    color: colors.subtext,
+                  ),
                 ),
                 calendarStyle: CalendarStyle(
                   outsideDaysVisible: false,
-                  defaultTextStyle: context.typo.body.copyWith(color: colors.text),
-                  weekendTextStyle: context.typo.body.copyWith(color: colors.text),
+                  defaultTextStyle: context.typo.body.copyWith(
+                    color: colors.text,
+                  ),
+                  weekendTextStyle: context.typo.body.copyWith(
+                    color: colors.text,
+                  ),
                   todayDecoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: colors.primary, width: 1.5),
                   ),
-                  todayTextStyle: context.typo.body.copyWith(color: colors.primary),
-                  selectedDecoration: BoxDecoration(shape: BoxShape.circle, color: colors.primary),
-                  selectedTextStyle: context.typo.body.copyWith(color: colors.onPrimary),
-                  markerDecoration: BoxDecoration(shape: BoxShape.circle, color: colors.danger),
+                  todayTextStyle: context.typo.body.copyWith(
+                    color: colors.primary,
+                  ),
+                  selectedDecoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: colors.primary,
+                  ),
+                  selectedTextStyle: context.typo.body.copyWith(
+                    color: colors.onPrimary,
+                  ),
+                  markerDecoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: colors.danger,
+                  ),
                   markersMaxCount: 1,
                   markerSize: 5,
                   markerMargin: const EdgeInsets.only(top: 4),
@@ -98,7 +128,9 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
             ),
             const SizedBox(height: 20),
             Text(
-              _selectedDay == null ? 'History' : DateGroupFormatter.label(_selectedDay!),
+              _selectedDay == null
+                  ? context.text.history
+                  : DateGroupFormatter.label(_selectedDay!),
               style: context.typo.title.copyWith(color: colors.text),
             ),
             const SizedBox(height: 8),
@@ -107,13 +139,18 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
                 padding: const EdgeInsets.symmetric(vertical: 32),
                 child: Center(
                   child: Text(
-                    'ບໍ່ມີລາຍການໃນວັນນີ້',
+                    context.text.noTransactionsOnThisDay,
                     style: context.typo.body.copyWith(color: colors.subtext),
                   ),
                 ),
               )
             else
-              ...selectedList.map((tx) => TransactionTile(transaction: tx)),
+              ...selectedList.map(
+                (tx) => TransactionTile(
+                  transaction: tx,
+                  onTap: () => showExpenseDetailBottomSheet(context, tx),
+                ),
+              ),
           ],
         ),
       ),
