@@ -6,19 +6,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/router/route_paths.dart';
-import 'package:kipp/core/utils/date_group_formatter.dart';
-import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
-import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
-import 'package:kipp/features/expense/presentation/screens/history_page.dart';
 import 'package:kipp/features/auth/presentation/screens/profile_page.dart';
+import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/screens/expense_page.dart';
+import 'package:kipp/features/expense/presentation/screens/history_page.dart';
 import 'package:kipp/features/expense/presentation/widgets/bottom_bar.dart';
-import 'package:kipp/features/expense/presentation/widgets/data_section_header.dart';
 import 'package:kipp/features/expense/presentation/widgets/day_type_nav_bar.dart';
-import 'package:kipp/features/expense/presentation/widgets/expense_detail_bottom_sheet.dart';
-import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
 import 'package:kipp/features/expense/presentation/widgets/expense_card.dart';
-import 'package:kipp/features/expense/presentation/widgets/transaction_tile.dart';
+import 'package:kipp/features/expense/presentation/widgets/grouped_transaction_list.dart';
+import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
+
+/// Bottom-navigation destinations, in tab order.
+enum HomeTab { home, expense, history, profile }
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -28,126 +27,99 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  int _currentIndex = 0;
-  int _currentDayType = 0;
+  HomeTab _tab = HomeTab.home;
+
+  /// The home tab draws its own header instead of the shared app bar.
+  PreferredSizeWidget? _appBar(BuildContext context) {
+    switch (_tab) {
+      case HomeTab.home:
+        return null;
+      case HomeTab.expense:
+        return KippAppBar(title: context.text.expenses);
+      case HomeTab.history:
+        return KippAppBar(title: context.text.history);
+      case HomeTab.profile:
+        return KippAppBar(title: context.text.profile);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final summary = ref.watch(expenseSummaryProvider(_currentDayType));
-    final recentList = ref.watch(expensesByDayTypeProvider(_currentDayType));
     return Scaffold(
-      appBar: _currentIndex == 1
-          ? const KippAppBar(title: 'Expense')
-          : _currentIndex == 2
-          ? KippAppBar(title: context.text.history)
-          : _currentIndex == 3
-          ? KippAppBar(title: context.text.profile)
-          : null,
+      appBar: _appBar(context),
       body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        '${context.text.welcomeUser}${", Kitsana"}',
-                        style: context.typo.title.copyWith(
-                          color: context.colors.text,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
-                    // home_screen.dart (ສະເພາະສ່ວນທີ່ແກ້)
-                    DayTypeNavBar(
-                      currentDayType: _currentDayType,
-                      onTap: (value) {
-                        setState(() {
-                          _currentDayType = value;
-                        });
-                      },
-                    ),
-
-                    const SizedBox(height: 16),
-                    ExpenseCard(
-                      expense: summary.expense,
-                      income: summary.income,
-                      dayType: _currentDayType,
-                    ),
-                    const SizedBox(height: 24),
-                    ..._buildGroupedTransactions(context, recentList),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const ExpensePage(),
-          const HistoryPage(),
-          const ProfilePage(),
+        index: _tab.index,
+        children: const [
+          _HomeTab(),
+          ExpensePage(),
+          HistoryPage(),
+          ProfilePage(),
         ],
       ),
       bottomNavigationBar: BottomBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() {
-          _currentIndex = index;
-        }),
+        currentIndex: _tab.index,
+        onTap: (index) => setState(() => _tab = HomeTab.values[index]),
       ),
       floatingActionButton: (!kIsWeb && Platform.isIOS)
           ? null
           : FloatingActionButton(
               backgroundColor: context.colors.primary,
+              onPressed: () => context.push(RoutePaths.addExpense),
               child: Icon(Icons.add, color: context.colors.onPrimary),
-              onPressed: () {
-                context.push(RoutePaths.addExpense);
-              },
             ),
     );
   }
+}
 
-  List<Widget> _buildGroupedTransactions(
-    BuildContext context,
-    List<ExpenseEntity> transactions,
-  ) {
-    final Map<String, List<ExpenseEntity>> grouped = {};
-    for (final tx in transactions) {
-      final label = DateGroupFormatter.label(tx.date);
-      grouped.putIfAbsent(label, () => []).add(tx);
-    }
+/// Home tab: greeting, day-type filter, summary card and recent transactions.
+/// Owns the selected day-type filter since nothing outside this tab needs it.
+class _HomeTab extends ConsumerStatefulWidget {
+  const _HomeTab();
 
-    final widgets = <Widget>[];
-    grouped.forEach((label, txList) {
-      widgets.add(DateSectionHeader(label: label));
-      for (final tx in txList) {
-        // ✅ tx ຄືຕົວແປ loop ຂອງ txList ນີ້
-        widgets.add(
-          TransactionTile(
-            transaction: tx,
-            onTap: () => showExpenseDetailBottomSheet(context, tx),
-          ),
-        );
-      }
-    });
+  @override
+  ConsumerState<_HomeTab> createState() => _HomeTabState();
+}
 
-    if (widgets.isEmpty) {
-      widgets.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 32),
-          child: Center(
-            child: Text(
-              context.text.noTransactions,
-              style: context.typo.body.copyWith(color: context.colors.subtext),
+class _HomeTabState extends ConsumerState<_HomeTab> {
+  int _dayType = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final summary = ref.watch(expenseSummaryProvider(_dayType));
+    final transactions = ref.watch(expensesByDayTypeProvider(_dayType));
+
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                context.text.welcomeUser,
+                style: context.typo.title.copyWith(
+                  color: context.colors.text,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
             ),
-          ),
+            const SizedBox(height: 16.0),
+            DayTypeNavBar(
+              currentDayType: _dayType,
+              onTap: (value) => setState(() => _dayType = value),
+            ),
+            const SizedBox(height: 16),
+            ExpenseCard(
+              expense: summary.expense,
+              income: summary.income,
+              dayType: _dayType,
+            ),
+            const SizedBox(height: 24),
+            GroupedTransactionList(transactions: transactions),
+          ],
         ),
-      );
-    }
-
-    return widgets;
+      ),
+    );
   }
 }

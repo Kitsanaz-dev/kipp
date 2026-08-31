@@ -2,13 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
-import 'package:kipp/features/expense/presentation/widgets/expense_detail_bottom_sheet.dart';
-import 'package:table_calendar/table_calendar.dart';
-import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/utils/date_group_formatter.dart';
 import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
-import 'package:kipp/features/expense/presentation/widgets/transaction_tile.dart';
+import 'package:kipp/features/expense/presentation/widgets/expense_calendar.dart';
+import 'package:kipp/features/expense/presentation/widgets/grouped_transaction_list.dart';
+import 'package:table_calendar/table_calendar.dart' show isSameDay;
 
 class HistoryPage extends ConsumerStatefulWidget {
   const HistoryPage({super.key});
@@ -19,28 +18,17 @@ class HistoryPage extends ConsumerStatefulWidget {
 
 class _HistoryPageState extends ConsumerState<HistoryPage> {
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedDay = DateTime.now();
-  }
+  DateTime _selectedDay = DateTime.now();
 
   List<ExpenseEntity> _transactionsForDay(
     List<ExpenseEntity> all,
     DateTime day,
-  ) {
-    return all.where((tx) => isSameDay(tx.date, day)).toList();
-  }
+  ) => all.where((tx) => isSameDay(tx.date, day)).toList();
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
-    final allExpenses = ref.watch(expenseListProvider).valueOrNull ?? [];
-    final selectedList = _selectedDay == null
-        ? <ExpenseEntity>[]
-        : _transactionsForDay(allExpenses, _selectedDay!);
+    final allExpenses = ref.watch(expenseListProvider).valueOrNull ?? const [];
+    final selectedList = _transactionsForDay(allExpenses, _selectedDay);
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -48,109 +36,27 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              decoration: BoxDecoration(
-                color: colors.surface,
-                borderRadius: AppRadius.lgAll,
-                border: Border.all(color: colors.inactiveContainer),
-              ),
-              child: TableCalendar<ExpenseEntity>(
-                firstDay: DateTime.utc(2020, 1, 1),
-                lastDay: DateTime.utc(2100, 12, 31),
-                focusedDay: _focusedDay,
-                currentDay: DateTime.now(),
-                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                eventLoader: (day) => _transactionsForDay(allExpenses, day),
-                calendarFormat: CalendarFormat.month,
-                availableCalendarFormats: const {CalendarFormat.month: 'Month'},
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                  });
-                },
-                onPageChanged: (focusedDay) => _focusedDay = focusedDay,
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: false,
-                  titleCentered: true,
-                  titleTextStyle: context.typo.title.copyWith(
-                    color: colors.text,
-                  ),
-                  leftChevronIcon: Icon(
-                    Icons.chevron_left,
-                    color: colors.primary,
-                  ),
-                  rightChevronIcon: Icon(
-                    Icons.chevron_right,
-                    color: colors.primary,
-                  ),
-                ),
-                daysOfWeekStyle: DaysOfWeekStyle(
-                  weekdayStyle: context.typo.caption.copyWith(
-                    color: colors.subtext,
-                  ),
-                  weekendStyle: context.typo.caption.copyWith(
-                    color: colors.subtext,
-                  ),
-                ),
-                calendarStyle: CalendarStyle(
-                  outsideDaysVisible: false,
-                  defaultTextStyle: context.typo.body.copyWith(
-                    color: colors.text,
-                  ),
-                  weekendTextStyle: context.typo.body.copyWith(
-                    color: colors.text,
-                  ),
-                  todayDecoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: colors.primary, width: 1.5),
-                  ),
-                  todayTextStyle: context.typo.body.copyWith(
-                    color: colors.primary,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: colors.primary,
-                  ),
-                  selectedTextStyle: context.typo.body.copyWith(
-                    color: colors.onPrimary,
-                  ),
-                  markerDecoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: colors.danger,
-                  ),
-                  markersMaxCount: 1,
-                  markerSize: 5,
-                  markerMargin: const EdgeInsets.only(top: 4),
-                ),
-              ),
+            ExpenseCalendar(
+              focusedDay: _focusedDay,
+              selectedDay: _selectedDay,
+              eventLoader: (day) => _transactionsForDay(allExpenses, day),
+              onDaySelected: (selectedDay, focusedDay) => setState(() {
+                _selectedDay = selectedDay;
+                _focusedDay = focusedDay;
+              }),
+              onPageChanged: (focusedDay) => _focusedDay = focusedDay,
             ),
             const SizedBox(height: 20),
             Text(
-              _selectedDay == null
-                  ? context.text.history
-                  : DateGroupFormatter.label(_selectedDay!),
-              style: context.typo.title.copyWith(color: colors.text),
+              DateGroupFormatter.label(_selectedDay),
+              style: context.typo.title.copyWith(color: context.colors.text),
             ),
             const SizedBox(height: 8),
-            if (selectedList.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 32),
-                child: Center(
-                  child: Text(
-                    context.text.noTransactionsOnThisDay,
-                    style: context.typo.body.copyWith(color: colors.subtext),
-                  ),
-                ),
-              )
-            else
-              ...selectedList.map(
-                (tx) => TransactionTile(
-                  transaction: tx,
-                  onTap: () => showExpenseDetailBottomSheet(context, tx),
-                ),
-              ),
+            GroupedTransactionList(
+              transactions: selectedList,
+              byDay: false,
+              emptyText: context.text.noTransactionsOnThisDay,
+            ),
           ],
         ),
       ),
