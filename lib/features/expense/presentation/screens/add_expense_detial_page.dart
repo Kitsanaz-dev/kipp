@@ -89,7 +89,7 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
               ),
               const SizedBox(width: 10),
               Text(
-                'ບັນທຶກສຳເລັດແລ້ວ',
+                context.text.savedSuccessfully,
                 style: context.typo.body.copyWith(
                   color: context.colors.onPrimary,
                   fontWeight: FontWeight.w600,
@@ -106,11 +106,25 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
           backgroundColor: context.colors.danger,
           shape: RoundedRectangleBorder(borderRadius: AppRadius.mdAll),
-          content: Text(
-            'ບໍ່ສາມາດບັນທຶກໄດ້: ${e.toString()}',
-            style: context.typo.body.copyWith(color: context.colors.onPrimary),
+          content: Row(
+            children: [
+              Icon(
+                CupertinoIcons.xmark_circle_fill,
+                color: context.colors.onPrimary,
+                size: 20,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                'ບໍ່ສາມາດບັນທຶກໄດ້: ${e.toString()}',
+                style: context.typo.body.copyWith(
+                  color: context.colors.onPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ),
       );
@@ -131,7 +145,11 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
 
     try {
       // ສົ່ງ List ຂອງ Categories ໄປໃຫ້ AI ເພື່ອໃຫ້ມັນເລືອກໄດ້ກົງກັບ Dropdown ຂອງເຮົາ
-      final data = await scanner.scan(capturedFile, _expenseTypes, _incomeTypes);
+      final data = await scanner.scan(
+        capturedFile,
+        _expenseTypes,
+        _incomeTypes,
+      );
       if (!mounted) return;
 
       if (data != null) {
@@ -165,8 +183,27 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(context.text.fetchData),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
             backgroundColor: context.colors.ok,
+            shape: RoundedRectangleBorder(borderRadius: AppRadius.mdAll),
+            content: Row(
+              children: [
+                Icon(
+                  CupertinoIcons.checkmark_circle_fill,
+                  color: context.colors.onPrimary,
+                  size: 20,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  context.text.fetchData,
+                  style: context.typo.body.copyWith(
+                    color: context.colors.onPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       } else {
@@ -175,8 +212,27 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(context.text.fetchDataError),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
           backgroundColor: context.colors.danger,
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.mdAll),
+          content: Row(
+            children: [
+              Icon(
+                CupertinoIcons.xmark_circle_fill,
+                color: context.colors.onPrimary,
+                size: 20,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                context.text.fetchDataError,
+                style: context.typo.body.copyWith(
+                  color: context.colors.onPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ),
       );
     } finally {
@@ -413,7 +469,7 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Save',
+                              context.text.save,
                               style: context.typo.title.copyWith(
                                 color: context.colors.onPrimary,
                               ),
