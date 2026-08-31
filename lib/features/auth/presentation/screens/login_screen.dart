@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/router/route_paths.dart';
+import 'package:kipp/core/widgets/app_snackbar.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -41,9 +42,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       context.go(RoutePaths.home);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
+      AppSnackbar.showError(context, e.toString());
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

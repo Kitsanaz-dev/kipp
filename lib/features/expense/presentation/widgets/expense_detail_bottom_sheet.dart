@@ -1,9 +1,9 @@
 // features/expense/presentation/widgets/expense_detail_bottom_sheet.dart
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:kipp/core/widgets/app_snackbar.dart';
 import 'package:kipp/core/utils/currency_formatter.dart';
 import 'package:kipp/core/utils/category_icon_mapper.dart';
 import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
@@ -144,33 +144,7 @@ class ExpenseDetailBottomSheet extends ConsumerWidget {
               onPressed: () async {
                 await ref.read(expenseListProvider.notifier).delete(expense.id);
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      behavior: SnackBarBehavior.floating,
-                      duration: const Duration(seconds: 2),
-                      backgroundColor: context.colors.ok,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppRadius.mdAll,
-                      ),
-                      content: Row(
-                        children: [
-                          Icon(
-                            CupertinoIcons.check_mark_circled_solid,
-                            color: context.colors.onPrimary,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            context.text.deleteSuccess,
-                            style: context.typo.body.copyWith(
-                              color: context.colors.onPrimary,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+                  AppSnackbar.showSuccess(context, context.text.deleteSuccess);
                   Navigator.pop(context);
                 }
               },

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:kipp/core/widgets/app_snackbar.dart';
 import 'package:kipp/features/expense/data/services/receipt_scanner_service.dart';
 import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
@@ -74,60 +75,12 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
       if (!mounted) return;
 
       // ✅ ສະແດງ success ກ່ອນ pop
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
-          backgroundColor: context.colors.ok,
-          shape: RoundedRectangleBorder(borderRadius: AppRadius.mdAll),
-          content: Row(
-            children: [
-              Icon(
-                CupertinoIcons.check_mark_circled_solid,
-                color: context.colors.onPrimary,
-                size: 20,
-              ),
-              const SizedBox(width: 10),
-              Text(
-                context.text.savedSuccessfully,
-                style: context.typo.body.copyWith(
-                  color: context.colors.onPrimary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+      AppSnackbar.showSuccess(context, context.text.savedSuccessfully);
 
       context.pop();
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
-          backgroundColor: context.colors.danger,
-          shape: RoundedRectangleBorder(borderRadius: AppRadius.mdAll),
-          content: Row(
-            children: [
-              Icon(
-                CupertinoIcons.xmark_circle_fill,
-                color: context.colors.onPrimary,
-                size: 20,
-              ),
-              const SizedBox(width: 10),
-              Text(
-                'ບໍ່ສາມາດບັນທຶກໄດ້: ${e.toString()}',
-                style: context.typo.body.copyWith(
-                  color: context.colors.onPrimary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+      AppSnackbar.showError(context, context.text.saveFailed(e.toString()));
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -181,60 +134,12 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
           }
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-            backgroundColor: context.colors.ok,
-            shape: RoundedRectangleBorder(borderRadius: AppRadius.mdAll),
-            content: Row(
-              children: [
-                Icon(
-                  CupertinoIcons.checkmark_circle_fill,
-                  color: context.colors.onPrimary,
-                  size: 20,
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  context.text.fetchData,
-                  style: context.typo.body.copyWith(
-                    color: context.colors.onPrimary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
+        AppSnackbar.showSuccess(context, context.text.fetchData);
       } else {
         throw Exception("AI response is empty");
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
-          backgroundColor: context.colors.danger,
-          shape: RoundedRectangleBorder(borderRadius: AppRadius.mdAll),
-          content: Row(
-            children: [
-              Icon(
-                CupertinoIcons.xmark_circle_fill,
-                color: context.colors.onPrimary,
-                size: 20,
-              ),
-              const SizedBox(width: 10),
-              Text(
-                context.text.fetchDataError,
-                style: context.typo.body.copyWith(
-                  color: context.colors.onPrimary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+      AppSnackbar.showError(context, context.text.fetchDataError);
     } finally {
       if (mounted) setState(() => _isScanning = false);
     }
