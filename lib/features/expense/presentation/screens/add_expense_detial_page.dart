@@ -9,8 +9,8 @@ import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/widgets/app_snackbar.dart';
 import 'package:kipp/features/expense/data/services/receipt_scanner_service.dart';
 import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
+import 'package:kipp/core/router/route_paths.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
-import 'package:kipp/features/expense/presentation/screens/receipt_capture_screen.dart';
 import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
 import 'package:uuid/uuid.dart';
 
@@ -87,10 +87,7 @@ class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
   }
 
   Future<void> _scanReceipt() async {
-    final capturedFile = await Navigator.push<File?>(
-      context,
-      MaterialPageRoute(builder: (_) => const ReceiptCaptureScreen()),
-    );
+    final capturedFile = await context.push<File?>(RoutePaths.receiptCapture);
     if (capturedFile == null || !mounted) return;
 
     setState(() => _isScanning = true);

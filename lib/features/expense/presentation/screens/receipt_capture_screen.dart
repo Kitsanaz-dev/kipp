@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
@@ -77,7 +78,7 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
     try {
       final xfile = await controller.takePicture();
       if (!mounted) return;
-      Navigator.pop(context, File(xfile.path));
+      context.pop(File(xfile.path));
     } catch (e) {
       debugPrint('Capture error: $e');
       setState(() => _isCapturing = false);
@@ -95,7 +96,7 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
         imageQuality: 85,
       );
       if (xfile == null || !mounted) return;
-      Navigator.pop(context, File(xfile.path));
+      context.pop(File(xfile.path));
     } catch (e) {
       debugPrint('Gallery pick error: $e');
     } finally {

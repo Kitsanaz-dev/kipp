@@ -12,4 +12,5 @@ class RoutePaths {
   static const profile = '/home/profile';
 
   static const addExpense = '/add-expense';
+  static const receiptCapture = '/receipt-capture';
 }

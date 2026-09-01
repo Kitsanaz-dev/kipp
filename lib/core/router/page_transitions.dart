@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 /// Slide ຈາກຂວາໄປຊ້າຍ - ໃຊ້ສຳລັບ "ໄປໜ້າໃໝ່" (push ລົງເລິກ)
-CustomTransitionPage<void> slideTransitionPage({
+CustomTransitionPage<T> slideTransitionPage<T>({
   required LocalKey key,
   required Widget child,
 }) {
-  return CustomTransitionPage<void>(
+  return CustomTransitionPage<T>(
     key: key,
     child: child,
     transitionDuration: const Duration(milliseconds: 300),
