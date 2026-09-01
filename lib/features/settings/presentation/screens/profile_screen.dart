@@ -1,14 +1,14 @@
-// features/expense/presentation/screens/profile_page.dart
+// features/settings/presentation/screens/profile_screen.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
-import 'package:kipp/features/expense/presentation/models/user_ui_model.dart';
-import 'package:kipp/features/expense/presentation/widgets/theme_mode_sector.dart';
+import 'package:kipp/features/settings/presentation/models/user_ui_model.dart';
+import 'package:kipp/features/settings/presentation/widgets/theme_mode_selector.dart';
 import 'package:kipp/features/settings/presentation/widgets/language_selector.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,4 @@
-// features/expense/presentation/screens/expense_page.dart
+// features/expense/presentation/screens/expense_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kipp/core/constant/radius.dart';
@@ -8,14 +8,14 @@ import 'package:kipp/features/expense/presentation/providers/expense_provider.da
 import 'package:kipp/features/expense/presentation/widgets/daily_bar_chart.dart';
 import 'package:kipp/features/expense/presentation/widgets/grouped_transaction_list.dart';
 
-class ExpensePage extends ConsumerStatefulWidget {
-  const ExpensePage({super.key});
+class ExpenseScreen extends ConsumerStatefulWidget {
+  const ExpenseScreen({super.key});
 
   @override
-  ConsumerState<ExpensePage> createState() => _ExpensePageState();
+  ConsumerState<ExpenseScreen> createState() => _ExpenseScreenState();
 }
 
-class _ExpensePageState extends ConsumerState<ExpensePage> {
+class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
   bool _showIncome = false;
 
   @override

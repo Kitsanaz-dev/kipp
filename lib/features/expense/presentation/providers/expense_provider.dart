@@ -85,7 +85,7 @@ List<DailyChartData> dailyChartData(DailyChartDataRef ref) {
   });
 }
 
-/// ຍອດລວມ income/expense ທັງໝົດ (all-time) - ໃຊ້ໃນ ExpensePage
+/// ຍອດລວມ income/expense ທັງໝົດ (all-time) - ໃຊ້ໃນ ExpenseScreen
 @riverpod
 ({double totalIncome, double totalExpense}) expenseTotals(ExpenseTotalsRef ref) {
   final all = ref.watch(expenseListProvider).valueOrNull ?? [];

@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/router/route_paths.dart';
-import 'package:kipp/features/auth/presentation/screens/profile_page.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
-import 'package:kipp/features/expense/presentation/screens/expense_page.dart';
-import 'package:kipp/features/expense/presentation/screens/history_page.dart';
+import 'package:kipp/features/expense/presentation/screens/expense_screen.dart';
+import 'package:kipp/features/expense/presentation/screens/history_screen.dart';
+import 'package:kipp/features/settings/presentation/screens/profile_screen.dart';
 import 'package:kipp/features/expense/presentation/widgets/bottom_bar.dart';
 import 'package:kipp/features/expense/presentation/widgets/day_type_nav_bar.dart';
 import 'package:kipp/features/expense/presentation/widgets/expense_card.dart';
@@ -51,9 +51,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         index: _tab.index,
         children: const [
           _HomeTab(),
-          ExpensePage(),
-          HistoryPage(),
-          ProfilePage(),
+          ExpenseScreen(),
+          HistoryScreen(),
+          ProfileScreen(),
         ],
       ),
       bottomNavigationBar: BottomBar(

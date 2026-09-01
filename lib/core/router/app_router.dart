@@ -2,7 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kipp/features/auth/presentation/screens/start_screen.dart';
 import 'package:kipp/features/auth/presentation/screens/login_screen.dart';
 import 'package:kipp/features/auth/presentation/screens/register_screen.dart';
-import 'package:kipp/features/expense/presentation/screens/add_expense_detial_page.dart';
+import 'package:kipp/features/expense/presentation/screens/add_expense_detail_screen.dart';
 import 'package:kipp/features/expense/presentation/screens/home_screen.dart';
 import 'package:kipp/features/expense/presentation/screens/receipt_capture_screen.dart';
 import 'dart:io';
@@ -41,7 +41,7 @@ final appRouter = GoRouter(
       path: RoutePaths.addExpense,
       pageBuilder: (context, state) => slideTransitionPage(
         key: state.pageKey,
-        child: const AddExpenseDetailPage(),
+        child: const AddExpenseDetailScreen(),
       ),
     ),
     GoRoute(

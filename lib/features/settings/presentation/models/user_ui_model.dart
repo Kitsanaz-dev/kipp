@@ -1,4 +1,4 @@
-// features/auth/presentation/models/user_ui_model.dart
+// features/settings/presentation/models/user_ui_model.dart
 class UserUiModel {
   final String name;
   final String email;

@@ -1,4 +1,4 @@
-// features/expense/presentation/screens/history_page.dart
+// features/expense/presentation/screens/history_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
@@ -9,14 +9,14 @@ import 'package:kipp/features/expense/presentation/widgets/expense_calendar.dart
 import 'package:kipp/features/expense/presentation/widgets/grouped_transaction_list.dart';
 import 'package:table_calendar/table_calendar.dart' show isSameDay;
 
-class HistoryPage extends ConsumerStatefulWidget {
-  const HistoryPage({super.key});
+class HistoryScreen extends ConsumerStatefulWidget {
+  const HistoryScreen({super.key});
 
   @override
-  ConsumerState<HistoryPage> createState() => _HistoryPageState();
+  ConsumerState<HistoryScreen> createState() => _HistoryScreenState();
 }
 
-class _HistoryPageState extends ConsumerState<HistoryPage> {
+class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
 

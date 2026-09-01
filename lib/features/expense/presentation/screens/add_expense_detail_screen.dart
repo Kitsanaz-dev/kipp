@@ -14,15 +14,15 @@ import 'package:kipp/features/expense/presentation/providers/expense_provider.da
 import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
 import 'package:uuid/uuid.dart';
 
-class AddExpenseDetailPage extends ConsumerStatefulWidget {
-  const AddExpenseDetailPage({super.key});
+class AddExpenseDetailScreen extends ConsumerStatefulWidget {
+  const AddExpenseDetailScreen({super.key});
 
   @override
-  ConsumerState<AddExpenseDetailPage> createState() =>
-      _AddExpenseDetailPageState();
+  ConsumerState<AddExpenseDetailScreen> createState() =>
+      _AddExpenseDetailScreenState();
 }
 
-class _AddExpenseDetailPageState extends ConsumerState<AddExpenseDetailPage> {
+class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen> {
   // -------- keys --------
   final _formKey = GlobalKey<FormState>();
 
