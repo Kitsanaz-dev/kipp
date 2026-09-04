@@ -15,14 +15,15 @@ String _$themeServiceHash() => r'081176ca5ea3dd6eee07dc243bef3a2af4018f77';
 @ProviderFor(ThemeService)
 final themeServiceProvider =
     AutoDisposeNotifierProvider<ThemeService, ThemeMode>.internal(
-  ThemeService.new,
-  name: r'themeServiceProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$themeServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      ThemeService.new,
+      name: r'themeServiceProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$themeServiceHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$ThemeService = AutoDisposeNotifier<ThemeMode>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

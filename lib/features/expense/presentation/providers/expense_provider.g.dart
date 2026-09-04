@@ -12,15 +12,17 @@ String _$expenseRepositoryHash() => r'b920689a693bd9e3b0f4a54426d9203b40e56496';
 @ProviderFor(expenseRepository)
 final expenseRepositoryProvider =
     AutoDisposeProvider<ExpenseRepository>.internal(
-  expenseRepository,
-  name: r'expenseRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$expenseRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      expenseRepository,
+      name: r'expenseRepositoryProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$expenseRepositoryHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ExpenseRepositoryRef = AutoDisposeProviderRef<ExpenseRepository>;
 String _$expensesByDayTypeHash() => r'f7f592a757e8a8c64b6e47c9772dd1c6bc127c7c';
 
@@ -63,21 +65,15 @@ class ExpensesByDayTypeFamily extends Family<List<ExpenseEntity>> {
   /// Filter ຕາມ dayType (0=Today, 1=Week, 2=Month) - derived ຈາກ expenseListProvider
   ///
   /// Copied from [expensesByDayType].
-  ExpensesByDayTypeProvider call(
-    int dayType,
-  ) {
-    return ExpensesByDayTypeProvider(
-      dayType,
-    );
+  ExpensesByDayTypeProvider call(int dayType) {
+    return ExpensesByDayTypeProvider(dayType);
   }
 
   @override
   ExpensesByDayTypeProvider getProviderOverride(
     covariant ExpensesByDayTypeProvider provider,
   ) {
-    return call(
-      provider.dayType,
-    );
+    return call(provider.dayType);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -103,24 +99,19 @@ class ExpensesByDayTypeProvider
   /// Filter ຕາມ dayType (0=Today, 1=Week, 2=Month) - derived ຈາກ expenseListProvider
   ///
   /// Copied from [expensesByDayType].
-  ExpensesByDayTypeProvider(
-    int dayType,
-  ) : this._internal(
-          (ref) => expensesByDayType(
-            ref as ExpensesByDayTypeRef,
-            dayType,
-          ),
-          from: expensesByDayTypeProvider,
-          name: r'expensesByDayTypeProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$expensesByDayTypeHash,
-          dependencies: ExpensesByDayTypeFamily._dependencies,
-          allTransitiveDependencies:
-              ExpensesByDayTypeFamily._allTransitiveDependencies,
-          dayType: dayType,
-        );
+  ExpensesByDayTypeProvider(int dayType)
+    : this._internal(
+        (ref) => expensesByDayType(ref as ExpensesByDayTypeRef, dayType),
+        from: expensesByDayTypeProvider,
+        name: r'expensesByDayTypeProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$expensesByDayTypeHash,
+        dependencies: ExpensesByDayTypeFamily._dependencies,
+        allTransitiveDependencies:
+            ExpensesByDayTypeFamily._allTransitiveDependencies,
+        dayType: dayType,
+      );
 
   ExpensesByDayTypeProvider._internal(
     super._createNotifier, {
@@ -171,6 +162,8 @@ class ExpensesByDayTypeProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin ExpensesByDayTypeRef on AutoDisposeProviderRef<List<ExpenseEntity>> {
   /// The parameter `dayType` of this provider.
   int get dayType;
@@ -205,21 +198,15 @@ class ExpenseSummaryFamily extends Family<({double income, double expense})> {
   /// ຄິດໄລ່ income/expense sum ຈາກ list ທີ່ filter ແລ້ວ
   ///
   /// Copied from [expenseSummary].
-  ExpenseSummaryProvider call(
-    int dayType,
-  ) {
-    return ExpenseSummaryProvider(
-      dayType,
-    );
+  ExpenseSummaryProvider call(int dayType) {
+    return ExpenseSummaryProvider(dayType);
   }
 
   @override
   ExpenseSummaryProvider getProviderOverride(
     covariant ExpenseSummaryProvider provider,
   ) {
-    return call(
-      provider.dayType,
-    );
+    return call(provider.dayType);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -245,24 +232,19 @@ class ExpenseSummaryProvider
   /// ຄິດໄລ່ income/expense sum ຈາກ list ທີ່ filter ແລ້ວ
   ///
   /// Copied from [expenseSummary].
-  ExpenseSummaryProvider(
-    int dayType,
-  ) : this._internal(
-          (ref) => expenseSummary(
-            ref as ExpenseSummaryRef,
-            dayType,
-          ),
-          from: expenseSummaryProvider,
-          name: r'expenseSummaryProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$expenseSummaryHash,
-          dependencies: ExpenseSummaryFamily._dependencies,
-          allTransitiveDependencies:
-              ExpenseSummaryFamily._allTransitiveDependencies,
-          dayType: dayType,
-        );
+  ExpenseSummaryProvider(int dayType)
+    : this._internal(
+        (ref) => expenseSummary(ref as ExpenseSummaryRef, dayType),
+        from: expenseSummaryProvider,
+        name: r'expenseSummaryProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$expenseSummaryHash,
+        dependencies: ExpenseSummaryFamily._dependencies,
+        allTransitiveDependencies:
+            ExpenseSummaryFamily._allTransitiveDependencies,
+        dayType: dayType,
+      );
 
   ExpenseSummaryProvider._internal(
     super._createNotifier, {
@@ -279,7 +261,7 @@ class ExpenseSummaryProvider
   @override
   Override overrideWith(
     ({double income, double expense}) Function(ExpenseSummaryRef provider)
-        create,
+    create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -297,7 +279,7 @@ class ExpenseSummaryProvider
 
   @override
   AutoDisposeProviderElement<({double income, double expense})>
-      createElement() {
+  createElement() {
     return _ExpenseSummaryProviderElement(this);
   }
 
@@ -315,6 +297,8 @@ class ExpenseSummaryProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin ExpenseSummaryRef
     on AutoDisposeProviderRef<({double income, double expense})> {
   /// The parameter `dayType` of this provider.
@@ -338,15 +322,17 @@ String _$dailyChartDataHash() => r'd03edda00f4ac00ae453944a8a86aa1b1e838933';
 @ProviderFor(dailyChartData)
 final dailyChartDataProvider =
     AutoDisposeProvider<List<DailyChartData>>.internal(
-  dailyChartData,
-  name: r'dailyChartDataProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$dailyChartDataHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      dailyChartData,
+      name: r'dailyChartDataProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$dailyChartDataHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef DailyChartDataRef = AutoDisposeProviderRef<List<DailyChartData>>;
 String _$expenseTotalsHash() => r'b4536a6e7deae6ff8646671d81a982f7c99f77d4';
 
@@ -356,17 +342,19 @@ String _$expenseTotalsHash() => r'b4536a6e7deae6ff8646671d81a982f7c99f77d4';
 @ProviderFor(expenseTotals)
 final expenseTotalsProvider =
     AutoDisposeProvider<({double totalIncome, double totalExpense})>.internal(
-  expenseTotals,
-  name: r'expenseTotalsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$expenseTotalsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      expenseTotals,
+      name: r'expenseTotalsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$expenseTotalsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
-typedef ExpenseTotalsRef
-    = AutoDisposeProviderRef<({double totalIncome, double totalExpense})>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ExpenseTotalsRef =
+    AutoDisposeProviderRef<({double totalIncome, double totalExpense})>;
 String _$expenseListHash() => r'91161f3e9ec44567075f0a5e2c169382a41ed2db';
 
 /// List ຂອງ transaction ທັງໝົດ - single source of truth
@@ -375,14 +363,15 @@ String _$expenseListHash() => r'91161f3e9ec44567075f0a5e2c169382a41ed2db';
 @ProviderFor(ExpenseList)
 final expenseListProvider =
     AutoDisposeAsyncNotifierProvider<ExpenseList, List<ExpenseEntity>>.internal(
-  ExpenseList.new,
-  name: r'expenseListProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$expenseListHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      ExpenseList.new,
+      name: r'expenseListProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$expenseListHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$ExpenseList = AutoDisposeAsyncNotifier<List<ExpenseEntity>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

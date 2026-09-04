@@ -121,8 +121,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         setState(() => _obscurePassword = !_obscurePassword),
                   ),
                   validator: (v) {
-                    if (v == null || v.length < 6)
+                    if (v == null || v.length < 6) {
                       return 'ລະຫັດຜ່ານຢ່າງໜ້ອຍ 6 ຕົວອັກສອນ';
+                    }
                     return null;
                   },
                 ),

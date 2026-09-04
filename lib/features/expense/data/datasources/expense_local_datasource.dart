@@ -1,5 +1,5 @@
 // features/expense/data/datasources/expense_local_datasource.dart
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import '../models/expense_model.dart';
 
 class ExpenseLocalDatasource {

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:kipp/app.dart';
 import 'package:kipp/features/auth/data/models/user_model.dart';
 import 'package:kipp/features/expense/data/models/expense_model.dart';

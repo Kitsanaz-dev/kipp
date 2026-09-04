@@ -107,8 +107,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   hint: 'ປ້ອນຊື່ຂອງເຈົ້າ',
                   icon: CupertinoIcons.person,
                   validator: (v) {
-                    if (v == null || v.trim().length < 2)
+                    if (v == null || v.trim().length < 2) {
                       return 'ຊື່ຕ້ອງມີຢ່າງໜ້ອຍ 2 ຕົວອັກສອນ';
+                    }
                     return null;
                   },
                 ),
@@ -122,8 +123,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   icon: CupertinoIcons.mail,
                   keyboardType: TextInputType.emailAddress,
                   validator: (v) {
-                    if (v == null || !v.contains('@') || !v.contains('.'))
+                    if (v == null || !v.contains('@') || !v.contains('.')) {
                       return 'ອີເມວບໍ່ຖືກຕ້ອງ';
+                    }
                     return null;
                   },
                 ),
@@ -148,8 +150,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         setState(() => _obscurePassword = !_obscurePassword),
                   ),
                   validator: (v) {
-                    if (v == null || v.length < 6)
+                    if (v == null || v.length < 6) {
                       return 'ລະຫັດຜ່ານຢ່າງໜ້ອຍ 6 ຕົວອັກສອນ';
+                    }
                     return null;
                   },
                 ),

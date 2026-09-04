@@ -8,7 +8,7 @@ part of 'expense_model.dart';
 
 class ExpenseModelAdapter extends TypeAdapter<ExpenseModel> {
   @override
-  final int typeId = 2;
+  final typeId = 2;
 
   @override
   ExpenseModel read(BinaryReader reader) {
@@ -19,7 +19,7 @@ class ExpenseModelAdapter extends TypeAdapter<ExpenseModel> {
     return ExpenseModel(
       id: fields[0] as String,
       title: fields[1] as String,
-      amount: fields[2] as double,
+      amount: (fields[2] as num).toDouble(),
       category: fields[3] as String,
       isIncome: fields[4] as bool,
       description: fields[5] as String,

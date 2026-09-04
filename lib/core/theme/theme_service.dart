@@ -1,6 +1,6 @@
 // core/theme/theme_service.dart
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart'; // ✅ ໃຊ້ hive_ce ຕາມທີ່ປ່ຽນໄປແລ້ວ
 
 part 'theme_service.g.dart';

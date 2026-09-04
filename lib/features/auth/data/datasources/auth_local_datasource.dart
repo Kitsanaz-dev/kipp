@@ -1,5 +1,5 @@
 // features/auth/data/datasources/auth_local_datasource.dart
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import '../models/user_model.dart';
 
 class AuthLocalDatasource {
