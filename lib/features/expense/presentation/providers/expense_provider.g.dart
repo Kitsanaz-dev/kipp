@@ -350,7 +350,7 @@ final dailyChartDataProvider =
 typedef DailyChartDataRef = AutoDisposeProviderRef<List<DailyChartData>>;
 String _$expenseTotalsHash() => r'b4536a6e7deae6ff8646671d81a982f7c99f77d4';
 
-/// ຍອດລວມ income/expense ທັງໝົດ (all-time) - ໃຊ້ໃນ ExpensePage
+/// ຍອດລວມ income/expense ທັງໝົດ (all-time) - ໃຊ້ໃນ ExpenseScreen
 ///
 /// Copied from [expenseTotals].
 @ProviderFor(expenseTotals)

@@ -71,5 +71,8 @@
     },
     "amountNotFoundManual": "No amount detected automatically, please enter it manually",
     "fetchData" : "Fetch Data successfully, Please review",
-    "fetchDataError" : "Cannot fetch data from pictures, please try again"
+    "fetchDataError" : "Cannot fetch data from pictures, please try again",
+    "emailAlreadyRegistered": "This email is already registered",
+    "incorrectEmailOrPassword": "Incorrect email or password",
+    "somethingWentWrong": "Something went wrong, please try again"
 }

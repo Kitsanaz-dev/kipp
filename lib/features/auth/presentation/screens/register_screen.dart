@@ -9,6 +9,7 @@ import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/router/route_paths.dart';
 import 'package:kipp/core/widgets/app_snackbar.dart';
+import 'package:kipp/features/auth/presentation/providers/auth_provider.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -41,16 +42,30 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     setState(() => _isLoading = true);
     try {
-      // TODO: ref.read(authProvider.notifier).register(_nameCtrl.text, _emailCtrl.text, _passCtrl.text);
-      await Future.delayed(const Duration(milliseconds: 400)); // placeholder
+      await ref.read(authProvider.notifier).register(
+            _nameCtrl.text.trim(),
+            _emailCtrl.text.trim(),
+            _passCtrl.text,
+          );
       if (!mounted) return;
       context.go(RoutePaths.home);
     } catch (e) {
       if (!mounted) return;
-      AppSnackbar.showError(context, e.toString());
+      AppSnackbar.showError(context, _authErrorMessage(context, e));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  String _authErrorMessage(BuildContext context, Object e) {
+    final raw = e.toString();
+    if (raw.contains('already registered')) {
+      return context.text.emailAlreadyRegistered;
+    }
+    if (raw.contains('Incorrect email or password')) {
+      return context.text.incorrectEmailOrPassword;
+    }
+    return context.text.somethingWentWrong;
   }
 
   @override

@@ -185,4 +185,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fetchDataError => 'Cannot fetch data from pictures, please try again';
+
+  @override
+  String get emailAlreadyRegistered => 'This email is already registered';
+
+  @override
+  String get incorrectEmailOrPassword => 'Incorrect email or password';
+
+  @override
+  String get somethingWentWrong => 'Something went wrong, please try again';
 }

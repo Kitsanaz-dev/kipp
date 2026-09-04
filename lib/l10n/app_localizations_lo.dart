@@ -185,4 +185,13 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get fetchDataError => 'ບໍ່ສາມາດດຶງຂໍ້ມູນຈາກຮູບພາບໄດ້';
+
+  @override
+  String get emailAlreadyRegistered => 'ອີເມວນີ້ຖືກລົງທະບຽນໄວ້ແລ້ວ';
+
+  @override
+  String get incorrectEmailOrPassword => 'ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ';
+
+  @override
+  String get somethingWentWrong => 'ມີບາງຢ່າງຜິດພາດ, ກະລຸນາລອງໃໝ່';
 }

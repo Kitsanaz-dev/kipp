@@ -1,17 +1,22 @@
 // features/settings/presentation/screens/profile_screen.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:kipp/core/router/route_paths.dart';
+import 'package:kipp/core/widgets/app_snackbar.dart';
+import 'package:kipp/features/auth/presentation/providers/auth_provider.dart';
 import 'package:kipp/features/settings/presentation/models/user_ui_model.dart';
 import 'package:kipp/features/settings/presentation/widgets/theme_mode_selector.dart';
 import 'package:kipp/features/settings/presentation/widgets/language_selector.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
 
     return SafeArea(
@@ -119,7 +124,7 @@ class ProfileScreen extends StatelessWidget {
               width: double.infinity,
               height: 52,
               child: OutlinedButton(
-                onPressed: () => _confirmLogout(context),
+                onPressed: () => _confirmLogout(context, ref),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: colors.danger, width: 1.5),
                   shape: RoundedRectangleBorder(borderRadius: AppRadius.xlAll),
@@ -139,7 +144,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  void _confirmLogout(BuildContext context) {
+  void _confirmLogout(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
     showDialog(
       context: context,
@@ -153,10 +158,16 @@ class ProfileScreen extends StatelessWidget {
             child: Text(context.text.cancel, style: TextStyle(color: colors.subtext)),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(dialogContext);
-              // TODO: ref.read(authProvider.notifier).logout();
-              // TODO: context.go(RoutePaths.start); ຫຼັງ logout ສຳເລັດ
+              try {
+                await ref.read(authProvider.notifier).logout();
+                if (!context.mounted) return;
+                context.go(RoutePaths.start);
+              } catch (_) {
+                if (!context.mounted) return;
+                AppSnackbar.showError(context, context.text.somethingWentWrong);
+              }
             },
             child: Text(
               context.text.logOut,

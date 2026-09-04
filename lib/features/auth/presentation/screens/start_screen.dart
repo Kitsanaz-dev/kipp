@@ -74,7 +74,7 @@ class StartScreen extends StatelessWidget {
                   height: 54,
                   child: ElevatedButton(
                     onPressed: () {
-                      context.go(RoutePaths.home);
+                      context.push(RoutePaths.login);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.colors.primary,

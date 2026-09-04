@@ -71,5 +71,8 @@
   },
   "amountNotFoundManual": "ບໍ່ພົບຈຳນວນເງິນອັດຕະໂນມັດ, ກະລຸນາປ້ອນເອງ",
   "fetchDataSuccess" : "ດຶງຂໍ້ມູນສຳເລັດແລ້ວ ກະລຸນາກວດສອບຄວາມຖືກຕ້ອງ",
-  "fetchDataError" : "ບໍ່ສາມາດດຶງຂໍ້ມູນຈາກຮູບພາບໄດ້"
+  "fetchDataError" : "ບໍ່ສາມາດດຶງຂໍ້ມູນຈາກຮູບພາບໄດ້",
+  "emailAlreadyRegistered": "ອີເມວນີ້ຖືກລົງທະບຽນໄວ້ແລ້ວ",
+  "incorrectEmailOrPassword": "ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ",
+  "somethingWentWrong": "ມີບາງຢ່າງຜິດພາດ, ກະລຸນາລອງໃໝ່"
 }
