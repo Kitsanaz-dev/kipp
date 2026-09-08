@@ -5,6 +5,7 @@ import 'package:crypto/crypto.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../domain/entities/user_entity.dart';
+import '../../domain/exceptions/auth_exceptions.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_local_datasource.dart';
 import '../models/user_model.dart';
@@ -26,7 +27,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
     final existing = await datasource.findByEmail(normalizedEmail);
     if (existing != null) {
-      throw Exception('This email is already registered');
+      throw const EmailAlreadyRegisteredException();
     }
 
     final model = UserModel(
@@ -46,11 +47,33 @@ class AuthRepositoryImpl implements AuthRepository {
 
     final user = await datasource.findByEmail(normalizedEmail);
     if (user == null || user.hashedPassword != _hash(password)) {
-      throw Exception('Incorrect email or password');
+      throw const InvalidCredentialsException();
     }
 
     await datasource.saveSession(user.id);
     return user.toEntity();
+  }
+
+  @override
+  Future<UserEntity> updateProfile(
+    String userId, {
+    String? name,
+    String? avatarPath,
+  }) async {
+    final user = await datasource.getById(userId);
+    if (user == null) {
+      throw Exception('User not found');
+    }
+
+    final updated = UserModel(
+      id: user.id,
+      name: name?.trim().isNotEmpty == true ? name!.trim() : user.name,
+      email: user.email,
+      hashedPassword: user.hashedPassword,
+      avatarPath: avatarPath ?? user.avatarPath,
+    );
+    await datasource.saveUser(updated);
+    return updated.toEntity();
   }
 
   @override

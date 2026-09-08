@@ -113,7 +113,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get deleteSuccess => 'Delete Successfully';
+  String get deleteSuccess => 'Deleted successfully';
 
   @override
   String get pleaseEnterAmount => 'Please enter an amount';
@@ -194,4 +194,64 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get somethingWentWrong => 'Something went wrong, please try again';
+
+  @override
+  String get welcomeTo => 'Welcome to';
+
+  @override
+  String get getStarted => 'Get Started';
+
+  @override
+  String get startSubtitle => 'Manage your income and expenses with ease\nControl your finances in one hand';
+
+  @override
+  String get pleaseEnterEmail => 'Please enter your email';
+
+  @override
+  String get invalidEmail => 'Invalid email';
+
+  @override
+  String get enterYourPassword => 'Enter your password';
+
+  @override
+  String get passwordMinLength => 'Password must be at least 6 characters';
+
+  @override
+  String get atLeastSixCharacters => 'At least 6 characters';
+
+  @override
+  String get enterYourName => 'Enter your name';
+
+  @override
+  String get nameMinLength => 'Name must be at least 2 characters';
+
+  @override
+  String get reenterYourPassword => 'Re-enter your password';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get selectTypeTitle => 'Select Type...';
+
+  @override
+  String get date => 'Date';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get editProfile => 'Edit Profile';
+
+  @override
+  String get changePhoto => 'Change Photo';
+
+  @override
+  String get takePhoto => 'Take Photo';
+
+  @override
+  String get chooseFromGallery => 'Choose from Gallery';
+
+  @override
+  String get profileUpdated => 'Profile updated';
 }

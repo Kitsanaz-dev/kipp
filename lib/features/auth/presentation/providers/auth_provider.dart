@@ -34,6 +34,19 @@ class Auth extends _$Auth {
     await future;
   }
 
+  Future<void> updateProfile({String? name, String? avatarPath}) async {
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    await ref.read(authRepositoryProvider).updateProfile(
+          current.id,
+          name: name,
+          avatarPath: avatarPath,
+        );
+    ref.invalidateSelf();
+    await future;
+  }
+
   Future<void> logout() async {
     await ref.read(authRepositoryProvider).logout();
     ref.invalidateSelf();

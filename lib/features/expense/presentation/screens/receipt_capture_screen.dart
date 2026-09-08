@@ -107,16 +107,15 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
-
+    // ໜ້ານີ້ເປັນ camera viewfinder - ຄົງທີ່ດຳ/ຂາວ ບໍ່ຂຶ້ນກັບ theme ຂອງແອັບ
     return Scaffold(
-      backgroundColor: colors.text,
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: colors.text,
-        iconTheme: IconThemeData(color: colors.onPrimary),
+        backgroundColor: Colors.black,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           context.text.scanReceipt,
-          style: TextStyle(color: colors.onPrimary),
+          style: const TextStyle(color: Colors.white),
         ),
       ),
       body: SafeArea(
@@ -125,7 +124,7 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
             Expanded(
               child: ClipRRect(
                 borderRadius: AppRadius.lgAll,
-                child: _buildPreview(colors),
+                child: _buildPreview(),
               ),
             ),
             Padding(
@@ -136,9 +135,9 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
                   // ✅ ປຸ່ມ gallery (ຊ້າຍ)
                   IconButton(
                     onPressed: _pickFromGallery,
-                    icon: Icon(
+                    icon: const Icon(
                       CupertinoIcons.photo_fill,
-                      color: colors.onPrimary,
+                      color: Colors.white,
                       size: 30,
                     ),
                   ),
@@ -149,26 +148,25 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
                     child: Container(
                       width: 68,
                       height: 68,
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: colors.primary,
-                        border: Border.all(color: colors.onPrimary, width: 3),
+                        color: context.colors.primary,
+                        border: Border.all(color: Colors.white, width: 3),
                       ),
                       child: _isCapturing
                           ? Padding(
                               padding: const EdgeInsets.all(18),
                               child: Platform.isAndroid
-                                  ? CircularProgressIndicator(
+                                  ? const CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      color: colors.onPrimary,
+                                      color: Colors.white,
                                     )
-                                  : const CupertinoActivityIndicator(),
+                                  : const CupertinoActivityIndicator(
+                                      color: Colors.white,
+                                    ),
                             )
-                          : Icon(
-                              CupertinoIcons.camera,
-                              color: colors.onPrimary,
-                              size: 28,
-                            ),
+                          : null,
                     ),
                   ),
                   const SizedBox(width: 48),
@@ -181,14 +179,14 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
     );
   }
 
-  Widget _buildPreview(dynamic colors) {
+  Widget _buildPreview() {
     if (!_isPermissionGranted) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(36),
           child: Text(
             context.text.cameraPermissionRequired,
-            style: TextStyle(color: colors.onPrimary),
+            style: const TextStyle(color: Colors.white),
             textAlign: TextAlign.center,
           ),
         ),
@@ -199,8 +197,11 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
     if (controller == null || !controller.value.isInitialized) {
       return Center(
         child: Platform.isAndroid
-            ? CircularProgressIndicator(strokeWidth: 2, color: colors.onPrimary)
-            : CupertinoActivityIndicator(color: colors.onPrimary),
+            ? const CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              )
+            : const CupertinoActivityIndicator(color: Colors.white),
       );
     }
 

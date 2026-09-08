@@ -134,7 +134,7 @@ class ExpenseDetailBottomSheet extends ConsumerWidget {
             value: expense.description.isEmpty ? '-' : expense.description,
           ),
           const SizedBox(height: 12),
-          _DetailRow(label: 'Date', value: _formatDate(expense.date)),
+          _DetailRow(label: context.text.date, value: _formatDate(expense.date)),
           const SizedBox(height: 24),
 
           // ---- ປຸ່ມ Delete ----
@@ -154,7 +154,7 @@ class ExpenseDetailBottomSheet extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
               child: Text(
-                'Delete',
+                context.text.delete,
                 style: TextStyle(
                   color: colors.danger,
                   fontWeight: FontWeight.w600,

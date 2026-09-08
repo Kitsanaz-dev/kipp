@@ -14,12 +14,15 @@ class UserModel extends HiveObject {
   final String email;
   @HiveField(3)
   final String hashedPassword; // ເກັບເປັນ sha256 hash ບໍ່ແມ່ນ plain text
+  @HiveField(4)
+  final String? avatarPath; // nullable - record ເກົ່າທີ່ບໍ່ມີ field ນີ້ຈະ read ເປັນ null
 
   UserModel({
     required this.id,
     required this.name,
     required this.email,
     required this.hashedPassword,
+    this.avatarPath,
   });
 
   UserEntity toEntity() => UserEntity(
@@ -27,6 +30,7 @@ class UserModel extends HiveObject {
         name: name,
         email: email,
         hashedPassword: hashedPassword,
+        avatarPath: avatarPath,
       );
 
   factory UserModel.fromEntity(UserEntity e) => UserModel(
@@ -34,5 +38,6 @@ class UserModel extends HiveObject {
         name: e.name,
         email: e.email,
         hashedPassword: e.hashedPassword,
+        avatarPath: e.avatarPath,
       );
 }

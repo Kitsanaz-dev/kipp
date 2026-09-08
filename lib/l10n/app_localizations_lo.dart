@@ -181,7 +181,7 @@ class AppLocalizationsLo extends AppLocalizations {
   String get amountNotFoundManual => 'ບໍ່ພົບຈຳນວນເງິນອັດຕະໂນມັດ, ກະລຸນາປ້ອນເອງ';
 
   @override
-  String get fetchData => 'Fetch Data successfully, Please review';
+  String get fetchData => 'ດຶງຂໍ້ມູນສຳເລັດແລ້ວ ກະລຸນາກວດສອບຄວາມຖືກຕ້ອງ';
 
   @override
   String get fetchDataError => 'ບໍ່ສາມາດດຶງຂໍ້ມູນຈາກຮູບພາບໄດ້';
@@ -194,4 +194,64 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get somethingWentWrong => 'ມີບາງຢ່າງຜິດພາດ, ກະລຸນາລອງໃໝ່';
+
+  @override
+  String get welcomeTo => 'ຍິນດີຕ້ອນຮັບສູ່';
+
+  @override
+  String get getStarted => 'ເລີ່ມຕົ້ນ';
+
+  @override
+  String get startSubtitle => 'ຈັດການລາຍຮັບ-ລາຍຈ່າຍ ໄດ້ງ່າຍໆ\nຄວບຄຸມການເງິນຂອງເຈົ້າໃນມືດຽວ';
+
+  @override
+  String get pleaseEnterEmail => 'ກະລຸນາປ້ອນອີເມວ';
+
+  @override
+  String get invalidEmail => 'ອີເມວບໍ່ຖືກຕ້ອງ';
+
+  @override
+  String get enterYourPassword => 'ປ້ອນລະຫັດຜ່ານ';
+
+  @override
+  String get passwordMinLength => 'ລະຫັດຜ່ານຢ່າງໜ້ອຍ 6 ຕົວອັກສອນ';
+
+  @override
+  String get atLeastSixCharacters => 'ຢ່າງໜ້ອຍ 6 ຕົວອັກສອນ';
+
+  @override
+  String get enterYourName => 'ປ້ອນຊື່ຂອງເຈົ້າ';
+
+  @override
+  String get nameMinLength => 'ຊື່ຕ້ອງມີຢ່າງໜ້ອຍ 2 ຕົວອັກສອນ';
+
+  @override
+  String get reenterYourPassword => 'ປ້ອນລະຫັດຜ່ານອີກຄັ້ງ';
+
+  @override
+  String get passwordsDoNotMatch => 'ລະຫັດຜ່ານບໍ່ກົງກັນ';
+
+  @override
+  String get selectTypeTitle => 'ເລືອກປະເພດ...';
+
+  @override
+  String get date => 'ວັນທີ';
+
+  @override
+  String get delete => 'ລົບ';
+
+  @override
+  String get editProfile => 'ແກ້ໄຂໂປຣໄຟລ໌';
+
+  @override
+  String get changePhoto => 'ປ່ຽນຮູບ';
+
+  @override
+  String get takePhoto => 'ຖ່າຍຮູບ';
+
+  @override
+  String get chooseFromGallery => 'ເລືອກຈາກຄັງຮູບ';
+
+  @override
+  String get profileUpdated => 'ອັບເດດໂປຣໄຟລ໌ແລ້ວ';
 }

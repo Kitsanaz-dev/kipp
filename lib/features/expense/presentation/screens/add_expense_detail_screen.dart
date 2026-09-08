@@ -213,7 +213,7 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
                   decimal: true,
                 ),
                 decoration: InputDecoration(
-                  labelText: 'Amount',
+                  labelText: context.text.amount,
                   border: OutlineInputBorder(
                     borderRadius: AppRadius.xlAll,
                   ), // ✅ token
@@ -243,12 +243,14 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter an amount';
+                    return context.text.pleaseEnterAmount;
                   }
                   final amount = double.tryParse(value);
-                  if (amount == null) return 'Please enter a valid number';
+                  if (amount == null) {
+                    return context.text.pleaseEnterValidNumber;
+                  }
                   if (amount <= 0) {
-                    return 'Amount must be greater than 0'; // ✅ ເພີ່ມ
+                    return context.text.amountMustBeGreaterThanZero;
                   }
                   return null;
                 },
@@ -258,7 +260,7 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
               // 3. ເລືອກ Type ຂອງການຈ່າຍ/ຮັບ
               FormField<String>(
                 validator: (value) =>
-                    _selectedType == null ? 'Please select a type' : null,
+                    _selectedType == null ? context.text.pleaseSelectType : null,
                 builder: (FormFieldState<String> state) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,7 +271,7 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
                           showCupertinoModalPopup<void>(
                             context: context,
                             builder: (BuildContext context) => CupertinoActionSheet(
-                              title: const Text('Select Type...'),
+                              title: Text(context.text.selectTypeTitle),
                               actions: currentTypes.map((type) {
                                 return CupertinoActionSheetAction(
                                   onPressed: () {
@@ -293,14 +295,14 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
                               cancelButton: CupertinoActionSheetAction(
                                 isDefaultAction: true,
                                 onPressed: () => Navigator.pop(context),
-                                child: const Text('Cancel'),
+                                child: Text(context.text.cancel),
                               ),
                             ),
                           );
                         },
                         child: InputDecorator(
                           decoration: InputDecoration(
-                            labelText: 'Type',
+                            labelText: context.text.type,
                             border: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(16),
@@ -314,7 +316,7 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
                             ),
                           ),
                           child: Text(
-                            _selectedType ?? 'Select Type',
+                            _selectedType ?? context.text.selectType,
                             style: TextStyle(
                               fontSize: 16,
                               color: _selectedType == null
@@ -334,9 +336,9 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
               TextFormField(
                 controller: _descController,
                 maxLines: 3,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                  border: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: context.text.description,
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                   ),
                 ),

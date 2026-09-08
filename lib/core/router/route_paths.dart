@@ -1,7 +1,8 @@
 class RoutePaths {
   RoutePaths._();
 
-  static const start = '/';
+  static const splash = '/';
+  static const start = '/start';
   static const login = '/login';
   static const register = '/register';
 
@@ -13,4 +14,5 @@ class RoutePaths {
 
   static const addExpense = '/add-expense';
   static const receiptCapture = '/receipt-capture';
+  static const editProfile = '/edit-profile';
 }

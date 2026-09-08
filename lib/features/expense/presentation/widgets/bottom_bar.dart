@@ -23,10 +23,16 @@ class BottomBar extends StatelessWidget {
         onTap: () => context.push(RoutePaths.addExpense),
       ),
       tabs: [
-        NativeGlassNavBarItem(label: 'Home', symbol: 'house'),
-        NativeGlassNavBarItem(label: 'Expense', symbol: 'kipsign.circle'),
-        NativeGlassNavBarItem(label: 'History', symbol: 'calendar'),
-        NativeGlassNavBarItem(label: 'Profile', symbol: 'person.crop.circle'),
+        NativeGlassNavBarItem(label: context.text.home, symbol: 'house'),
+        NativeGlassNavBarItem(
+          label: context.text.expenses,
+          symbol: 'kipsign.circle',
+        ),
+        NativeGlassNavBarItem(label: context.text.history, symbol: 'calendar'),
+        NativeGlassNavBarItem(
+          label: context.text.profile,
+          symbol: 'person.crop.circle',
+        ),
       ],
       fallback: GNav(
         rippleColor: context.colors.onPrimary,
@@ -37,11 +43,11 @@ class BottomBar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         duration: const Duration(milliseconds: 400),
         tabBackgroundColor: context.colors.primary,
-        tabs: const [
-          GButton(icon: CupertinoIcons.home, text: 'Home'),
-          GButton(icon: CupertinoIcons.graph_square, text: 'Expense'),
-          GButton(icon: CupertinoIcons.calendar, text: 'History'),
-          GButton(icon: CupertinoIcons.person, text: 'Profile'),
+        tabs: [
+          GButton(icon: CupertinoIcons.home, text: context.text.home),
+          GButton(icon: CupertinoIcons.graph_square, text: context.text.expenses),
+          GButton(icon: CupertinoIcons.calendar, text: context.text.history),
+          GButton(icon: CupertinoIcons.person, text: context.text.profile),
         ],
         selectedIndex: currentIndex,
         onTabChange: onTap, 

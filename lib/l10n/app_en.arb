@@ -41,7 +41,7 @@
             }
         }
     },
-    "deleteSuccess":"Delete Successfully",
+    "deleteSuccess": "Deleted successfully",
     "pleaseEnterAmount": "Please enter an amount",
     "pleaseEnterValidNumber": "Please enter a valid number",
     "amountMustBeGreaterThanZero": "Amount must be greater than 0",
@@ -74,5 +74,25 @@
     "fetchDataError" : "Cannot fetch data from pictures, please try again",
     "emailAlreadyRegistered": "This email is already registered",
     "incorrectEmailOrPassword": "Incorrect email or password",
-    "somethingWentWrong": "Something went wrong, please try again"
+    "somethingWentWrong": "Something went wrong, please try again",
+    "welcomeTo": "Welcome to",
+    "getStarted": "Get Started",
+    "startSubtitle": "Manage your income and expenses with ease\nControl your finances in one hand",
+    "pleaseEnterEmail": "Please enter your email",
+    "invalidEmail": "Invalid email",
+    "enterYourPassword": "Enter your password",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "atLeastSixCharacters": "At least 6 characters",
+    "enterYourName": "Enter your name",
+    "nameMinLength": "Name must be at least 2 characters",
+    "reenterYourPassword": "Re-enter your password",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "selectTypeTitle": "Select Type...",
+    "date": "Date",
+    "delete": "Delete",
+    "editProfile": "Edit Profile",
+    "changePhoto": "Change Photo",
+    "takePhoto": "Take Photo",
+    "chooseFromGallery": "Choose from Gallery",
+    "profileUpdated": "Profile updated"
 }

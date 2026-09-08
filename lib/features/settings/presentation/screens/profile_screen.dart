@@ -7,8 +7,8 @@ import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/router/route_paths.dart';
 import 'package:kipp/core/widgets/app_snackbar.dart';
+import 'package:kipp/core/widgets/user_avatar.dart';
 import 'package:kipp/features/auth/presentation/providers/auth_provider.dart';
-import 'package:kipp/features/settings/presentation/models/user_ui_model.dart';
 import 'package:kipp/features/settings/presentation/widgets/theme_mode_selector.dart';
 import 'package:kipp/features/settings/presentation/widgets/language_selector.dart';
 
@@ -18,6 +18,12 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
+    final user = ref.watch(authProvider).valueOrNull;
+
+    // router guard ກັນບໍ່ໃຫ້ເຂົ້າໜ້ານີ້ຕອນ logged out ຢູ່ແລ້ວ - guard ໄວ້ອີກຊັ້ນ
+    if (user == null) {
+      return const Center(child: CupertinoActivityIndicator());
+    }
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -28,23 +34,19 @@ class ProfileScreen extends ConsumerWidget {
             // ---- Avatar + ຂໍ້ມູນ user ----
             Row(
               children: [
-                CircleAvatar(
-                  radius: 32,
-                  backgroundColor: colors.primary.withValues(alpha: 0.15),
-                  child: Icon(Icons.person, size: 32, color: colors.primary),
-                ),
+                UserAvatar(path: user.avatarPath),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        mockUser.name,
+                        user.name,
                         style: context.typo.title.copyWith(color: colors.text),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        mockUser.email,
+                        user.email,
                         style: context.typo.bodySmall.copyWith(
                           color: colors.subtext,
                         ),
@@ -60,9 +62,7 @@ class ProfileScreen extends ConsumerWidget {
             _ProfileMenuTile(
               icon: Icons.edit_outlined,
               label: context.text.editProfileInfo,
-              onTap: () {
-                // TODO: ໄປໜ້າ EditProfilePage ຕອນສ້າງໜ້ານັ້ນ
-              },
+              onTap: () => context.push(RoutePaths.editProfile),
             ),
 
             // ---- Theme (ຝັງ selector ຢູ່ນຳ ບໍ່ຕ້ອງໄປໜ້າແຍກ) ----

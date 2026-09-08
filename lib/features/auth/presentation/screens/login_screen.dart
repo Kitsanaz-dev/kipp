@@ -8,7 +8,9 @@ import 'package:go_router/go_router.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/router/route_paths.dart';
+import 'package:kipp/core/utils/auth_error_mapper.dart';
 import 'package:kipp/core/widgets/app_snackbar.dart';
+import 'package:kipp/core/widgets/app_text_field.dart';
 import 'package:kipp/features/auth/presentation/providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -44,21 +46,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       context.go(RoutePaths.home);
     } catch (e) {
       if (!mounted) return;
-      AppSnackbar.showError(context, _authErrorMessage(context, e));
+      AppSnackbar.showError(context, mapAuthError(context, e));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
-  }
-
-  String _authErrorMessage(BuildContext context, Object e) {
-    final raw = e.toString();
-    if (raw.contains('already registered')) {
-      return context.text.emailAlreadyRegistered;
-    }
-    if (raw.contains('Incorrect email or password')) {
-      return context.text.incorrectEmailOrPassword;
-    }
-    return context.text.somethingWentWrong;
   }
 
   @override
@@ -77,36 +68,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               children: [
                 const SizedBox(height: 24),
                 Text(
-                  'Sign in',
+                  context.text.signIn,
                   style: context.typo.h2.copyWith(color: colors.text),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'ຍິນດີຕ້ອນຮັບກັບມາ',
+                  context.text.signInSubtitle,
                   style: context.typo.body.copyWith(color: colors.subtext),
                 ),
                 const SizedBox(height: 32),
 
-                _buildLabel(context, 'Email'),
-                _buildTextField(
-                  context: context,
+                AppTextField(
+                  label: context.text.email,
                   controller: _emailCtrl,
                   hint: 'demo@email.com',
                   icon: CupertinoIcons.mail,
                   keyboardType: TextInputType.emailAddress,
                   validator: (v) {
-                    if (v == null || v.isEmpty) return 'ກະລຸນາປ້ອນອີເມວ';
-                    if (!v.contains('@')) return 'ອີເມວບໍ່ຖືກຕ້ອງ';
+                    if (v == null || v.isEmpty) {
+                      return context.text.pleaseEnterEmail;
+                    }
+                    if (!v.contains('@')) return context.text.invalidEmail;
                     return null;
                   },
                 ),
                 const SizedBox(height: 20),
 
-                _buildLabel(context, 'Password'),
-                _buildTextField(
-                  context: context,
+                AppTextField(
+                  label: context.text.password,
                   controller: _passCtrl,
-                  hint: 'ປ້ອນລະຫັດຜ່ານ',
+                  hint: context.text.enterYourPassword,
                   icon: CupertinoIcons.lock,
                   obscureText: _obscurePassword,
                   suffixIcon: IconButton(
@@ -122,7 +113,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   validator: (v) {
                     if (v == null || v.length < 6) {
-                      return 'ລະຫັດຜ່ານຢ່າງໜ້ອຍ 6 ຕົວອັກສອນ';
+                      return context.text.passwordMinLength;
                     }
                     return null;
                   },
@@ -155,7 +146,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   ),
                           )
                         : Text(
-                            'Login',
+                            context.text.login,
                             style: context.typo.title.copyWith(
                               color: colors.onPrimary,
                             ),
@@ -171,13 +162,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         color: colors.subtext,
                       ),
                       children: [
-                        const TextSpan(text: "ຍັງບໍ່ມີບັນຊີ? "),
+                        TextSpan(text: context.text.dontHaveAccount),
                         WidgetSpan(
                           alignment: PlaceholderAlignment.middle,
                           child: GestureDetector(
                             onTap: () => context.push(RoutePaths.register),
                             child: Text(
-                              'Sign up',
+                              context.text.signUp,
                               style: TextStyle(
                                 color: colors.primary,
                                 fontWeight: FontWeight.w600,
@@ -193,51 +184,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLabel(BuildContext context, String text) => Padding(
-    padding: const EdgeInsets.only(bottom: 8),
-    child: Text(
-      text,
-      style: context.typo.subtitle.copyWith(color: context.colors.text),
-    ),
-  );
-
-  Widget _buildTextField({
-    required BuildContext context,
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    bool obscureText = false,
-    TextInputType? keyboardType,
-    Widget? suffixIcon,
-    String? Function(String?)? validator,
-  }) {
-    final colors = context.colors;
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      validator: validator,
-      style: context.typo.body.copyWith(color: colors.text),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: context.typo.body.copyWith(color: colors.hint),
-        prefixIcon: Icon(icon, color: colors.subtext, size: 20),
-        suffixIcon: suffixIcon,
-        filled: true,
-        fillColor: colors.hintContainer,
-        contentPadding: const EdgeInsets.symmetric(vertical: 16),
-        border: OutlineInputBorder(
-          borderRadius: AppRadius.lgAll,
-          borderSide: BorderSide.none,
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: AppRadius.lgAll,
-          borderSide: BorderSide(color: colors.danger),
         ),
       ),
     );

@@ -13,12 +13,18 @@ class DayTypeNavBar extends StatelessWidget {
 
   final int currentDayType;
   final ValueChanged<int> onTap;
-  static const _labels = ['Today', 'This Week', 'This Month'];
+
+  List<String> _labels(BuildContext context) => [
+    context.text.today,
+    context.text.thisWeek,
+    context.text.thisMonth,
+  ];
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final itemCount = _labels.length;
+    final labels = _labels(context);
+    final itemCount = labels.length;
 
     return Container(
       height: 52,
@@ -76,7 +82,7 @@ class DayTypeNavBar extends StatelessWidget {
                             color: isSelected ? colors.onPrimary : colors.inactive,
                             fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                           ),
-                          child: Text(_labels[index]),
+                          child: Text(labels[index]),
                         ),
                       ),
                     ),
