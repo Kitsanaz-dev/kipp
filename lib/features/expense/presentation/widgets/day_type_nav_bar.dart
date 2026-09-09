@@ -79,7 +79,7 @@ class DayTypeNavBar extends StatelessWidget {
                         child: AnimatedDefaultTextStyle(
                           duration: const Duration(milliseconds: 200),
                           style: context.typo.subtitle.copyWith(
-                            color: isSelected ? colors.onPrimary : colors.inactive,
+                            color: isSelected ? colors.primary : colors.inactive,
                             fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                           ),
                           child: Text(labels[index]),

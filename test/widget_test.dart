@@ -6,21 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:kipp/app.dart';
-import 'package:kipp/features/auth/data/models/user_model.dart';
-import 'package:kipp/features/expense/data/models/expense_model.dart';
 
 void main() {
   late Directory tempDir;
 
   setUp(() async {
     tempDir = await Directory.systemTemp.createTemp('kipp_test');
+    // Hive ໃຊ້ສະເພາະ settings (theme/locale) - ບໍ່ມີ custom adapter ໃຫ້ register.
     Hive.init(tempDir.path);
-    if (!Hive.isAdapterRegistered(ExpenseModelAdapter().typeId)) {
-      Hive.registerAdapter(ExpenseModelAdapter());
-    }
-    if (!Hive.isAdapterRegistered(UserModelAdapter().typeId)) {
-      Hive.registerAdapter(UserModelAdapter());
-    }
   });
 
   tearDown(() async {

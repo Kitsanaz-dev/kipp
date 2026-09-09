@@ -48,7 +48,9 @@ class AppLocalizationsLo extends AppLocalizations {
   String get forgotPassword => 'ລືມລະຫັດຜ່ານ?';
 
   @override
-  String get welcomeUser => 'ຍິນດີຕ້ອນຮັບ';
+  String welcomeUser(String name) {
+    return 'ຍິນດີຕ້ອນຮັບ, $name';
+  }
 
   @override
   String get todaysBalance => 'ຍອດເງິນມື້ນີ້';
@@ -194,6 +196,9 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get somethingWentWrong => 'ມີບາງຢ່າງຜິດພາດ, ກະລຸນາລອງໃໝ່';
+
+  @override
+  String get networkError => 'ບໍ່ສາມາດເຊື່ອມຕໍ່ຫາເຊີບເວີໄດ້. ກະລຸນາກວດສອບການເຊື່ອມຕໍ່ອິນເຕີເນັດ.';
 
   @override
   String get welcomeTo => 'ຍິນດີຕ້ອນຮັບສູ່';

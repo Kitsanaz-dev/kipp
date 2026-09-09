@@ -22,6 +22,7 @@ class AppColor extends ThemeExtension<AppColor> {
   final Color onTertiary;
   final Color danger;
   final Color ok;
+  final Color white;
 
   const AppColor({
     required this.surface,
@@ -44,6 +45,7 @@ class AppColor extends ThemeExtension<AppColor> {
     required this.onTertiary,
     required this.danger,
     required this.ok,
+    required this.white,
   });
 
   @override
@@ -68,6 +70,7 @@ class AppColor extends ThemeExtension<AppColor> {
     Color? onTertiary,
     Color? danger,
     Color? ok,
+    Color? white,
   }) {
     return AppColor(
       surface: surface ?? this.surface,
@@ -90,6 +93,7 @@ class AppColor extends ThemeExtension<AppColor> {
       onTertiary: onTertiary ?? this.onTertiary,
       danger: danger ?? this.danger,
       ok: ok ?? this.ok,
+      white: white ?? this.white,
     );
   }
 
@@ -117,6 +121,7 @@ class AppColor extends ThemeExtension<AppColor> {
       onTertiary: Color.lerp(onTertiary, other.onTertiary, t)!,
       danger: Color.lerp(danger, other.danger, t)!,
       ok: Color.lerp(ok, other.ok, t)!,
+      white: Color.lerp(white, other.white, t)!,
     );
   }
 }

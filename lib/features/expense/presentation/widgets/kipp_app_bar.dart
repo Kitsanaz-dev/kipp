@@ -18,7 +18,7 @@ class KippAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(title, style: context.typo.h2.copyWith(color: context.colors.onPrimary)),
+      title: Text(title, style: context.typo.h2.copyWith(color: context.colors.white)),
       centerTitle: true,
       backgroundColor: context.colors.primary,
       leading: leading,

@@ -33,6 +33,7 @@ class LightTheme implements AppTheme {
     onTertiary: Palette.white,
     danger: Palette.red,
     ok: Palette.green,
+    white: Palette.white,
   );
 
   @override

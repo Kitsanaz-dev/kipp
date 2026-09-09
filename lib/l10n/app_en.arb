@@ -13,7 +13,14 @@
     "alreadyHaveAccount": "Already have an Account? ",
     "rememberMe": "Remember Me",
     "forgotPassword": "Forgot Password?",
-    "welcomeUser": "Welcome, User",
+    "welcomeUser": "Welcome, {name}",
+    "@welcomeUser": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
     "todaysBalance": "Today's balance",
     "thisWeeksBalance": "This week's balance",
     "thisMonthsBalance": "This month's balance",
@@ -75,6 +82,7 @@
     "emailAlreadyRegistered": "This email is already registered",
     "incorrectEmailOrPassword": "Incorrect email or password",
     "somethingWentWrong": "Something went wrong, please try again",
+    "networkError": "Could not connect to the server. Please check your internet connection.",
     "welcomeTo": "Welcome to",
     "getStarted": "Get Started",
     "startSubtitle": "Manage your income and expenses with ease\nControl your finances in one hand",

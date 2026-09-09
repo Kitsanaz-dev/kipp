@@ -1,7 +1,8 @@
 // features/auth/presentation/providers/auth_provider.dart
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../data/datasources/auth_local_datasource.dart';
+import '../../../../core/network/network_providers.dart';
+import '../../data/datasources/auth_remote_datasource.dart';
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -10,7 +11,10 @@ part 'auth_provider.g.dart';
 
 @riverpod
 AuthRepository authRepository(AuthRepositoryRef ref) {
-  return AuthRepositoryImpl(AuthLocalDatasource());
+  return AuthRepositoryImpl(
+    AuthRemoteDatasource(ref.watch(apiClientProvider)),
+    ref.watch(tokenStorageProvider),
+  );
 }
 
 /// Current signed-in user - single source of truth ສຳລັບ auth state.

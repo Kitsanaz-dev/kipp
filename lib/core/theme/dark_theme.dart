@@ -25,7 +25,7 @@ class DarkTheme implements AppTheme {
     inactive: Palette.grey500,
     inactiveContainer: Palette.grey700,
     onInactiveContainer: Palette.grey400,
-    primary: Palette.coral400, // ອ່ອນລົງໜ້ອຍໜຶ່ງໃຫ້ contrast ດີເທິງພື້ນມືດ
+    primary: Palette.coral600, // coral ເຂັ້ມ/ອີ່ມຕົວກວ່າ - coral400 ເກົ່າ pale ໄປເທິງພື້ນດຳ
     onPrimary: Palette.black,
     secondary: Palette.red,
     onSecondary: Palette.white,
@@ -33,6 +33,7 @@ class DarkTheme implements AppTheme {
     onTertiary: Palette.black,
     danger: Palette.red,
     ok: Palette.green,
+    white: Palette.white,
   );
   @override
   late final AppTypo typo = AppTypo(

@@ -43,6 +43,12 @@ dependencies:
   hive_ce: ^2.19.3
   hive_ce_flutter: ^2.3.0
 
+  # ---- Secure credential storage (JWT token) ----
+  flutter_secure_storage: ^9.2.4
+
+  # ---- Non-sensitive key/value storage (device-local avatar path) ----
+  shared_preferences: ^2.3.5
+
   dio: ^5.11.0
   intl: ^0.20.2
   uuid: ^4.6.0

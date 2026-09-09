@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/router/route_paths.dart';
+import 'package:kipp/core/theme/theme_builder.dart';
+import 'package:kipp/features/auth/presentation/providers/auth_provider.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/screens/expense_screen.dart';
 import 'package:kipp/features/expense/presentation/screens/history_screen.dart';
@@ -45,28 +48,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _appBar(context),
-      body: IndexedStack(
-        index: _tab.index,
-        children: const [
-          _HomeTab(),
-          ExpenseScreen(),
-          HistoryScreen(),
-          ProfileScreen(),
-        ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: systemOverlayStyleFor(Theme.of(context).brightness),
+      child: Scaffold(
+        appBar: _appBar(context),
+        body: IndexedStack(
+          index: _tab.index,
+          children: const [
+            _HomeTab(),
+            ExpenseScreen(),
+            HistoryScreen(),
+            ProfileScreen(),
+          ],
+        ),
+        bottomNavigationBar: BottomBar(
+          currentIndex: _tab.index,
+          onTap: (index) => setState(() => _tab = HomeTab.values[index]),
+        ),
+        floatingActionButton: (!kIsWeb && Platform.isIOS)
+            ? null
+            : FloatingActionButton(
+                backgroundColor: context.colors.primary,
+                onPressed: () => context.push(RoutePaths.addExpense),
+                child: Icon(Icons.add, color: context.colors.onPrimary),
+              ),
       ),
-      bottomNavigationBar: BottomBar(
-        currentIndex: _tab.index,
-        onTap: (index) => setState(() => _tab = HomeTab.values[index]),
-      ),
-      floatingActionButton: (!kIsWeb && Platform.isIOS)
-          ? null
-          : FloatingActionButton(
-              backgroundColor: context.colors.primary,
-              onPressed: () => context.push(RoutePaths.addExpense),
-              child: Icon(Icons.add, color: context.colors.onPrimary),
-            ),
     );
   }
 }
@@ -87,6 +93,7 @@ class _HomeTabState extends ConsumerState<_HomeTab> {
   Widget build(BuildContext context) {
     final summary = ref.watch(expenseSummaryProvider(_dayType));
     final transactions = ref.watch(expensesByDayTypeProvider(_dayType));
+    final userName = ref.watch(authProvider).valueOrNull?.name ?? '';
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -97,7 +104,7 @@ class _HomeTabState extends ConsumerState<_HomeTab> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
-                context.text.welcomeUser,
+                context.text.welcomeUser(userName),
                 style: context.typo.title.copyWith(
                   color: context.colors.text,
                   fontWeight: FontWeight.w400,

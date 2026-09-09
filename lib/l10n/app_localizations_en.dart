@@ -48,7 +48,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPassword => 'Forgot Password?';
 
   @override
-  String get welcomeUser => 'Welcome, User';
+  String welcomeUser(String name) {
+    return 'Welcome, $name';
+  }
 
   @override
   String get todaysBalance => 'Today\'s balance';
@@ -194,6 +196,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get somethingWentWrong => 'Something went wrong, please try again';
+
+  @override
+  String get networkError => 'Could not connect to the server. Please check your internet connection.';
 
   @override
   String get welcomeTo => 'Welcome to';

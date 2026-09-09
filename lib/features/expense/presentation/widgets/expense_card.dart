@@ -53,16 +53,11 @@ class ExpenseCard extends StatelessWidget {
                 key: ValueKey(
                   dayType,
                 ), // ✅ ຕ້ອງມີ key ບໍ່ຄືກັນ ຈຶ່ງ trigger animation
-                style: context.typo.title.copyWith(
-                  color: context.colors.onPrimary,
-                ),
+                style: context.typo.title.copyWith(color: context.colors.white),
               ),
             ),
             const SizedBox(height: 8),
 
-            // TODO: balance ນີ້ຄິດໄລ່ຈາກ expense/income ທີ່ Home screen ສົ່ງມາ
-            // ຕອນຕໍ່ data ຈິງ, expense/income ຕ້ອງ filter ຕາມ dayType ກ່ອນສົ່ງເຂົ້າມາ
-            // (ເບິ່ງ TODO ໃນ home_screen.dart)
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 220),
               transitionBuilder: (child, animation) =>
@@ -70,9 +65,7 @@ class ExpenseCard extends StatelessWidget {
               child: Text(
                 CurrencyFormatter.formatKip(balance),
                 key: ValueKey('balance-$dayType-$balance'),
-                style: context.typo.h1.copyWith(
-                  color: context.colors.onPrimary,
-                ),
+                style: context.typo.h1.copyWith(color: context.colors.white),
               ),
             ),
             const Spacer(),
@@ -83,8 +76,8 @@ class ExpenseCard extends StatelessWidget {
                   label: context.text.income,
                   amount: income,
                   iconColor: context.colors.ok,
-                  iconBackgroundColor: context.colors.onPrimary.withValues(
-                    alpha: 0.5,
+                  iconBackgroundColor: context.colors.white.withValues(
+                    alpha: 0.1,
                   ),
                 ),
                 const Spacer(),
@@ -93,8 +86,8 @@ class ExpenseCard extends StatelessWidget {
                   label: context.text.expenses,
                   amount: -expense,
                   iconColor: context.colors.danger,
-                  iconBackgroundColor: context.colors.onPrimary.withValues(
-                    alpha: 0.5,
+                  iconBackgroundColor: context.colors.white.withValues(
+                    alpha: 0.1,
                   ),
                 ),
               ],
@@ -154,14 +147,16 @@ class _SummaryItem extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               label,
-              style: context.typo.subtitle.copyWith(color: onPrimary),
+              style: context.typo.subtitle.copyWith(
+                color: context.colors.white,
+              ),
             ),
           ],
         ),
         const SizedBox(height: 8),
         Text(
           CurrencyFormatter.formatKip(amount),
-          style: context.typo.title.copyWith(color: onPrimary),
+          style: context.typo.title.copyWith(color: context.colors.white),
         ),
       ],
     );

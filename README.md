@@ -1,13 +1,15 @@
 # Kipp
 
-Kipp is a personal expense tracker app built with Flutter. It runs entirely on local storage (no backend required) while being designed so a real API can be swapped in later without touching the UI layer.
+Kipp is a personal expense tracker app built with Flutter. Auth and expenses are backed by a Go + GORM + Postgres (Neon) REST API; only theme/locale settings stay on-device. The Clean Architecture layering means the backend was swapped in without touching the UI layer.
 
 ## Tech stack
 
 | Purpose | Package |
 |---|---|
 | State management | `flutter_riverpod`, `riverpod_annotation` (code generation) |
-| Local storage | `hive_ce`, `hive_ce_flutter` |
+| Backend API client | `dio` (JWT bearer auth) |
+| Token storage | `flutter_secure_storage` (JWT credential) |
+| Settings storage | `hive_ce`, `hive_ce_flutter` (theme/locale only), `shared_preferences` (device-local avatar path) |
 | Routing | `go_router` |
 | Charts | `fl_chart` |
 | Calendar | `table_calendar` |
@@ -26,8 +28,7 @@ features/<feature>/
 │   ├── entities/        # Plain Dart objects, no framework dependencies
 │   └── repositories/     # Abstract interfaces (contracts)
 ├── data/
-│   ├── models/           # Hive models (@HiveType), map to/from entities
-│   ├── datasources/      # Talks to Hive directly
+│   ├── datasources/      # Remote datasources — call the Go API via dio
 │   └── repositories/     # Implements the domain interface using datasources
 └── presentation/
     ├── providers/         # Riverpod providers (state)
@@ -35,7 +36,7 @@ features/<feature>/
     └── widgets/           # Reusable UI pieces
 ```
 
-**Why this matters:** the presentation layer only ever depends on the `domain` interface (e.g. `ExpenseRepository`), never on Hive directly. Swapping local storage for a real backend later means writing a new `ExpenseRepositoryImpl` that calls a remote datasource instead — no changes needed in any screen or widget.
+**Why this matters:** the presentation layer only ever depends on the `domain` interface (e.g. `ExpenseRepository`), never on the transport. Moving auth and expenses from local Hive storage to the Go API only meant writing new `*RemoteDatasource` classes and new `*RepositoryImpl` bodies — no changes in any screen, widget, provider notifier, or the domain interfaces.
 
 ### Folder structure
 
@@ -48,7 +49,7 @@ lib/
 │   ├── theme/             # AppTheme interface, Light/DarkTheme, ThemeService
 │   └── utils/             # currency formatter, date grouping, etc.
 ├── features/
-│   ├── auth/              # Login, register, session (local-first)
+│   ├── auth/              # Login, register, session (JWT + Go API)
 │   └── expense/           # Home, expense list, history, profile, add transaction
 └── main.dart
 ```
@@ -57,10 +58,12 @@ lib/
 
 Riverpod is used with the **single source of truth + derived providers** pattern:
 
-- `expenseListProvider` (`AsyncNotifier`) is the only provider that reads from Hive. It exposes `add()` / `delete()` methods that write to storage, then invalidate themselves so every dependent provider recomputes automatically.
-- `expensesByDayTypeProvider`, `expenseSummaryProvider`, `dailyChartDataProvider`, and `expenseTotalsProvider` are pure derived providers — they `watch` the list above and compute filtered views or aggregates. None of them touch Hive directly.
+- `expenseListProvider` (`AsyncNotifier`) is the only provider that reads the expense list from the API (`GET /api/expenses`). It exposes `add()` / `delete()` methods that call the API, then invalidate themselves so every dependent provider recomputes automatically.
+- `expensesByDayTypeProvider`, `expenseSummaryProvider`, `dailyChartDataProvider`, and `expenseTotalsProvider` are pure derived providers — they `watch` the list above and compute filtered views or aggregates. None of them touch the network directly.
+- `authProvider` (`AsyncNotifier`) holds the signed-in `UserEntity`. `build()` calls `GET /api/auth/me` when a JWT is present in secure storage, else emits `null`.
+- `apiClientProvider` / `tokenStorageProvider` (in `core/network/`) wire the `dio` instance (base URL from `API_BASE_URL`, bearer-token + 401 interceptors) and the secure token store into the repositories.
 - Ephemeral UI state (selected tab index, selected day-type filter) stays as local `StatefulWidget` state rather than being lifted into Riverpod, since it doesn't need to be shared or persisted.
-- `themeServiceProvider` manages `ThemeMode` (light/dark/system) independently of the color/typography system, and persists the choice to a separate Hive box.
+- `themeServiceProvider` manages `ThemeMode` (light/dark/system) independently of the color/typography system, and persists the choice to a separate Hive box. `localeServiceProvider` does the same for the app locale. These two are the only remaining Hive users.
 
 ## Design system
 
@@ -82,20 +85,26 @@ dart run build_runner build --delete-conflicting-outputs
 flutter run
 ```
 
-Re-run `build_runner` any time a `@riverpod` provider or `@HiveType` model is added or changed. After changes to `main.dart` or Hive adapters, use a **hot restart** rather than hot reload — Hive adapter registration only runs once, in `main()`.
+Copy `.env.example` to `.env` and set `API_BASE_URL` to point at your running Go backend (`http://10.0.2.2:8080` for the Android emulator, `http://localhost:8080` for the iOS simulator, the host LAN IP for a physical device).
+
+Re-run `build_runner` any time a `@riverpod` provider is added or changed.
 
 ## Current status
 
 - ✅ Design system (palette, colors, typography, spacing, radius, shadows) with light/dark support
-- ✅ Local-first expense tracking (add, list, filter by day/week/month, chart, calendar view) backed by Hive
+- ✅ Auth (register / login / session / profile name) backed by the Go API with JWT bearer auth; token in `flutter_secure_storage`
+- ✅ Expense tracking (add, list, delete, filter by day/week/month, chart, calendar view) backed by the Go API (`/api/expenses`)
+- ✅ Offline / unreachable-backend handling — repositories surface a localized "could not connect" message
 - ✅ Routing via `go_router` with custom page transitions
-- ⏳ Auth is UI-complete (login/register screens) but not yet wired to a Riverpod provider or persisted session — no route guard yet
+- ⏳ Avatar photos are still device-local (`shared_preferences`, keyed by user id) — waiting on a backend image-upload endpoint
 - ⏳ Receipt scanning (camera → OCR → auto-fill amount) planned via `google_mlkit_text_recognition` + `google_mlkit_entity_extraction`, not yet implemented
 
-## Notes for future backend integration
+## Backend integration
 
-Because every feature is split into domain/data/presentation layers, connecting a real API later should only require:
+Auth and expenses talk to a Go + GORM + Postgres (Neon) REST API:
 
-1. A new `*RemoteDatasource` per feature that calls the API via `dio`
-2. A new `*RepositoryImpl` (or a flag inside the existing one) that uses the remote datasource instead of the local one
-3. No changes to providers, screens, or widgets, since they depend only on the domain repository interface
+- `POST /api/auth/register`, `POST /api/auth/login` → `{token, user}`; `GET /api/auth/me`; `PATCH /api/users/me`
+- `GET/POST /api/expenses`, `PATCH/DELETE /api/expenses/{id}`
+- JWT bearer token, attached by a `dio` request interceptor; a 401 response clears the stored token so the app falls back to logged-out
+
+Each feature keeps the domain/data/presentation split, so the transport lives entirely in `data/datasources/*_remote_datasource.dart` and `data/repositories/*_repository_impl.dart` — providers, screens, widgets, and the `AuthRepository` / `ExpenseRepository` interfaces are untouched. Only theme/locale settings remain on-device (Hive).

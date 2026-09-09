@@ -1,7 +1,8 @@
 // features/expense/presentation/providers/expense_provider.dart
 import 'package:kipp/features/expense/presentation/models/chart_ui_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../data/datasources/expense_local_datasource.dart';
+import '../../../../core/network/network_providers.dart';
+import '../../data/datasources/expense_remote_datasource.dart';
 import '../../data/repositories/expense_repository_impl.dart';
 import '../../domain/entities/expense_entity.dart';
 import '../../domain/repositories/expense_repository.dart';
@@ -10,7 +11,9 @@ part 'expense_provider.g.dart';
 
 @riverpod
 ExpenseRepository expenseRepository(ExpenseRepositoryRef ref) {
-  return ExpenseRepositoryImpl(ExpenseLocalDatasource());
+  return ExpenseRepositoryImpl(
+    ExpenseRemoteDatasource(ref.watch(apiClientProvider)),
+  );
 }
 
 /// List ຂອງ transaction ທັງໝົດ - single source of truth

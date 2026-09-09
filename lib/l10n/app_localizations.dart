@@ -176,8 +176,8 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeUser.
   ///
   /// In en, this message translates to:
-  /// **'Welcome, User'**
-  String get welcomeUser;
+  /// **'Welcome, {name}'**
+  String welcomeUser(String name);
 
   /// No description provided for @todaysBalance.
   ///
@@ -460,6 +460,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong, please try again'**
   String get somethingWentWrong;
+
+  /// No description provided for @networkError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not connect to the server. Please check your internet connection.'**
+  String get networkError;
 
   /// No description provided for @welcomeTo.
   ///
