@@ -140,52 +140,50 @@ class _ExpenseCalendarState extends State<ExpenseCalendar> {
     final showJump =
         focusedMonth.year != now.year || focusedMonth.month != now.month;
 
-    return Stack(
-      alignment: Alignment.center,
+    // The title only gives up width while the "Today" button is visible.
+    return Row(
       children: [
-        Semantics(
-          button: true,
-          hint: context.text.selectMonth,
-          child: GestureDetector(
-            onTap: () => _openMonthPicker(focusedMonth),
-            behavior: HitTestBehavior.opaque,
-            child: Padding(
-              // Leave room for the "Today" button on either side.
-              padding: const EdgeInsets.symmetric(horizontal: 56),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Text(
-                      DateFormat.yMMMM(localeTag).format(focusedMonth),
-                      style: context.typo.title.copyWith(color: colors.text),
-                      overflow: TextOverflow.ellipsis,
+        Expanded(
+          child: Semantics(
+            button: true,
+            hint: context.text.selectMonth,
+            child: GestureDetector(
+              onTap: () => _openMonthPicker(focusedMonth),
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        DateFormat.yMMMM(localeTag).format(focusedMonth),
+                        style: context.typo.title.copyWith(color: colors.text),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 2),
-                  Icon(Icons.expand_more, size: 18, color: colors.subtext),
-                ],
+                    const SizedBox(width: 2),
+                    Icon(Icons.expand_more, size: 18, color: colors.subtext),
+                  ],
+                ),
               ),
             ),
           ),
         ),
         if (showJump)
-          Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: TextButton(
-              onPressed: widget.onJumpToToday,
-              style: TextButton.styleFrom(
-                foregroundColor: colors.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                minimumSize: const Size(0, 32),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              child: Text(
-                context.text.jumpToToday,
-                style: context.typo.caption.copyWith(
-                  color: colors.primary,
-                  fontWeight: FontWeight.w600,
-                ),
+          TextButton(
+            onPressed: widget.onJumpToToday,
+            style: TextButton.styleFrom(
+              foregroundColor: colors.primary,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              minimumSize: const Size(0, 32),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Text(
+              context.text.jumpToToday,
+              style: context.typo.caption.copyWith(
+                color: colors.primary,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
