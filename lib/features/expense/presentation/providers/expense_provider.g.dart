@@ -578,35 +578,39 @@ class _PeriodSummaryProviderElement
   DateRange get range => (origin as PeriodSummaryProvider).range;
 }
 
-String _$monthlyChartDataHash() => r'ae863e68730178c15d83ff1a3fee313db8b17ca3';
+String _$periodChartDataHash() => r'a33ae5ada77d8d0ca475937543cf089b8779139c';
 
-/// One zero-filled [DailyChartData] per day of [month], oldest first.
+/// Zero-filled chart buckets for [range] (hourly / daily / monthly, see
+/// [ExpenseStats.chartTotals]), oldest first.
 ///
-/// Copied from [monthlyChartData].
-@ProviderFor(monthlyChartData)
-const monthlyChartDataProvider = MonthlyChartDataFamily();
+/// Copied from [periodChartData].
+@ProviderFor(periodChartData)
+const periodChartDataProvider = PeriodChartDataFamily();
 
-/// One zero-filled [DailyChartData] per day of [month], oldest first.
+/// Zero-filled chart buckets for [range] (hourly / daily / monthly, see
+/// [ExpenseStats.chartTotals]), oldest first.
 ///
-/// Copied from [monthlyChartData].
-class MonthlyChartDataFamily extends Family<List<DailyChartData>> {
-  /// One zero-filled [DailyChartData] per day of [month], oldest first.
+/// Copied from [periodChartData].
+class PeriodChartDataFamily extends Family<List<DailyChartData>> {
+  /// Zero-filled chart buckets for [range] (hourly / daily / monthly, see
+  /// [ExpenseStats.chartTotals]), oldest first.
   ///
-  /// Copied from [monthlyChartData].
-  const MonthlyChartDataFamily();
+  /// Copied from [periodChartData].
+  const PeriodChartDataFamily();
 
-  /// One zero-filled [DailyChartData] per day of [month], oldest first.
+  /// Zero-filled chart buckets for [range] (hourly / daily / monthly, see
+  /// [ExpenseStats.chartTotals]), oldest first.
   ///
-  /// Copied from [monthlyChartData].
-  MonthlyChartDataProvider call(DateRange month) {
-    return MonthlyChartDataProvider(month);
+  /// Copied from [periodChartData].
+  PeriodChartDataProvider call(DateRange range) {
+    return PeriodChartDataProvider(range);
   }
 
   @override
-  MonthlyChartDataProvider getProviderOverride(
-    covariant MonthlyChartDataProvider provider,
+  PeriodChartDataProvider getProviderOverride(
+    covariant PeriodChartDataProvider provider,
   ) {
-    return call(provider.month);
+    return call(provider.range);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -621,75 +625,77 @@ class MonthlyChartDataFamily extends Family<List<DailyChartData>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'monthlyChartDataProvider';
+  String? get name => r'periodChartDataProvider';
 }
 
-/// One zero-filled [DailyChartData] per day of [month], oldest first.
+/// Zero-filled chart buckets for [range] (hourly / daily / monthly, see
+/// [ExpenseStats.chartTotals]), oldest first.
 ///
-/// Copied from [monthlyChartData].
-class MonthlyChartDataProvider
+/// Copied from [periodChartData].
+class PeriodChartDataProvider
     extends AutoDisposeProvider<List<DailyChartData>> {
-  /// One zero-filled [DailyChartData] per day of [month], oldest first.
+  /// Zero-filled chart buckets for [range] (hourly / daily / monthly, see
+  /// [ExpenseStats.chartTotals]), oldest first.
   ///
-  /// Copied from [monthlyChartData].
-  MonthlyChartDataProvider(DateRange month)
+  /// Copied from [periodChartData].
+  PeriodChartDataProvider(DateRange range)
     : this._internal(
-        (ref) => monthlyChartData(ref as MonthlyChartDataRef, month),
-        from: monthlyChartDataProvider,
-        name: r'monthlyChartDataProvider',
+        (ref) => periodChartData(ref as PeriodChartDataRef, range),
+        from: periodChartDataProvider,
+        name: r'periodChartDataProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
             ? null
-            : _$monthlyChartDataHash,
-        dependencies: MonthlyChartDataFamily._dependencies,
+            : _$periodChartDataHash,
+        dependencies: PeriodChartDataFamily._dependencies,
         allTransitiveDependencies:
-            MonthlyChartDataFamily._allTransitiveDependencies,
-        month: month,
+            PeriodChartDataFamily._allTransitiveDependencies,
+        range: range,
       );
 
-  MonthlyChartDataProvider._internal(
+  PeriodChartDataProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.month,
+    required this.range,
   }) : super.internal();
 
-  final DateRange month;
+  final DateRange range;
 
   @override
   Override overrideWith(
-    List<DailyChartData> Function(MonthlyChartDataRef provider) create,
+    List<DailyChartData> Function(PeriodChartDataRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: MonthlyChartDataProvider._internal(
-        (ref) => create(ref as MonthlyChartDataRef),
+      override: PeriodChartDataProvider._internal(
+        (ref) => create(ref as PeriodChartDataRef),
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        month: month,
+        range: range,
       ),
     );
   }
 
   @override
   AutoDisposeProviderElement<List<DailyChartData>> createElement() {
-    return _MonthlyChartDataProviderElement(this);
+    return _PeriodChartDataProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is MonthlyChartDataProvider && other.month == month;
+    return other is PeriodChartDataProvider && other.range == range;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, month.hashCode);
+    hash = _SystemHash.combine(hash, range.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -697,18 +703,18 @@ class MonthlyChartDataProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin MonthlyChartDataRef on AutoDisposeProviderRef<List<DailyChartData>> {
-  /// The parameter `month` of this provider.
-  DateRange get month;
+mixin PeriodChartDataRef on AutoDisposeProviderRef<List<DailyChartData>> {
+  /// The parameter `range` of this provider.
+  DateRange get range;
 }
 
-class _MonthlyChartDataProviderElement
+class _PeriodChartDataProviderElement
     extends AutoDisposeProviderElement<List<DailyChartData>>
-    with MonthlyChartDataRef {
-  _MonthlyChartDataProviderElement(super.provider);
+    with PeriodChartDataRef {
+  _PeriodChartDataProviderElement(super.provider);
 
   @override
-  DateRange get month => (origin as MonthlyChartDataProvider).month;
+  DateRange get range => (origin as PeriodChartDataProvider).range;
 }
 
 String _$earliestExpenseMonthHash() =>

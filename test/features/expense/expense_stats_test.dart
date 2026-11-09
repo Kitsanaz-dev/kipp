@@ -21,10 +21,10 @@ void main() {
         tx('first', DateTime(2026, 2, 1), 3),
         tx('jan', DateTime(2026, 1, 31, 23, 59), 4),
       ];
-      expect(
-        ExpenseStats.inRange(items, feb2026).map((e) => e.id),
-        ['lastDay', 'first'],
-      );
+      expect(ExpenseStats.inRange(items, feb2026).map((e) => e.id), [
+        'lastDay',
+        'first',
+      ]);
     });
 
     test('leap day is inside Feb 2028', () {
@@ -147,6 +147,66 @@ void main() {
       final items = [tx('a', DateTime(2026), 1), tx('b', DateTime(2026), 2)];
       expect(ExpenseStats.topExpenses(items, limit: 1).map((e) => e.id), ['b']);
       expect(ExpenseStats.topExpenses(items, limit: 5), hasLength(2));
+    });
+  });
+
+  group('chartTotals', () {
+    test('a single day is bucketed by hour', () {
+      final day = DateRange.day(DateTime(2026, 11, 9));
+      final data = ExpenseStats.chartTotals([
+        tx('a', DateTime(2026, 11, 9, 0, 0), 1),
+        tx('b', DateTime(2026, 11, 9, 13, 59), 2),
+        tx('c', DateTime(2026, 11, 9, 13, 1), 3, income: true),
+        tx('d', DateTime(2026, 11, 9, 23, 59), 4),
+        tx('out', DateTime(2026, 11, 10), 100),
+      ], day);
+      expect(data, hasLength(24));
+      expect(data.first.date, DateTime(2026, 11, 9));
+      expect(data[13].date, DateTime(2026, 11, 9, 13));
+      expect(data[0].expense, 1);
+      expect(data[13].expense, 2);
+      expect(data[13].income, 3);
+      expect(data[23].expense, 4);
+    });
+
+    test('a week is bucketed by day', () {
+      final data = ExpenseStats.chartTotals([
+        tx('a', DateTime(2026, 11, 15, 23), 5),
+      ], DateRange.week(DateTime(2026, 11, 12)));
+      expect(data, hasLength(7));
+      expect(data.last.date, DateTime(2026, 11, 15));
+      expect(data.last.expense, 5);
+    });
+
+    test('a month is bucketed by day', () {
+      expect(ExpenseStats.chartTotals(const [], dec2026), hasLength(31));
+    });
+
+    test('a year is bucketed by month', () {
+      final data = ExpenseStats.chartTotals([
+        tx('jan', DateTime(2028, 1, 1), 1),
+        tx('feb', DateTime(2028, 2, 29, 23), 2),
+        tx('dec', DateTime(2028, 12, 31, 23, 59), 3),
+        tx('next', DateTime(2029, 1, 1), 100),
+      ], DateRange.year(DateTime(2028)));
+      expect(data, hasLength(12));
+      expect(data.map((d) => d.date.month), List.generate(12, (i) => i + 1));
+      expect(data[0].expense, 1);
+      expect(data[1].expense, 2);
+      expect(data[11].expense, 3);
+    });
+  });
+
+  group('bucketTotals', () {
+    test('empty starts yields no buckets', () {
+      expect(
+        ExpenseStats.bucketTotals(
+          [tx('a', DateTime(2026), 1)],
+          const [],
+          DateTime(2027),
+        ),
+        isEmpty,
+      );
     });
   });
 }

@@ -72,10 +72,11 @@ PeriodSummary periodSummary(PeriodSummaryRef ref, DateRange range) {
   return PeriodSummary.from(ref.watch(expensesInRangeProvider(range)));
 }
 
-/// One zero-filled [DailyChartData] per day of [month], oldest first.
+/// Zero-filled chart buckets for [range] (hourly / daily / monthly, see
+/// [ExpenseStats.chartTotals]), oldest first.
 @riverpod
-List<DailyChartData> monthlyChartData(MonthlyChartDataRef ref, DateRange month) {
-  return ExpenseStats.dailyTotals(ref.watch(expensesInRangeProvider(month)), month);
+List<DailyChartData> periodChartData(PeriodChartDataRef ref, DateRange range) {
+  return ExpenseStats.chartTotals(ref.watch(expensesInRangeProvider(range)), range);
 }
 
 /// First day of the month of the oldest transaction, or of the current month

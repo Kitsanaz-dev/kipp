@@ -97,6 +97,61 @@ abstract final class ExpenseStats {
     ];
   }
 
+  /// Chart buckets for [range], zero-filled and oldest first: hourly when the
+  /// range is a single day, daily up to 31 days (week, month), and monthly
+  /// beyond that (year).
+  static List<DailyChartData> chartTotals(
+    Iterable<ExpenseEntity> items,
+    DateRange range,
+  ) {
+    final days = range.days;
+    if (days.length <= 1) {
+      final s = range.start;
+      return bucketTotals(items, [
+        for (var h = 0; h < 24; h++) DateTime(s.year, s.month, s.day, h),
+      ], range.end);
+    }
+    if (days.length <= 31) return dailyTotals(items, range);
+    return bucketTotals(items, [
+      for (
+        var m = DateTime(range.start.year, range.start.month);
+        m.isBefore(range.end);
+        m = DateTime(m.year, m.month + 1)
+      )
+        m,
+    ], range.end);
+  }
+
+  /// Sums [items] into consecutive buckets: bucket i covers
+  /// `[starts[i], starts[i + 1])`, the last one ends at [end]. [starts] must be
+  /// ascending; items outside `[starts.first, end)` are ignored.
+  static List<DailyChartData> bucketTotals(
+    Iterable<ExpenseEntity> items,
+    List<DateTime> starts,
+    DateTime end,
+  ) {
+    final income = List<double>.filled(starts.length, 0);
+    final expense = List<double>.filled(starts.length, 0);
+    if (starts.isNotEmpty) {
+      for (final e in items) {
+        if (e.date.isBefore(starts.first) || !e.date.isBefore(end)) continue;
+        var i = starts.length - 1;
+        while (e.date.isBefore(starts[i])) {
+          i--;
+        }
+        if (e.isIncome) {
+          income[i] += e.amount;
+        } else {
+          expense[i] += e.amount;
+        }
+      }
+    }
+    return [
+      for (var i = 0; i < starts.length; i++)
+        DailyChartData(date: starts[i], income: income[i], expense: expense[i]),
+    ];
+  }
+
   /// The [limit] largest expenses (income ignored), largest first. Equal
   /// amounts keep their source order.
   static List<ExpenseEntity> topExpenses(

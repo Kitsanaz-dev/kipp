@@ -42,7 +42,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final chartData = ref.watch(monthlyChartDataProvider(_month));
+    final chartData = ref.watch(periodChartDataProvider(_month));
     final summary = ref.watch(periodSummaryProvider(_month));
     final transactions = ref
         .watch(expensesInRangeProvider(_month))

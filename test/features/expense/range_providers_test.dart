@@ -32,17 +32,20 @@ void main() {
     expect(identical(c.read(p1), c.read(p1)), isTrue);
   });
 
-  test('periodSummary aggregates totals, categories and top expenses', () async {
-    final c = await containerWith(fixtures);
-    final s = c.read(periodSummaryProvider(nov));
-    expect(s.income, 100);
-    expect(s.expense, 100);
-    expect(s.balance, 0);
-    expect(s.count, 3);
-    expect(s.isEmpty, isFalse);
-    expect(s.byCategory.map((x) => x.category), ['Travel', 'Food']);
-    expect(s.topExpenses.map((e) => e.id), ['c', 'b']);
-  });
+  test(
+    'periodSummary aggregates totals, categories and top expenses',
+    () async {
+      final c = await containerWith(fixtures);
+      final s = c.read(periodSummaryProvider(nov));
+      expect(s.income, 100);
+      expect(s.expense, 100);
+      expect(s.balance, 0);
+      expect(s.count, 3);
+      expect(s.isEmpty, isFalse);
+      expect(s.byCategory.map((x) => x.category), ['Travel', 'Food']);
+      expect(s.topExpenses.map((e) => e.id), ['c', 'b']);
+    },
+  );
 
   test('periodSummary for an empty range', () async {
     final c = await containerWith(fixtures);
@@ -52,13 +55,24 @@ void main() {
     expect(s.topExpenses, isEmpty);
   });
 
-  test('monthlyChartData has one entry per day of the month', () async {
+  test('periodChartData has one entry per day of the month', () async {
     final c = await containerWith(fixtures);
-    final data = c.read(monthlyChartDataProvider(nov));
+    final data = c.read(periodChartDataProvider(nov));
     expect(data, hasLength(30));
     expect(data[0].expense, 60);
     expect(data[14].expense, 40);
     expect(data[19].income, 100);
+  });
+
+  test('periodChartData buckets a year by month', () async {
+    final c = await containerWith(fixtures);
+    final data = c.read(
+      periodChartDataProvider(DateRange.year(DateTime(2026))),
+    );
+    expect(data, hasLength(12));
+    expect(data[10].expense, 100);
+    expect(data[10].income, 100);
+    expect(data[9].expense, 500);
   });
 
   group('earliestExpenseMonth', () {
@@ -70,7 +84,10 @@ void main() {
     test('current month when there are no transactions', () async {
       final now = DateTime.now();
       final c = await containerWith(const []);
-      expect(c.read(earliestExpenseMonthProvider), DateTime(now.year, now.month));
+      expect(
+        c.read(earliestExpenseMonthProvider),
+        DateTime(now.year, now.month),
+      );
     });
 
     test('never later than the current month', () async {
@@ -78,7 +95,10 @@ void main() {
       final c = await containerWith([
         tx('future', DateTime(now.year + 1, 1, 1), 1),
       ]);
-      expect(c.read(earliestExpenseMonthProvider), DateTime(now.year, now.month));
+      expect(
+        c.read(earliestExpenseMonthProvider),
+        DateTime(now.year, now.month),
+      );
     });
   });
 }
