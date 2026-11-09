@@ -7,7 +7,7 @@ import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/widgets/daily_bar_chart.dart';
 import 'package:kipp/features/expense/presentation/widgets/grouped_transaction_list.dart';
-import 'package:kipp/features/expense/presentation/widgets/month_switcher.dart';
+import 'package:kipp/features/expense/presentation/widgets/period_switcher.dart';
 import 'package:kipp/features/expense/presentation/widgets/total_card.dart';
 
 class ExpenseScreen extends ConsumerStatefulWidget {
@@ -19,33 +19,35 @@ class ExpenseScreen extends ConsumerStatefulWidget {
 
 class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
   bool _showIncome = false;
-  DateRange _month = DateRange.month(DateTime.now());
+  final PeriodUnit _unit = PeriodUnit.month;
+  DateRange _range = DateRange.month(DateTime.now());
 
-  /// Minimum fling speed (logical px/s) for a chart swipe to change month.
+  /// Minimum fling speed (logical px/s) for a chart swipe to change period.
   static const _swipeVelocity = 300.0;
 
-  /// Moves to [target] if it lies within [earliest month, current month].
-  void _goToMonth(DateRange target) {
+  /// Moves to [target] if it overlaps [earliest data month, now].
+  void _goTo(DateRange target) {
     final first = ref.read(earliestExpenseMonthProvider);
-    final last = DateRange.month(DateTime.now()).start;
-    if (target.start.isBefore(first) || target.start.isAfter(last)) return;
-    setState(() => _month = target);
+    if (!target.end.isAfter(first) || target.start.isAfter(DateTime.now())) {
+      return;
+    }
+    setState(() => _range = target);
   }
 
   void _onChartSwipe(DragEndDetails details) {
     final velocity = details.primaryVelocity ?? 0;
     if (velocity.abs() < _swipeVelocity) return;
-    // Swipe left → later month, swipe right → earlier month.
-    _goToMonth(velocity < 0 ? _month.nextMonth() : _month.previousMonth());
+    // Swipe left → later period, swipe right → earlier period.
+    _goTo(_unit.shift(_range, velocity < 0 ? 1 : -1));
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final chartData = ref.watch(periodChartDataProvider(_month));
-    final summary = ref.watch(periodSummaryProvider(_month));
+    final chartData = ref.watch(periodChartDataProvider(_range));
+    final summary = ref.watch(periodSummaryProvider(_range));
     final transactions = ref
-        .watch(expensesInRangeProvider(_month))
+        .watch(expensesInRangeProvider(_range))
         .where((e) => e.isIncome == _showIncome)
         .toList();
 
@@ -55,11 +57,12 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            MonthSwitcher(
-              month: _month,
+            PeriodSwitcher(
+              unit: _unit,
+              range: _range,
               first: ref.watch(earliestExpenseMonthProvider),
               last: DateTime.now(),
-              onChanged: (month) => setState(() => _month = month),
+              onChanged: (range) => setState(() => _range = range),
             ),
             const SizedBox(height: 8),
             GestureDetector(
