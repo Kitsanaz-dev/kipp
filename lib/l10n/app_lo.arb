@@ -41,7 +41,7 @@
       }
     }
   },
-  "deleteSuccess":"ລົບສຳເລັດ",
+  "deleteSuccess": "ລົບສຳເລັດ",
   "pleaseEnterAmount": "ກະລຸນາປ້ອນຈຳນວນເງິນ",
   "pleaseEnterValidNumber": "ກະລຸນາປ້ອນຕົວເລກທີ່ຖືກຕ້ອງ",
   "amountMustBeGreaterThanZero": "ຈຳນວນເງິນຕ້ອງຫຼາຍກວ່າ 0",
@@ -70,8 +70,8 @@
     }
   },
   "amountNotFoundManual": "ບໍ່ພົບຈຳນວນເງິນອັດຕະໂນມັດ, ກະລຸນາປ້ອນເອງ",
-  "fetchData" : "ດຶງຂໍ້ມູນສຳເລັດແລ້ວ ກະລຸນາກວດສອບຄວາມຖືກຕ້ອງ",
-  "fetchDataError" : "ບໍ່ສາມາດດຶງຂໍ້ມູນຈາກຮູບພາບໄດ້",
+  "fetchData": "ດຶງຂໍ້ມູນສຳເລັດແລ້ວ ກະລຸນາກວດສອບຄວາມຖືກຕ້ອງ",
+  "fetchDataError": "ບໍ່ສາມາດດຶງຂໍ້ມູນຈາກຮູບພາບໄດ້",
   "emailAlreadyRegistered": "ອີເມວນີ້ຖືກລົງທະບຽນໄວ້ແລ້ວ",
   "incorrectEmailOrPassword": "ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ",
   "somethingWentWrong": "ມີບາງຢ່າງຜິດພາດ, ກະລຸນາລອງໃໝ່",
@@ -95,5 +95,18 @@
   "changePhoto": "ປ່ຽນຮູບ",
   "takePhoto": "ຖ່າຍຮູບ",
   "chooseFromGallery": "ເລືອກຈາກຄັງຮູບ",
-  "profileUpdated": "ອັບເດດໂປຣໄຟລ໌ແລ້ວ"
+  "profileUpdated": "ອັບເດດໂປຣໄຟລ໌ແລ້ວ",
+  "periodDetails": "ລາຍລະອຽດຊ່ວງເວລາ",
+  "seeDetails": "ເບິ່ງລາຍລະອຽດ",
+  "transactionCount": "{count, plural, =0{ບໍ່ມີລາຍການ} other{{count} ລາຍການ}}",
+  "byCategory": "ຕາມໝວດໝູ່",
+  "topExpenses": "ລາຍຈ່າຍສູງສຸດ",
+  "netBalance": "ຍອດເງິນສຸດທິ",
+  "selectMonth": "ເລືອກເດືອນ",
+  "selectYear": "ເລືອກປີ",
+  "thisMonthShortcut": "ເດືອນນີ້",
+  "jumpToToday": "ໄປມື້ນີ້",
+  "noTransactionsThisMonth": "ບໍ່ມີລາຍການໃນເດືອນນີ້",
+  "dayIncome": "ລາຍຮັບຂອງວັນ",
+  "dayExpense": "ລາຍຈ່າຍຂອງວັນ"
 }

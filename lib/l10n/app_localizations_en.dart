@@ -259,4 +259,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileUpdated => 'Profile updated';
+
+  @override
+  String get periodDetails => 'Period details';
+
+  @override
+  String get seeDetails => 'See details';
+
+  @override
+  String transactionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count transactions',
+      one: '1 transaction',
+      zero: 'No transactions',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get byCategory => 'By category';
+
+  @override
+  String get topExpenses => 'Top expenses';
+
+  @override
+  String get netBalance => 'Net balance';
+
+  @override
+  String get selectMonth => 'Select month';
+
+  @override
+  String get selectYear => 'Select year';
+
+  @override
+  String get thisMonthShortcut => 'This month';
+
+  @override
+  String get jumpToToday => 'Today';
+
+  @override
+  String get noTransactionsThisMonth => 'No transactions in this month';
+
+  @override
+  String get dayIncome => 'Day income';
+
+  @override
+  String get dayExpense => 'Day expense';
 }

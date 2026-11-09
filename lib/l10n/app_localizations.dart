@@ -586,6 +586,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile updated'**
   String get profileUpdated;
+
+  /// No description provided for @periodDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Period details'**
+  String get periodDetails;
+
+  /// No description provided for @seeDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'See details'**
+  String get seeDetails;
+
+  /// No description provided for @transactionCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No transactions} =1{1 transaction} other{{count} transactions}}'**
+  String transactionCount(int count);
+
+  /// No description provided for @byCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'By category'**
+  String get byCategory;
+
+  /// No description provided for @topExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Top expenses'**
+  String get topExpenses;
+
+  /// No description provided for @netBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Net balance'**
+  String get netBalance;
+
+  /// No description provided for @selectMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Select month'**
+  String get selectMonth;
+
+  /// No description provided for @selectYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Select year'**
+  String get selectYear;
+
+  /// No description provided for @thisMonthShortcut.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get thisMonthShortcut;
+
+  /// No description provided for @jumpToToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get jumpToToday;
+
+  /// No description provided for @noTransactionsThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions in this month'**
+  String get noTransactionsThisMonth;
+
+  /// No description provided for @dayIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Day income'**
+  String get dayIncome;
+
+  /// No description provided for @dayExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Day expense'**
+  String get dayExpense;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -259,4 +259,51 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get profileUpdated => 'ອັບເດດໂປຣໄຟລ໌ແລ້ວ';
+
+  @override
+  String get periodDetails => 'ລາຍລະອຽດຊ່ວງເວລາ';
+
+  @override
+  String get seeDetails => 'ເບິ່ງລາຍລະອຽດ';
+
+  @override
+  String transactionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ລາຍການ',
+      zero: 'ບໍ່ມີລາຍການ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get byCategory => 'ຕາມໝວດໝູ່';
+
+  @override
+  String get topExpenses => 'ລາຍຈ່າຍສູງສຸດ';
+
+  @override
+  String get netBalance => 'ຍອດເງິນສຸດທິ';
+
+  @override
+  String get selectMonth => 'ເລືອກເດືອນ';
+
+  @override
+  String get selectYear => 'ເລືອກປີ';
+
+  @override
+  String get thisMonthShortcut => 'ເດືອນນີ້';
+
+  @override
+  String get jumpToToday => 'ໄປມື້ນີ້';
+
+  @override
+  String get noTransactionsThisMonth => 'ບໍ່ມີລາຍການໃນເດືອນນີ້';
+
+  @override
+  String get dayIncome => 'ລາຍຮັບຂອງວັນ';
+
+  @override
+  String get dayExpense => 'ລາຍຈ່າຍຂອງວັນ';
 }
