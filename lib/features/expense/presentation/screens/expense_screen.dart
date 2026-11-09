@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:kipp/core/utils/currency_formatter.dart';
 import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/widgets/daily_bar_chart.dart';
@@ -23,10 +24,10 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final chartData = ref.watch(dailyChartDataProvider);
-    final totals = ref.watch(expenseTotalsProvider);
-    final allExpenses = ref.watch(expenseListProvider).valueOrNull ?? const [];
-    final transactions = allExpenses
+    final chartData = ref.watch(monthlyChartDataProvider(_month));
+    final summary = ref.watch(periodSummaryProvider(_month));
+    final transactions = ref
+        .watch(expensesInRangeProvider(_month))
         .where((e) => e.isIncome == _showIncome)
         .toList();
 
@@ -50,7 +51,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                 Expanded(
                   child: TotalCard(
                     label: context.text.totalIncome,
-                    amount: totals.totalIncome,
+                    amount: summary.income,
                     color: colors.ok,
                     icon: Icons.arrow_downward,
                   ),
@@ -59,13 +60,15 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                 Expanded(
                   child: TotalCard(
                     label: context.text.totalExpense,
-                    amount: totals.totalExpense,
+                    amount: summary.expense,
                     color: colors.danger,
                     icon: Icons.arrow_upward,
                   ),
                 ),
               ],
             ),
+            const SizedBox(height: 12),
+            _NetBalanceRow(balance: summary.balance),
             const SizedBox(height: 20),
             _buildToggle(context),
             const SizedBox(height: 12),
@@ -98,6 +101,37 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
       selected: {_showIncome},
       onSelectionChanged: (newSelection) =>
           setState(() => _showIncome = newSelection.first),
+    );
+  }
+}
+
+/// Compact "Net balance  ₭ …" line under the total cards.
+class _NetBalanceRow extends StatelessWidget {
+  const _NetBalanceRow({required this.balance});
+
+  final double balance;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Row(
+        children: [
+          Text(
+            context.text.netBalance,
+            style: context.typo.bodySmall.copyWith(color: colors.subtext),
+          ),
+          const Spacer(),
+          Text(
+            CurrencyFormatter.formatKip(balance),
+            style: context.typo.subtitle.copyWith(
+              color: balance < 0 ? colors.danger : colors.ok,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
