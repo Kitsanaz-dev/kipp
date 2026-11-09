@@ -21,9 +21,9 @@ class DailyBarChart extends StatelessWidget {
     );
     final safeMax = maxValue <= 0 ? 100.0 : maxValue;
     final step = safeMax / 4;
-    // ~6 bottom labels whatever the length: 14 days → every 3rd (as before),
+    // ~6 bottom labels whatever the length: 14 days → every 3rd,
     // 28–30 days → every 5th, 31 days → every 6th.
-    final labelInterval = (data.length / 6).ceilToDouble().clamp(1.0, 31.0);
+    final labelEvery = (data.length / 6).ceil().clamp(1, 31);
 
     return Container(
       height: 220,
@@ -77,10 +77,13 @@ class DailyBarChart extends StatelessWidget {
                 bottomTitles: AxisTitles(
                   sideTitles: SideTitles(
                     showTitles: true,
-                    interval: labelInterval,
+                    // Bar charts call this for every group and ignore
+                    // `interval`, so thin the labels out here.
                     getTitlesWidget: (value, _) {
                       final index = value.toInt();
-                      if (index < 0 || index >= data.length) {
+                      if (index < 0 ||
+                          index >= data.length ||
+                          index % labelEvery != 0) {
                         return const SizedBox();
                       }
                       return Padding(
