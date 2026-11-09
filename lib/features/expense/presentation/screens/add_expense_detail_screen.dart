@@ -13,7 +13,6 @@ import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
 import 'package:kipp/core/router/route_paths.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
-import 'package:uuid/uuid.dart';
 
 part 'add_expense_detail_widgets.dart';
 
@@ -64,7 +63,7 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
     setState(() => _isSaving = true);
 
     final expense = ExpenseEntity(
-      id: const Uuid().v4(),
+      id: '', // assigned by the backend; toJson() never sends it
       title: _selectedType ?? 'Untitled',
       amount: double.tryParse(_amountController.text) ?? 0.0,
       category: _selectedType ?? 'Other',
