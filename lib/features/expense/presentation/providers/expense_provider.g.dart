@@ -24,7 +24,7 @@ final expenseRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ExpenseRepositoryRef = AutoDisposeProviderRef<ExpenseRepository>;
-String _$expensesByDayTypeHash() => r'f7f592a757e8a8c64b6e47c9772dd1c6bc127c7c';
+String _$expensesByDayTypeHash() => r'e35523ab4b46d82d76d03fca83be1475f6c8f0c0';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -178,7 +178,7 @@ class _ExpensesByDayTypeProviderElement
   int get dayType => (origin as ExpensesByDayTypeProvider).dayType;
 }
 
-String _$expenseSummaryHash() => r'4636e43057429c2fe637347d1531ae420d4cb5c3';
+String _$expenseSummaryHash() => r'e5124511cc96a607e7ad73d547bbebc886eda108';
 
 /// ຄິດໄລ່ income/expense sum ຈາກ list ທີ່ filter ແລ້ວ
 ///

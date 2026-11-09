@@ -43,34 +43,16 @@ class ExpenseList extends _$ExpenseList {
 /// Filter ຕາມ dayType (0=Today, 1=Week, 2=Month) - derived ຈາກ expenseListProvider
 @riverpod
 List<ExpenseEntity> expensesByDayType(ExpensesByDayTypeRef ref, int dayType) {
-  final all = ref.watch(expenseListProvider).valueOrNull ?? [];
-  final now = DateTime.now();
-
-  bool isSameDay(DateTime a, DateTime b) =>
-      a.year == b.year && a.month == b.month && a.day == b.day;
-
-  return all.where((e) {
-    switch (dayType) {
-      case 0:
-        return isSameDay(e.date, now);
-      case 1:
-        final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-        return !e.date.isBefore(DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day));
-      case 2:
-        return e.date.year == now.year && e.date.month == now.month;
-      default:
-        return true;
-    }
-  }).toList();
+  final range = PeriodFilter.values[dayType].toRange(DateTime.now());
+  return ref.watch(expensesInRangeProvider(range));
 }
 
 /// ຄິດໄລ່ income/expense sum ຈາກ list ທີ່ filter ແລ້ວ
 @riverpod
 ({double income, double expense}) expenseSummary(ExpenseSummaryRef ref, int dayType) {
-  final list = ref.watch(expensesByDayTypeProvider(dayType));
-  final income = list.where((e) => e.isIncome).fold(0.0, (sum, e) => sum + e.amount);
-  final expense = list.where((e) => !e.isIncome).fold(0.0, (sum, e) => sum + e.amount);
-  return (income: income, expense: expense);
+  final range = PeriodFilter.values[dayType].toRange(DateTime.now());
+  final summary = ref.watch(periodSummaryProvider(range));
+  return (income: summary.income, expense: summary.expense);
 }
 
 /// ຄິດໄລ່ chart data 14 ວັນລ່າສຸດ ຈາກ transaction ຈິງ
