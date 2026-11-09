@@ -15,6 +15,8 @@ import 'package:kipp/features/expense/presentation/providers/expense_provider.da
 import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
 import 'package:uuid/uuid.dart';
 
+part 'add_expense_detail_widgets.dart';
+
 class AddExpenseDetailScreen extends ConsumerStatefulWidget {
   const AddExpenseDetailScreen({super.key});
 
@@ -168,168 +170,24 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // 1. ເລືອກ Income ຫຼື Expense
-              SegmentedButton<bool>(
-                style: ButtonStyle(
-                  // ຈັດການສີພື້ນຫຼັງ (Background Color)
-                  backgroundColor: WidgetStateProperty.resolveWith<Color>((
-                    states,
-                  ) {
-                    if (states.contains(WidgetState.selected)) {
-                      return context.colors.primary; // ສີ Primary ເມື່ອຖືກເລືອກ
-                    }
-                    return Colors.transparent; // ສີຕອນບໍ່ໄດ້ເລືອກ
-                  }),
-                  // ຈັດການສີຕົວໜັງສື ແລະ ໄອຄອນ (Foreground Color)
-                  foregroundColor: WidgetStateProperty.resolveWith<Color>((
-                    states,
-                  ) {
-                    if (states.contains(WidgetState.selected)) {
-                      return context.colors.onPrimary; // ສີຕົວໜັງສືຕອນເລືອກ
-                    }
-                    return context.colors.text; // ສີຕົວໜັງສືຕອນບໍ່ໄດ້ເລືອກ
-                  }),
-                  elevation: const WidgetStatePropertyAll(0),
-                ),
-                segments: [
-                  ButtonSegment(
-                    value: true,
-                    label: Text(context.text.expenses),
-                  ),
-                  ButtonSegment(value: false, label: Text(context.text.income)),
-                ],
-                selected: {_isExpense},
-                onSelectionChanged: (Set<bool> newSelection) {
-                  setState(() {
-                    _isExpense = newSelection.first;
-                    _selectedType = null; // Reset category ເມື່ອປ່ຽນປະເພດ
-                  });
-                },
+              _TransactionTypeToggle(
+                isExpense: _isExpense,
+                onChanged: (isExpense) => setState(() {
+                  _isExpense = isExpense;
+                  _selectedType = null; // Reset category ເມື່ອປ່ຽນປະເພດ
+                }),
               ),
               const SizedBox(height: 16),
 
               // 2. ປ້ອນຈຳນວນເງິນ
-              TextFormField(
-                controller: _amountController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                decoration: InputDecoration(
-                  labelText: context.text.amount,
-                  border: OutlineInputBorder(
-                    borderRadius: AppRadius.xlAll,
-                  ), // ✅ token
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Container(
-                      width: 24,
-                      height: 24,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: context.colors.hint,
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Text(
-                        '₭',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: context.colors.hint,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return context.text.pleaseEnterAmount;
-                  }
-                  final amount = double.tryParse(value);
-                  if (amount == null) {
-                    return context.text.pleaseEnterValidNumber;
-                  }
-                  if (amount <= 0) {
-                    return context.text.amountMustBeGreaterThanZero;
-                  }
-                  return null;
-                },
-              ),
+              _AmountField(controller: _amountController),
               const SizedBox(height: 16),
 
               // 3. ເລືອກ Type ຂອງການຈ່າຍ/ຮັບ
-              FormField<String>(
-                validator: (value) =>
-                    _selectedType == null ? context.text.pleaseSelectType : null,
-                builder: (FormFieldState<String> state) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          // ສະແດງ Bottom Sheet ແບບ iOS Native
-                          showCupertinoModalPopup<void>(
-                            context: context,
-                            builder: (BuildContext context) => CupertinoActionSheet(
-                              title: Text(context.text.selectTypeTitle),
-                              actions: currentTypes.map((type) {
-                                return CupertinoActionSheetAction(
-                                  onPressed: () {
-                                    setState(() {
-                                      _selectedType = type;
-                                      state.didChange(
-                                        type,
-                                      ); // ອັບເດດ state ໃຫ້ Form Validation ເຫັນ
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(
-                                    type,
-                                    style: TextStyle(
-                                      color: context.colors.primary,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                              cancelButton: CupertinoActionSheetAction(
-                                isDefaultAction: true,
-                                onPressed: () => Navigator.pop(context),
-                                child: Text(context.text.cancel),
-                              ),
-                            ),
-                          );
-                        },
-                        child: InputDecorator(
-                          decoration: InputDecoration(
-                            labelText: context.text.type,
-                            border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(AppRadius.xl),
-                              ),
-                            ),
-                            errorText: state
-                                .errorText, // ສະແດງຂໍ້ຄວາມ Error ຖ້າບໍ່ໄດ້ເລືອກ
-                            suffixIcon: const Icon(
-                              CupertinoIcons.chevron_up_chevron_down,
-                              size: 18,
-                            ),
-                          ),
-                          child: Text(
-                            _selectedType ?? context.text.selectType,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: _selectedType == null
-                                  ? context.colors.hint
-                                  : context.colors.text,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
+              _CategoryPickerField(
+                types: currentTypes,
+                selectedType: _selectedType,
+                onSelected: (type) => setState(() => _selectedType = type),
               ),
               const SizedBox(height: 16),
 
@@ -388,16 +246,9 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
         ),
       ),
 
-      floatingActionButton: FloatingActionButton(
-        shape: const CircleBorder(),
-        backgroundColor: context.colors.primary,
-        onPressed: _isScanning ? null : _scanReceipt,
-        child: _isScanning
-            ? AdaptiveSpinner(size: 20, color: context.colors.onPrimary)
-            : Icon(
-                Platform.isAndroid ? Icons.camera_alt : CupertinoIcons.camera,
-                color: context.colors.onPrimary,
-              ),
+      floatingActionButton: _ScanReceiptFab(
+        isScanning: _isScanning,
+        onPressed: _scanReceipt,
       ),
     );
   }
