@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:kipp/core/constant/durations.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/widgets/month_year_picker.dart';
 import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
@@ -94,7 +95,7 @@ class _MonthSwitcherState extends State<MonthSwitcher> {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: ClipRect(
                   child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 220),
+                    duration: AppDurations.normal,
                     transitionBuilder: (child, animation) {
                       final incoming = child.key == key;
                       final dx = (incoming ? 0.4 : -0.4) * _direction;

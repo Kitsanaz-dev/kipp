@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import 'package:kipp/core/constant/durations.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/locale/locale_service.dart';
@@ -37,7 +38,7 @@ class LanguageSelector extends ConsumerWidget {
             children: [
               // ---- ຊັ້ນ 1: Glass indicator ທີ່ slide ໄດ້ ----
               AnimatedAlign(
-                duration: const Duration(milliseconds: 280),
+                duration: AppDurations.slide,
                 curve: Curves.easeOutCubic,
                 alignment: Alignment(
                   itemCount == 1
@@ -68,7 +69,7 @@ class LanguageSelector extends ConsumerWidget {
                       child: Container(
                         alignment: Alignment.center,
                         child: AnimatedDefaultTextStyle(
-                          duration: const Duration(milliseconds: 200),
+                          duration: AppDurations.fast,
                           style: context.typo.bodySmall.copyWith(
                             color: isSelected
                                 ? colors.onPrimary

@@ -1,6 +1,7 @@
 // core/widgets/month_year_picker.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:kipp/core/constant/durations.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
@@ -78,7 +79,7 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
   Future<void> _pick(DateTime month) async {
     setState(() => _selected = month);
     // Let the indicator slide before closing.
-    await Future<void>.delayed(const Duration(milliseconds: 200));
+    await Future<void>.delayed(AppDurations.fast);
     if (mounted) Navigator.of(context).pop(month);
   }
 
@@ -174,11 +175,11 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
             onTap: () {
               setState(() => _viewYear = year);
               WidgetsBinding.instance.addPostFrameCallback(
-                (_) => _revealYear(duration: const Duration(milliseconds: 200)),
+                (_) => _revealYear(duration: AppDurations.fast),
               );
             },
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
+              duration: AppDurations.fast,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               alignment: Alignment.center,
               decoration: BoxDecoration(
@@ -220,14 +221,14 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
             children: [
               // ---- Glass indicator, same look as DayTypeNavBar ----
               AnimatedAlign(
-                duration: const Duration(milliseconds: 280),
+                duration: AppDurations.slide,
                 curve: Curves.easeOutCubic,
                 alignment: Alignment(
                   -1 + 2 * col / (_columns - 1),
                   -1 + 2 * row / (_rows - 1),
                 ),
                 child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
+                  duration: AppDurations.fast,
                   opacity: showIndicator ? 1 : 0,
                   child: FakeGlass(
                     shape: LiquidRoundedSuperellipse(borderRadius: AppRadius.md),
@@ -303,7 +304,7 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
         onTap: enabled ? () => _pick(month) : null,
         child: Center(
           child: AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 200),
+            duration: AppDurations.fast,
             style: context.typo.subtitle.copyWith(
               color: color,
               fontWeight: isSelected || isCurrent

@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:kipp/core/constant/durations.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/router/route_paths.dart';
 import 'package:native_glass_navbar/native_glass_navbar.dart';
@@ -41,7 +42,7 @@ class BottomBar extends StatelessWidget {
         activeColor: context.colors.onPrimary,
         iconSize: 24,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        duration: const Duration(milliseconds: 400),
+        duration: AppDurations.slower,
         tabBackgroundColor: context.colors.primary,
         tabs: [
           GButton(icon: CupertinoIcons.home, text: context.text.home),

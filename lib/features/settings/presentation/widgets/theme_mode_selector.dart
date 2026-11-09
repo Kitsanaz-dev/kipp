@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import 'package:kipp/core/constant/durations.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/theme/theme_service.dart';
@@ -33,7 +34,7 @@ class ThemeModeSelector extends ConsumerWidget {
             children: [
               // ---- ຊັ້ນ 1: Glass indicator ທີ່ slide ໄດ້ ----
               AnimatedAlign(
-                duration: const Duration(milliseconds: 280),
+                duration: AppDurations.slide,
                 curve: Curves.easeOutCubic,
                 alignment: Alignment(
                   itemCount == 1
@@ -65,7 +66,7 @@ class ThemeModeSelector extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           AnimatedDefaultTextStyle(
-                            duration: const Duration(milliseconds: 200),
+                            duration: AppDurations.fast,
                             style: TextStyle(
                               color: isSelected
                                   ? colors.onPrimary
@@ -81,7 +82,7 @@ class ThemeModeSelector extends ConsumerWidget {
                           ),
                           const SizedBox(height: 4),
                           AnimatedDefaultTextStyle(
-                            duration: const Duration(milliseconds: 200),
+                            duration: AppDurations.fast,
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: isSelected

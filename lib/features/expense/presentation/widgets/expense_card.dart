@@ -1,6 +1,7 @@
 // features/expense/presentation/widgets/expense_card.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kipp/core/constant/durations.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/utils/currency_formatter.dart';
 import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
@@ -79,7 +80,7 @@ class ExpenseCard extends StatelessWidget {
           const SizedBox(height: 8),
 
           AnimatedSwitcher(
-            duration: const Duration(milliseconds: 220),
+            duration: AppDurations.normal,
             transitionBuilder: (child, animation) =>
                 FadeTransition(opacity: animation, child: child),
             child: Text(
@@ -120,7 +121,7 @@ class ExpenseCard extends StatelessWidget {
   Widget _buildBalanceLabel(BuildContext context) {
     // ✅ ປ່ຽນ label smooth ຕາມ period (today / week / month)
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 220),
+      duration: AppDurations.normal,
       transitionBuilder: (child, animation) => FadeTransition(
         opacity: animation,
         child: SlideTransition(

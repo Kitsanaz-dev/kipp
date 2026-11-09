@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:kipp/core/constant/durations.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/utils/category_icon_mapper.dart';
@@ -257,7 +258,7 @@ class _CategoryRow extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: TweenAnimationBuilder<double>(
                       tween: Tween(begin: 0, end: total.share),
-                      duration: const Duration(milliseconds: 300),
+                      duration: AppDurations.slow,
                       curve: Curves.easeOutCubic,
                       builder: (_, value, _) => FractionallySizedBox(
                         widthFactor: value.clamp(0.0, 1.0),

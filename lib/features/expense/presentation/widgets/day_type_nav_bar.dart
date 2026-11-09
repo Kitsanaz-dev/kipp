@@ -1,5 +1,6 @@
 // features/expense/presentation/widgets/day_type_nav_bar.dart
 import 'package:flutter/material.dart';
+import 'package:kipp/core/constant/durations.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:kipp/core/constant/radius.dart';
@@ -44,7 +45,7 @@ class DayTypeNavBar extends StatelessWidget {
             children: [
               // ---- ຊັ້ນ 1: Glass indicator ທີ່ slide ໄດ້ ----
               AnimatedAlign(
-                duration: const Duration(milliseconds: 280),
+                duration: AppDurations.slide,
                 curve: Curves.easeOutCubic,
                 alignment: Alignment(
                   itemCount == 1
@@ -78,7 +79,7 @@ class DayTypeNavBar extends StatelessWidget {
                       child: Container(
                         alignment: Alignment.center,
                         child: AnimatedDefaultTextStyle(
-                          duration: const Duration(milliseconds: 200),
+                          duration: AppDurations.fast,
                           style: context.typo.subtitle.copyWith(
                             color: isSelected ? colors.primary : colors.inactive,
                             fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,

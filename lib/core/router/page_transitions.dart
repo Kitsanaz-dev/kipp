@@ -1,6 +1,7 @@
 // core/router/page_transitions.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kipp/core/constant/durations.dart';
 
 /// Slide ຈາກຂວາໄປຊ້າຍ - ໃຊ້ສຳລັບ "ໄປໜ້າໃໝ່" (push ລົງເລິກ)
 CustomTransitionPage<T> slideTransitionPage<T>({
@@ -10,7 +11,7 @@ CustomTransitionPage<T> slideTransitionPage<T>({
   return CustomTransitionPage<T>(
     key: key,
     child: child,
-    transitionDuration: const Duration(milliseconds: 300),
+    transitionDuration: AppDurations.slow,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(1.0, 0.0);
       const end = Offset.zero;
@@ -30,7 +31,7 @@ CustomTransitionPage<void> fadeTransitionPage({
   return CustomTransitionPage<void>(
     key: key,
     child: child,
-    transitionDuration: const Duration(milliseconds: 250),
+    transitionDuration: AppDurations.medium,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return FadeTransition(
         opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
@@ -53,7 +54,7 @@ CustomTransitionPage<void> fadeThroughPage({
   return CustomTransitionPage<void>(
     key: key,
     child: child,
-    transitionDuration: const Duration(milliseconds: 400),
+    transitionDuration: AppDurations.slower,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return FadeTransition(
         opacity: CurvedAnimation(parent: animation, curve: Curves.easeIn),
