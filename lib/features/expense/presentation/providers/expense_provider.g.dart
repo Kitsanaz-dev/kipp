@@ -355,6 +355,425 @@ final expenseTotalsProvider =
 // ignore: unused_element
 typedef ExpenseTotalsRef =
     AutoDisposeProviderRef<({double totalIncome, double totalExpense})>;
+String _$expensesInRangeHash() => r'793fda4d87a7f39d8ad8a9b635fdd5884c489833';
+
+/// Transactions inside [range], in source order (newest first).
+///
+/// Copied from [expensesInRange].
+@ProviderFor(expensesInRange)
+const expensesInRangeProvider = ExpensesInRangeFamily();
+
+/// Transactions inside [range], in source order (newest first).
+///
+/// Copied from [expensesInRange].
+class ExpensesInRangeFamily extends Family<List<ExpenseEntity>> {
+  /// Transactions inside [range], in source order (newest first).
+  ///
+  /// Copied from [expensesInRange].
+  const ExpensesInRangeFamily();
+
+  /// Transactions inside [range], in source order (newest first).
+  ///
+  /// Copied from [expensesInRange].
+  ExpensesInRangeProvider call(DateRange range) {
+    return ExpensesInRangeProvider(range);
+  }
+
+  @override
+  ExpensesInRangeProvider getProviderOverride(
+    covariant ExpensesInRangeProvider provider,
+  ) {
+    return call(provider.range);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'expensesInRangeProvider';
+}
+
+/// Transactions inside [range], in source order (newest first).
+///
+/// Copied from [expensesInRange].
+class ExpensesInRangeProvider extends AutoDisposeProvider<List<ExpenseEntity>> {
+  /// Transactions inside [range], in source order (newest first).
+  ///
+  /// Copied from [expensesInRange].
+  ExpensesInRangeProvider(DateRange range)
+    : this._internal(
+        (ref) => expensesInRange(ref as ExpensesInRangeRef, range),
+        from: expensesInRangeProvider,
+        name: r'expensesInRangeProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$expensesInRangeHash,
+        dependencies: ExpensesInRangeFamily._dependencies,
+        allTransitiveDependencies:
+            ExpensesInRangeFamily._allTransitiveDependencies,
+        range: range,
+      );
+
+  ExpensesInRangeProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.range,
+  }) : super.internal();
+
+  final DateRange range;
+
+  @override
+  Override overrideWith(
+    List<ExpenseEntity> Function(ExpensesInRangeRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ExpensesInRangeProvider._internal(
+        (ref) => create(ref as ExpensesInRangeRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        range: range,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<ExpenseEntity>> createElement() {
+    return _ExpensesInRangeProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ExpensesInRangeProvider && other.range == range;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, range.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin ExpensesInRangeRef on AutoDisposeProviderRef<List<ExpenseEntity>> {
+  /// The parameter `range` of this provider.
+  DateRange get range;
+}
+
+class _ExpensesInRangeProviderElement
+    extends AutoDisposeProviderElement<List<ExpenseEntity>>
+    with ExpensesInRangeRef {
+  _ExpensesInRangeProviderElement(super.provider);
+
+  @override
+  DateRange get range => (origin as ExpensesInRangeProvider).range;
+}
+
+String _$periodSummaryHash() => r'f0499210148f747fab3cdd1ed5cea06c3f4565ba';
+
+/// Totals, category breakdown and top expenses for [range].
+///
+/// Copied from [periodSummary].
+@ProviderFor(periodSummary)
+const periodSummaryProvider = PeriodSummaryFamily();
+
+/// Totals, category breakdown and top expenses for [range].
+///
+/// Copied from [periodSummary].
+class PeriodSummaryFamily extends Family<PeriodSummary> {
+  /// Totals, category breakdown and top expenses for [range].
+  ///
+  /// Copied from [periodSummary].
+  const PeriodSummaryFamily();
+
+  /// Totals, category breakdown and top expenses for [range].
+  ///
+  /// Copied from [periodSummary].
+  PeriodSummaryProvider call(DateRange range) {
+    return PeriodSummaryProvider(range);
+  }
+
+  @override
+  PeriodSummaryProvider getProviderOverride(
+    covariant PeriodSummaryProvider provider,
+  ) {
+    return call(provider.range);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'periodSummaryProvider';
+}
+
+/// Totals, category breakdown and top expenses for [range].
+///
+/// Copied from [periodSummary].
+class PeriodSummaryProvider extends AutoDisposeProvider<PeriodSummary> {
+  /// Totals, category breakdown and top expenses for [range].
+  ///
+  /// Copied from [periodSummary].
+  PeriodSummaryProvider(DateRange range)
+    : this._internal(
+        (ref) => periodSummary(ref as PeriodSummaryRef, range),
+        from: periodSummaryProvider,
+        name: r'periodSummaryProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$periodSummaryHash,
+        dependencies: PeriodSummaryFamily._dependencies,
+        allTransitiveDependencies:
+            PeriodSummaryFamily._allTransitiveDependencies,
+        range: range,
+      );
+
+  PeriodSummaryProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.range,
+  }) : super.internal();
+
+  final DateRange range;
+
+  @override
+  Override overrideWith(
+    PeriodSummary Function(PeriodSummaryRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: PeriodSummaryProvider._internal(
+        (ref) => create(ref as PeriodSummaryRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        range: range,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<PeriodSummary> createElement() {
+    return _PeriodSummaryProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PeriodSummaryProvider && other.range == range;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, range.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin PeriodSummaryRef on AutoDisposeProviderRef<PeriodSummary> {
+  /// The parameter `range` of this provider.
+  DateRange get range;
+}
+
+class _PeriodSummaryProviderElement
+    extends AutoDisposeProviderElement<PeriodSummary>
+    with PeriodSummaryRef {
+  _PeriodSummaryProviderElement(super.provider);
+
+  @override
+  DateRange get range => (origin as PeriodSummaryProvider).range;
+}
+
+String _$monthlyChartDataHash() => r'ae863e68730178c15d83ff1a3fee313db8b17ca3';
+
+/// One zero-filled [DailyChartData] per day of [month], oldest first.
+///
+/// Copied from [monthlyChartData].
+@ProviderFor(monthlyChartData)
+const monthlyChartDataProvider = MonthlyChartDataFamily();
+
+/// One zero-filled [DailyChartData] per day of [month], oldest first.
+///
+/// Copied from [monthlyChartData].
+class MonthlyChartDataFamily extends Family<List<DailyChartData>> {
+  /// One zero-filled [DailyChartData] per day of [month], oldest first.
+  ///
+  /// Copied from [monthlyChartData].
+  const MonthlyChartDataFamily();
+
+  /// One zero-filled [DailyChartData] per day of [month], oldest first.
+  ///
+  /// Copied from [monthlyChartData].
+  MonthlyChartDataProvider call(DateRange month) {
+    return MonthlyChartDataProvider(month);
+  }
+
+  @override
+  MonthlyChartDataProvider getProviderOverride(
+    covariant MonthlyChartDataProvider provider,
+  ) {
+    return call(provider.month);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'monthlyChartDataProvider';
+}
+
+/// One zero-filled [DailyChartData] per day of [month], oldest first.
+///
+/// Copied from [monthlyChartData].
+class MonthlyChartDataProvider
+    extends AutoDisposeProvider<List<DailyChartData>> {
+  /// One zero-filled [DailyChartData] per day of [month], oldest first.
+  ///
+  /// Copied from [monthlyChartData].
+  MonthlyChartDataProvider(DateRange month)
+    : this._internal(
+        (ref) => monthlyChartData(ref as MonthlyChartDataRef, month),
+        from: monthlyChartDataProvider,
+        name: r'monthlyChartDataProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$monthlyChartDataHash,
+        dependencies: MonthlyChartDataFamily._dependencies,
+        allTransitiveDependencies:
+            MonthlyChartDataFamily._allTransitiveDependencies,
+        month: month,
+      );
+
+  MonthlyChartDataProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.month,
+  }) : super.internal();
+
+  final DateRange month;
+
+  @override
+  Override overrideWith(
+    List<DailyChartData> Function(MonthlyChartDataRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: MonthlyChartDataProvider._internal(
+        (ref) => create(ref as MonthlyChartDataRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        month: month,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<DailyChartData>> createElement() {
+    return _MonthlyChartDataProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is MonthlyChartDataProvider && other.month == month;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, month.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin MonthlyChartDataRef on AutoDisposeProviderRef<List<DailyChartData>> {
+  /// The parameter `month` of this provider.
+  DateRange get month;
+}
+
+class _MonthlyChartDataProviderElement
+    extends AutoDisposeProviderElement<List<DailyChartData>>
+    with MonthlyChartDataRef {
+  _MonthlyChartDataProviderElement(super.provider);
+
+  @override
+  DateRange get month => (origin as MonthlyChartDataProvider).month;
+}
+
+String _$earliestExpenseMonthHash() =>
+    r'50cf55065639e6613e964122a22947ea20e90351';
+
+/// First day of the month of the oldest transaction, or of the current month
+/// when there are none (never later than the current month). Used to bound
+/// month pickers.
+///
+/// Copied from [earliestExpenseMonth].
+@ProviderFor(earliestExpenseMonth)
+final earliestExpenseMonthProvider = AutoDisposeProvider<DateTime>.internal(
+  earliestExpenseMonth,
+  name: r'earliestExpenseMonthProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$earliestExpenseMonthHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef EarliestExpenseMonthRef = AutoDisposeProviderRef<DateTime>;
 String _$expenseListHash() => r'91161f3e9ec44567075f0a5e2c169382a41ed2db';
 
 /// List ຂອງ transaction ທັງໝົດ - single source of truth
