@@ -10,11 +10,15 @@ import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 ///
 /// Only months in `[first, last]` (compared by month) are selectable. Returns
 /// the first day of the chosen month, or `null` when dismissed.
+///
+/// With [yearOnly] the month grid is hidden: tapping a year chip returns
+/// January 1 of that year, and the shortcut becomes "This year".
 Future<DateTime?> showMonthYearPicker(
   BuildContext context, {
   required DateTime initial,
   required DateTime first,
   required DateTime last,
+  bool yearOnly = false,
 }) {
   final firstMonth = DateTime(first.year, first.month);
   final lastMonth = DateTime(last.year, last.month);
@@ -31,6 +35,7 @@ Future<DateTime?> showMonthYearPicker(
       initial: initialMonth,
       first: firstMonth,
       last: lastMonth,
+      yearOnly: yearOnly,
     ),
   );
 }
@@ -41,7 +46,10 @@ class MonthYearPickerSheet extends StatefulWidget {
     required this.initial,
     required this.first,
     required this.last,
+    this.yearOnly = false,
   });
+
+  final bool yearOnly;
 
   /// All three are first-of-month dates.
   final DateTime initial;
@@ -76,6 +84,15 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
   bool _isEnabled(DateTime month) =>
       !month.isBefore(widget.first) && !month.isAfter(widget.last);
 
+  bool _isYearEnabled(int year) =>
+      year >= widget.first.year && year <= widget.last.year;
+
+  Future<void> _pickYear(int year) async {
+    setState(() => _viewYear = year);
+    await Future<void>.delayed(AppDurations.fast);
+    if (mounted) Navigator.of(context).pop(DateTime(year));
+  }
+
   Future<void> _pick(DateTime month) async {
     setState(() => _selected = month);
     // Let the indicator slide before closing.
@@ -88,6 +105,10 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
     final colors = context.colors;
     final now = DateTime.now();
     final thisMonth = DateTime(now.year, now.month);
+    final yearOnly = widget.yearOnly;
+    final shortcutEnabled = yearOnly
+        ? _isYearEnabled(now.year)
+        : _isEnabled(thisMonth);
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -121,35 +142,41 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
             children: [
               Expanded(
                 child: Text(
-                  context.text.selectMonth,
+                  yearOnly ? context.text.selectYear : context.text.selectMonth,
                   style: context.typo.title.copyWith(color: colors.text),
                 ),
               ),
               TextButton(
-                onPressed: _isEnabled(thisMonth)
-                    ? () => Navigator.of(context).pop(thisMonth)
+                onPressed: shortcutEnabled
+                    ? () => Navigator.of(
+                        context,
+                      ).pop(yearOnly ? DateTime(now.year) : thisMonth)
                     : null,
                 style: TextButton.styleFrom(foregroundColor: colors.primary),
                 child: Text(
-                  context.text.thisMonthShortcut,
+                  yearOnly
+                      ? context.text.thisYearShortcut
+                      : context.text.thisMonthShortcut,
                   style: context.typo.subtitle.copyWith(
-                    color: _isEnabled(thisMonth)
-                        ? colors.primary
-                        : colors.inactive,
+                    color: shortcutEnabled ? colors.primary : colors.inactive,
                   ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            context.text.selectYear,
-            style: context.typo.caption.copyWith(color: colors.subtext),
-          ),
-          const SizedBox(height: 8),
-          _buildYearRow(context),
-          const SizedBox(height: 20),
-          _buildMonthGrid(context, thisMonth),
+          if (yearOnly)
+            _buildYearRow(context)
+          else ...[
+            Text(
+              context.text.selectYear,
+              style: context.typo.caption.copyWith(color: colors.subtext),
+            ),
+            const SizedBox(height: 8),
+            _buildYearRow(context),
+            const SizedBox(height: 20),
+            _buildMonthGrid(context, thisMonth),
+          ],
         ],
       ),
     );
@@ -173,6 +200,10 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
           return GestureDetector(
             key: isSelected ? _selectedYearKey : null,
             onTap: () {
+              if (widget.yearOnly) {
+                _pickYear(year);
+                return;
+              }
               setState(() => _viewYear = year);
               WidgetsBinding.instance.addPostFrameCallback(
                 (_) => _revealYear(duration: AppDurations.fast),
@@ -231,7 +262,9 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
                   duration: AppDurations.fast,
                   opacity: showIndicator ? 1 : 0,
                   child: FakeGlass(
-                    shape: LiquidRoundedSuperellipse(borderRadius: AppRadius.md),
+                    shape: LiquidRoundedSuperellipse(
+                      borderRadius: AppRadius.md,
+                    ),
                     settings: LiquidGlassSettings(
                       blur: 6,
                       glassColor: colors.primary.withValues(alpha: 0.65),

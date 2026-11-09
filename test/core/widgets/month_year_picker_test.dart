@@ -17,6 +17,7 @@ Future<_Result> _openPicker(
   required DateTime first,
   required DateTime last,
   Locale locale = const Locale('en'),
+  bool yearOnly = false,
 }) async {
   final result = _Result();
   await tester.pumpWidget(
@@ -38,6 +39,7 @@ Future<_Result> _openPicker(
               initial: initial,
               first: first,
               last: last,
+              yearOnly: yearOnly,
             );
             result.closed = true;
           },
@@ -72,7 +74,9 @@ void main() {
     expect(result.value, DateTime(2026, 8));
   });
 
-  testWidgets('months outside [first, last] are not selectable', (tester) async {
+  testWidgets('months outside [first, last] are not selectable', (
+    tester,
+  ) async {
     final result = await _openPicker(
       tester,
       initial: DateTime(2026, 11),
@@ -122,5 +126,26 @@ void main() {
 
     expect(find.text('ເລືອກເດືອນ'), findsOneWidget);
     expect(find.text('Jan'), findsNothing);
+  });
+
+  testWidgets('year-only mode returns Jan 1 of the tapped year', (
+    tester,
+  ) async {
+    final result = await _openPicker(
+      tester,
+      initial: DateTime(2026, 5),
+      first: DateTime(2024, 3),
+      last: DateTime(2026, 11),
+      yearOnly: true,
+    );
+
+    expect(find.text('Select year'), findsOneWidget);
+    expect(find.text('This year'), findsOneWidget);
+    expect(find.text('Jan'), findsNothing); // no month grid
+
+    await tester.tap(find.text('2025'));
+    await tester.pump(const Duration(milliseconds: 250));
+    await tester.pumpAndSettle();
+    expect(result.value, DateTime(2025));
   });
 }
