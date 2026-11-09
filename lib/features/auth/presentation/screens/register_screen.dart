@@ -1,12 +1,11 @@
 // features/auth/presentation/screens/register_screen.dart
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:kipp/core/widgets/adaptive_spinner.dart';
 import 'package:kipp/core/router/route_paths.dart';
 import 'package:kipp/core/utils/auth_error_mapper.dart';
 import 'package:kipp/core/widgets/app_snackbar.dart';
@@ -182,16 +181,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                     ),
                     child: _isLoading
-                        ? SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: Platform.isAndroid
-                                ? CircularProgressIndicator(
-                                    color: colors.onPrimary,
-                                  )
-                                : CupertinoActivityIndicator(
-                                    color: colors.onPrimary,
-                                  ),
+                        ? AdaptiveSpinner(
+                            size: 22,
+                            color: colors.onPrimary,
+                            // CircularProgressIndicator's default, kept as-is.
+                            strokeWidth: 4,
                           )
                         : Text(
                             context.text.signUp,

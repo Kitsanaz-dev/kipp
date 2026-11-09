@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:kipp/core/widgets/adaptive_spinner.dart';
 import 'package:kipp/core/widgets/app_snackbar.dart';
 import 'package:kipp/core/widgets/user_avatar.dart';
 import 'package:kipp/features/auth/presentation/providers/auth_provider.dart';
@@ -251,17 +252,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             ),
                           ),
                           child: _isSaving
-                              ? SizedBox(
-                                  width: 22,
-                                  height: 22,
-                                  child: Platform.isAndroid
-                                      ? CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          color: colors.onPrimary,
-                                        )
-                                      : CupertinoActivityIndicator(
-                                          color: colors.onPrimary,
-                                        ),
+                              ? AdaptiveSpinner(
+                                  size: 22,
+                                  color: colors.onPrimary,
                                 )
                               : Text(
                                   context.text.save,

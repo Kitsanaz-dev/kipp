@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:kipp/core/widgets/adaptive_spinner.dart';
 import 'package:kipp/core/constant/radius.dart';
 
 class ReceiptCaptureScreen extends StatefulWidget {
@@ -157,14 +158,7 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
                       child: _isCapturing
                           ? Padding(
                               padding: const EdgeInsets.all(18),
-                              child: Platform.isAndroid
-                                  ? const CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    )
-                                  : const CupertinoActivityIndicator(
-                                      color: Colors.white,
-                                    ),
+                              child: const AdaptiveSpinner(color: Colors.white),
                             )
                           : null,
                     ),
@@ -196,12 +190,7 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
     final controller = _controller;
     if (controller == null || !controller.value.isInitialized) {
       return Center(
-        child: Platform.isAndroid
-            ? const CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.white,
-              )
-            : const CupertinoActivityIndicator(color: Colors.white),
+        child: const AdaptiveSpinner(color: Colors.white),
       );
     }
 
