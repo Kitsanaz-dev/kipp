@@ -299,9 +299,6 @@ class AppLocalizationsLo extends AppLocalizations {
   String get jumpToToday => 'ໄປມື້ນີ້';
 
   @override
-  String get noTransactionsThisMonth => 'ບໍ່ມີລາຍການໃນເດືອນນີ້';
-
-  @override
   String get dayIncome => 'ລາຍຮັບຂອງວັນ';
 
   @override

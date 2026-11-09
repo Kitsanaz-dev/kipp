@@ -45,4 +45,40 @@ void main() {
     }
     expect(find.text('6'), findsNothing);
   });
+
+  testWidgets('year buckets use month labels, every 2nd by default', (
+    tester,
+  ) async {
+    await pumpApp(
+      tester,
+      DailyBarChart(
+        data: ExpenseStats.chartTotals(
+          const [],
+          DateRange.year(DateTime(2026)),
+        ),
+        labelOf: (d) => 'M${d.month}',
+      ),
+    );
+    for (final m in [1, 3, 5, 7, 9, 11]) {
+      expect(find.text('M$m'), findsOneWidget);
+    }
+    expect(find.text('M2'), findsNothing);
+  });
+
+  testWidgets('labelEvery: 1 shows every week day', (tester) async {
+    await pumpApp(
+      tester,
+      DailyBarChart(
+        data: ExpenseStats.chartTotals(
+          const [],
+          DateRange.week(DateTime(2026, 11, 12)),
+        ),
+        labelOf: (d) => 'D${d.day}',
+        labelEvery: 1,
+      ),
+    );
+    for (var d = 9; d <= 15; d++) {
+      expect(find.text('D$d'), findsOneWidget);
+    }
+  });
 }

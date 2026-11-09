@@ -1,8 +1,11 @@
 // features/expense/presentation/screens/expense_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/utils/currency_formatter.dart';
+import 'package:kipp/core/widgets/glass_segmented_bar.dart';
+import 'package:kipp/features/expense/domain/value_objects/daily_totals.dart';
 import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/widgets/daily_bar_chart.dart';
@@ -19,7 +22,7 @@ class ExpenseScreen extends ConsumerStatefulWidget {
 
 class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
   bool _showIncome = false;
-  final PeriodUnit _unit = PeriodUnit.month;
+  PeriodUnit _unit = PeriodUnit.month;
   DateRange _range = DateRange.month(DateTime.now());
 
   /// Minimum fling speed (logical px/s) for a chart swipe to change period.
@@ -32,6 +35,18 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
       return;
     }
     setState(() => _range = target);
+  }
+
+  /// Switches granularity, staying on today when the current period contains
+  /// it, otherwise on the start of the period being viewed.
+  void _setUnit(PeriodUnit unit) {
+    if (unit == _unit) return;
+    final now = DateTime.now();
+    final anchor = _range.contains(now) ? now : _range.start;
+    setState(() {
+      _unit = unit;
+      _range = unit.rangeOf(anchor);
+    });
   }
 
   void _onChartSwipe(DragEndDetails details) {
@@ -57,6 +72,17 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            GlassSegmentedBar(
+              labels: [
+                context.text.periodDay,
+                context.text.periodWeek,
+                context.text.periodMonth,
+                context.text.periodYear,
+              ],
+              selectedIndex: _unit.index,
+              onSelected: (i) => _setUnit(PeriodUnit.values[i]),
+            ),
+            const SizedBox(height: 8),
             PeriodSwitcher(
               unit: _unit,
               range: _range,
@@ -67,7 +93,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
             const SizedBox(height: 8),
             GestureDetector(
               onHorizontalDragEnd: _onChartSwipe,
-              child: DailyBarChart(data: chartData),
+              child: _buildChart(context, chartData),
             ),
             const SizedBox(height: 20),
             Row(
@@ -98,12 +124,31 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
             const SizedBox(height: 12),
             GroupedTransactionList(
               transactions: transactions,
-              emptyText: context.text.noTransactionsThisMonth,
+              emptyText: context.text.noTransactionsInPeriod,
             ),
           ],
         ),
       ),
     );
+  }
+
+  /// Bucket labels per unit: hours for a day, weekday names for a week, day
+  /// numbers for a month, month names for a year.
+  Widget _buildChart(BuildContext context, List<DailyChartData> data) {
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    return switch (_unit) {
+      PeriodUnit.day => DailyBarChart(data: data, labelOf: (d) => '${d.hour}'),
+      PeriodUnit.week => DailyBarChart(
+        data: data,
+        labelOf: (d) => DateFormat.E(locale).format(d),
+        labelEvery: 1,
+      ),
+      PeriodUnit.month => DailyBarChart(data: data),
+      PeriodUnit.year => DailyBarChart(
+        data: data,
+        labelOf: (d) => DateFormat.MMM(locale).format(d),
+      ),
+    };
   }
 
   Widget _buildToggle(BuildContext context) {

@@ -6,11 +6,23 @@ import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/utils/currency_formatter.dart';
 import 'package:kipp/features/expense/presentation/models/chart_ui_model.dart';
 
-/// Grouped bar chart of daily income (green) vs. expense (red).
+/// Grouped bar chart of income (green) vs. expense (red) per bucket (hour,
+/// day or month — see ExpenseStats.chartTotals).
 class DailyBarChart extends StatelessWidget {
-  const DailyBarChart({super.key, required this.data});
+  const DailyBarChart({
+    super.key,
+    required this.data,
+    this.labelOf,
+    this.labelEvery,
+  });
 
   final List<DailyChartData> data;
+
+  /// Bottom label for a bucket start; defaults to the day of month.
+  final String Function(DateTime bucket)? labelOf;
+
+  /// Show every n-th bottom label; defaults to roughly six labels.
+  final int? labelEvery;
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +33,10 @@ class DailyBarChart extends StatelessWidget {
     );
     final safeMax = maxValue <= 0 ? 100.0 : maxValue;
     final step = safeMax / 4;
-    // ~6 bottom labels whatever the length: 14 days → every 3rd,
-    // 28–30 days → every 5th, 31 days → every 6th.
-    final labelEvery = (data.length / 6).ceil().clamp(1, 31);
+    // ~6 bottom labels whatever the length unless overridden: 28–30 days →
+    // every 5th, 31 days → every 6th, 24 hours → every 4th, 12 months → 2nd.
+    final labelEvery = this.labelEvery ?? (data.length / 6).ceil().clamp(1, 31);
+    final labelOf = this.labelOf ?? (DateTime d) => '${d.day}';
 
     return Container(
       height: 220,
@@ -89,7 +102,7 @@ class DailyBarChart extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.only(top: 6),
                         child: Text(
-                          '${data[index].date.day}',
+                          labelOf(data[index].date),
                           style: context.typo.caption.copyWith(
                             color: colors.subtext,
                           ),

@@ -300,9 +300,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jumpToToday => 'Today';
 
   @override
-  String get noTransactionsThisMonth => 'No transactions in this month';
-
-  @override
   String get dayIncome => 'Day income';
 
   @override

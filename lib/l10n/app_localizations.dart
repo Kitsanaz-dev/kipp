@@ -647,12 +647,6 @@ abstract class AppLocalizations {
   /// **'Today'**
   String get jumpToToday;
 
-  /// No description provided for @noTransactionsThisMonth.
-  ///
-  /// In en, this message translates to:
-  /// **'No transactions in this month'**
-  String get noTransactionsThisMonth;
-
   /// No description provided for @dayIncome.
   ///
   /// In en, this message translates to:

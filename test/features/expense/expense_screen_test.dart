@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
+import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
 import 'package:kipp/features/expense/presentation/screens/expense_screen.dart';
 import 'package:kipp/features/expense/presentation/widgets/daily_bar_chart.dart';
 
@@ -84,11 +85,70 @@ void main() {
     expect(find.text(title(thisMonth)), findsOneWidget);
   });
 
-  testWidgets('month without transactions shows the month empty state', (
+  testWidgets('period without transactions shows the period empty state', (
     tester,
   ) async {
     await pumpApp(tester, const ExpenseScreen());
-    expect(find.text('No transactions in this month'), findsOneWidget);
+    expect(find.text('No transactions in this period'), findsOneWidget);
     expect(find.text('No transactions yet'), findsNothing);
+  });
+
+  testWidgets('defaults to Month and switches to Year, Day and Week', (
+    tester,
+  ) async {
+    await pumpApp(tester, const ExpenseScreen(), items: items);
+    for (final label in ['Day', 'Week', 'Month', 'Year']) {
+      expect(find.text(label), findsOneWidget);
+    }
+    expect(find.text(title(thisMonth)), findsOneWidget);
+
+    // Year: both months' transactions (unless the previous month is in the
+    // previous year, i.e. it is January).
+    await tester.tap(find.text('Year'));
+    await tester.pumpAndSettle();
+    expect(find.text('${now.year}'), findsOneWidget);
+    expect(find.text('- ₭ 40.00'), findsOneWidget);
+    expect(
+      find.text('- ₭ 7.00'),
+      now.month == 1 ? findsNothing : findsOneWidget,
+    );
+
+    // Day: today only (the fixtures are on the 1st and in the last month).
+    await tester.tap(find.text('Day'));
+    await tester.pumpAndSettle();
+    expect(find.text(DateFormat.yMMMEd('en').format(now)), findsOneWidget);
+    expect(find.text('- ₭ 7.00'), findsNothing);
+    expect(
+      find.text('- ₭ 40.00'),
+      now.day == 1 ? findsOneWidget : findsNothing,
+    );
+
+    // Week: Monday–Sunday span title.
+    await tester.tap(find.text('Week'));
+    await tester.pumpAndSettle();
+    final week = DateRange.week(now);
+    expect(
+      find.text(
+        '${DateFormat.MMMd('en').format(week.start)} – '
+        '${DateFormat.yMMMd('en').format(week.days.last)}',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('switching unit from a past month anchors on that month', (
+    tester,
+  ) async {
+    await pumpApp(tester, const ExpenseScreen(), items: items);
+    await tester.tap(find.byIcon(Icons.chevron_left));
+    await tester.pumpAndSettle();
+    expect(find.text(title(lastMonth)), findsOneWidget);
+
+    await tester.tap(find.text('Day'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text(DateFormat.yMMMEd('en').format(lastMonth)),
+      findsOneWidget,
+    );
   });
 }
