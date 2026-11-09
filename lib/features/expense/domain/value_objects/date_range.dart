@@ -8,18 +8,31 @@ class DateRange {
   const DateRange(this.start, this.end);
 
   /// The single day containing [d].
-  factory DateRange.day(DateTime d) =>
-      DateRange(DateTime(d.year, d.month, d.day), DateTime(d.year, d.month, d.day + 1));
+  factory DateRange.day(DateTime d) => DateRange(
+    DateTime(d.year, d.month, d.day),
+    DateTime(d.year, d.month, d.day + 1),
+  );
 
   /// The Monday-to-Sunday week containing [d].
   factory DateRange.week(DateTime d) {
-    final monday = DateTime(d.year, d.month, d.day - (d.weekday - DateTime.monday));
-    return DateRange(monday, DateTime(monday.year, monday.month, monday.day + 7));
+    final monday = DateTime(
+      d.year,
+      d.month,
+      d.day - (d.weekday - DateTime.monday),
+    );
+    return DateRange(
+      monday,
+      DateTime(monday.year, monday.month, monday.day + 7),
+    );
   }
 
   /// The calendar month containing [d].
   factory DateRange.month(DateTime d) =>
       DateRange(DateTime(d.year, d.month), DateTime(d.year, d.month + 1));
+
+  /// The calendar year containing [d].
+  factory DateRange.year(DateTime d) =>
+      DateRange(DateTime(d.year), DateTime(d.year + 1));
 
   final DateTime start;
   final DateTime end;
@@ -29,7 +42,12 @@ class DateRange {
   /// Every local midnight in the range, oldest first. Steps by calendar day
   /// (not 24h) so DST transitions never skip or repeat a day.
   List<DateTime> get days => [
-    for (var d = start; d.isBefore(end); d = DateTime(d.year, d.month, d.day + 1)) d,
+    for (
+      var d = start;
+      d.isBefore(end);
+      d = DateTime(d.year, d.month, d.day + 1)
+    )
+      d,
   ];
 
   /// Whether this range spans exactly one calendar month.
@@ -72,4 +90,35 @@ enum PeriodFilter {
     PeriodFilter.thisWeek => DateRange.week(now),
     PeriodFilter.thisMonth => DateRange.month(now),
   };
+}
+
+/// Granularity of a browsable period (ExpenseScreen's Day/Week/Month/Year).
+enum PeriodUnit {
+  day,
+  week,
+  month,
+  year;
+
+  /// The period of this unit that contains [d].
+  DateRange rangeOf(DateTime d) => switch (this) {
+    PeriodUnit.day => DateRange.day(d),
+    PeriodUnit.week => DateRange.week(d),
+    PeriodUnit.month => DateRange.month(d),
+    PeriodUnit.year => DateRange.year(d),
+  };
+
+  /// The period [delta] units before (negative) or after (positive) the one
+  /// starting at [range].start. Uses calendar arithmetic, so DST and month
+  /// lengths never skew it.
+  DateRange shift(DateRange range, int delta) {
+    final s = range.start;
+    return switch (this) {
+      PeriodUnit.day => DateRange.day(DateTime(s.year, s.month, s.day + delta)),
+      PeriodUnit.week => DateRange.week(
+        DateTime(s.year, s.month, s.day + 7 * delta),
+      ),
+      PeriodUnit.month => DateRange.month(DateTime(s.year, s.month + delta)),
+      PeriodUnit.year => DateRange.year(DateTime(s.year + delta)),
+    };
+  }
 }

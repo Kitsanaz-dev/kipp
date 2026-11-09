@@ -109,4 +109,48 @@ void main() {
       ]);
     });
   });
+
+  group('DateRange.year', () {
+    test('spans Jan 1 to next Jan 1', () {
+      final r = DateRange.year(DateTime(2028, 7, 4));
+      expect(r.start, DateTime(2028));
+      expect(r.end, DateTime(2029));
+      expect(r.days, hasLength(366)); // leap year
+      expect(DateRange.year(DateTime(2026)).days, hasLength(365));
+    });
+  });
+
+  group('PeriodUnit', () {
+    final d = DateTime(2026, 11, 12, 9); // Thursday
+
+    test('rangeOf matches the named constructors', () {
+      expect(PeriodUnit.day.rangeOf(d), DateRange.day(d));
+      expect(PeriodUnit.week.rangeOf(d), DateRange.week(d));
+      expect(PeriodUnit.month.rangeOf(d), DateRange.month(d));
+      expect(PeriodUnit.year.rangeOf(d), DateRange.year(d));
+    });
+
+    test('shift steps one unit across boundaries', () {
+      expect(
+        PeriodUnit.day.shift(DateRange.day(DateTime(2026, 12, 31)), 1),
+        DateRange.day(DateTime(2027, 1, 1)),
+      );
+      expect(
+        PeriodUnit.week.shift(DateRange.week(DateTime(2026, 12, 30)), 1),
+        DateRange.week(DateTime(2027, 1, 4)),
+      );
+      expect(
+        PeriodUnit.month.shift(DateRange.month(DateTime(2026, 1)), -1),
+        DateRange.month(DateTime(2025, 12)),
+      );
+      expect(
+        PeriodUnit.year.shift(DateRange.year(DateTime(2026)), -2),
+        DateRange.year(DateTime(2024)),
+      );
+      expect(
+        PeriodUnit.day.shift(DateRange.day(DateTime(2028, 3, 1)), -1),
+        DateRange.day(DateTime(2028, 2, 29)),
+      );
+    });
+  });
 }
