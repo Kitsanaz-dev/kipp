@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../core/network/api_exceptions.dart';
+import '../../../../core/network/dio_error_mapper.dart';
 import '../../../../core/network/token_storage.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/exceptions/auth_exceptions.dart';
@@ -29,22 +29,6 @@ class AuthRepositoryImpl implements AuthRepository {
     await prefs.setString(_avatarKey(userId), path);
   }
 
-  Never _rethrowDio(DioException e) {
-    if (e.type == DioExceptionType.connectionError ||
-        e.type == DioExceptionType.connectionTimeout ||
-        e.type == DioExceptionType.receiveTimeout ||
-        e.type == DioExceptionType.sendTimeout) {
-      throw const NetworkException();
-    }
-    final data = e.response?.data;
-    final message = data is Map && data['error'] is String
-        ? data['error'] as String
-        : (data is Map && data['message'] is String
-            ? data['message'] as String
-            : 'Something went wrong, please try again');
-    throw ApiException(message);
-  }
-
   @override
   Future<UserEntity> register(
       String name, String email, String password) async {
@@ -56,7 +40,7 @@ class AuthRepositoryImpl implements AuthRepository {
       if (e.response?.statusCode == 409) {
         throw const EmailAlreadyRegisteredException();
       }
-      _rethrowDio(e);
+      rethrowDio(e, useServerMessage: true);
     }
   }
 
@@ -70,7 +54,7 @@ class AuthRepositoryImpl implements AuthRepository {
       if (e.response?.statusCode == 401) {
         throw const InvalidCredentialsException();
       }
-      _rethrowDio(e);
+      rethrowDio(e, useServerMessage: true);
     }
   }
 
@@ -91,7 +75,7 @@ class AuthRepositoryImpl implements AuthRepository {
         await tokenStorage.clearToken();
         return null;
       }
-      _rethrowDio(e);
+      rethrowDio(e, useServerMessage: true);
     }
   }
 
@@ -117,7 +101,7 @@ class AuthRepositoryImpl implements AuthRepository {
       }
       return user;
     } on DioException catch (e) {
-      _rethrowDio(e);
+      rethrowDio(e, useServerMessage: true);
     }
   }
 
