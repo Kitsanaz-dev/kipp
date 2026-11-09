@@ -92,4 +92,24 @@ void main() {
 
     expect(find.text(title(DateTime(now.year - 1, 3))), findsOneWidget);
   });
+
+  testWidgets('shows income and expense totals for the selected day', (
+    tester,
+  ) async {
+    await pumpApp(
+      tester,
+      const HistoryScreen(),
+      items: [
+        tx('i', now, 120, income: true),
+        tx('e1', now, 30),
+        tx('e2', now, 15),
+        tx('other', now.subtract(const Duration(days: 40)), 999),
+      ],
+    );
+
+    expect(find.text('Day income'), findsOneWidget);
+    expect(find.text('Day expense'), findsOneWidget);
+    expect(find.text('₭ 120.00'), findsOneWidget);
+    expect(find.text('₭ 45.00'), findsOneWidget);
+  });
 }
