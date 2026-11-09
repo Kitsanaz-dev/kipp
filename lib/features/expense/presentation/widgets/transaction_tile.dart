@@ -1,5 +1,6 @@
 // features/expense/presentation/widgets/transaction_tile.dart
 import 'package:flutter/material.dart';
+import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/utils/category_icon_mapper.dart';
 import 'package:kipp/core/utils/currency_formatter.dart';
@@ -18,7 +19,7 @@ class TransactionTile extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: AppRadius.lgAll,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
         child: Row(

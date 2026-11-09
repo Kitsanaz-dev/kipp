@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/constant/durations.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/widgets/month_year_picker.dart';
@@ -90,7 +91,7 @@ class _MonthSwitcherState extends State<MonthSwitcher> {
             hint: context.text.selectMonth,
             child: InkWell(
               onTap: _openPicker,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.smAll,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: ClipRect(

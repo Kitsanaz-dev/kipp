@@ -1,6 +1,7 @@
 // features/expense/presentation/widgets/expense_card.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/constant/durations.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/utils/currency_formatter.dart';
@@ -31,7 +32,7 @@ class ExpenseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(16.0);
+    final borderRadius = AppRadius.xlAll;
 
     // Ink (not a Container decoration) paints the card colour on the Material,
     // so the InkWell ripple shows above it; the Material clips it to the radius.
@@ -197,7 +198,7 @@ class _SummaryItem extends StatelessWidget {
                   size: 28,
                 ), // ✅ ຕັດ fontWeight ອອກແລ້ວ
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(24.0),
+                  borderRadius: AppRadius.xxlAll,
                   child: Container(
                     height: 30,
                     width: 30,

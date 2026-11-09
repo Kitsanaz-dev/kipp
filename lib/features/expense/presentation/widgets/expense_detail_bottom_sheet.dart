@@ -40,7 +40,9 @@ class ExpenseDetailBottomSheet extends ConsumerWidget {
       ),
       decoration: BoxDecoration(
         color: colors.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(AppRadius.xxl),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

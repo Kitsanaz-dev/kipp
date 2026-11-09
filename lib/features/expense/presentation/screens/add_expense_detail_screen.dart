@@ -306,7 +306,7 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
                             labelText: context.text.type,
                             border: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(
-                                Radius.circular(16),
+                                Radius.circular(AppRadius.xl),
                               ),
                             ),
                             errorText: state
@@ -340,7 +340,7 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
                 decoration: InputDecoration(
                   labelText: context.text.description,
                   border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderRadius: BorderRadius.all(Radius.circular(AppRadius.xl)),
                   ),
                 ),
               ),
