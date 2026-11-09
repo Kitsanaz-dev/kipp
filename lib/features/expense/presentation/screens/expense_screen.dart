@@ -2,9 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/widgets/daily_bar_chart.dart';
 import 'package:kipp/features/expense/presentation/widgets/grouped_transaction_list.dart';
+import 'package:kipp/features/expense/presentation/widgets/month_switcher.dart';
 import 'package:kipp/features/expense/presentation/widgets/total_card.dart';
 
 class ExpenseScreen extends ConsumerStatefulWidget {
@@ -16,6 +18,7 @@ class ExpenseScreen extends ConsumerStatefulWidget {
 
 class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
   bool _showIncome = false;
+  DateRange _month = DateRange.month(DateTime.now());
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +36,13 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            MonthSwitcher(
+              month: _month,
+              first: ref.watch(earliestExpenseMonthProvider),
+              last: DateTime.now(),
+              onChanged: (month) => setState(() => _month = month),
+            ),
+            const SizedBox(height: 8),
             DailyBarChart(data: chartData),
             const SizedBox(height: 20),
             Row(
