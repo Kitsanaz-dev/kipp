@@ -21,6 +21,24 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
   bool _showIncome = false;
   DateRange _month = DateRange.month(DateTime.now());
 
+  /// Minimum fling speed (logical px/s) for a chart swipe to change month.
+  static const _swipeVelocity = 300.0;
+
+  /// Moves to [target] if it lies within [earliest month, current month].
+  void _goToMonth(DateRange target) {
+    final first = ref.read(earliestExpenseMonthProvider);
+    final last = DateRange.month(DateTime.now()).start;
+    if (target.start.isBefore(first) || target.start.isAfter(last)) return;
+    setState(() => _month = target);
+  }
+
+  void _onChartSwipe(DragEndDetails details) {
+    final velocity = details.primaryVelocity ?? 0;
+    if (velocity.abs() < _swipeVelocity) return;
+    // Swipe left → later month, swipe right → earlier month.
+    _goToMonth(velocity < 0 ? _month.nextMonth() : _month.previousMonth());
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -44,7 +62,10 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
               onChanged: (month) => setState(() => _month = month),
             ),
             const SizedBox(height: 8),
-            DailyBarChart(data: chartData),
+            GestureDetector(
+              onHorizontalDragEnd: _onChartSwipe,
+              child: DailyBarChart(data: chartData),
+            ),
             const SizedBox(height: 20),
             Row(
               children: [
