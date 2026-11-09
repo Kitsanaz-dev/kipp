@@ -9,6 +9,7 @@ import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/router/route_paths.dart';
 import 'package:kipp/core/theme/theme_builder.dart';
 import 'package:kipp/features/auth/presentation/providers/auth_provider.dart';
+import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/screens/expense_screen.dart';
 import 'package:kipp/features/expense/presentation/screens/history_screen.dart';
@@ -18,6 +19,7 @@ import 'package:kipp/features/expense/presentation/widgets/day_type_nav_bar.dart
 import 'package:kipp/features/expense/presentation/widgets/expense_card.dart';
 import 'package:kipp/features/expense/presentation/widgets/grouped_transaction_list.dart';
 import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
+import 'package:kipp/features/expense/presentation/widgets/period_summary_sheet.dart';
 
 /// Bottom-navigation destinations, in tab order.
 enum HomeTab { home, expense, history, profile }
@@ -89,6 +91,19 @@ class _HomeTab extends ConsumerStatefulWidget {
 class _HomeTabState extends ConsumerState<_HomeTab> {
   int _dayType = 0;
 
+  void _openPeriodSummary() {
+    final titles = [
+      context.text.todaysBalance,
+      context.text.thisWeeksBalance,
+      context.text.thisMonthsBalance,
+    ];
+    showPeriodSummarySheet(
+      context,
+      PeriodFilter.values[_dayType].toRange(DateTime.now()),
+      titles[_dayType],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final summary = ref.watch(expenseSummaryProvider(_dayType));
@@ -121,6 +136,7 @@ class _HomeTabState extends ConsumerState<_HomeTab> {
               expense: summary.expense,
               income: summary.income,
               dayType: _dayType,
+              onTap: _openPeriodSummary,
             ),
             const SizedBox(height: 24),
             GroupedTransactionList(transactions: transactions),
