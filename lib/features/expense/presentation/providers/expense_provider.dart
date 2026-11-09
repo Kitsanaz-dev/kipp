@@ -55,33 +55,6 @@ List<ExpenseEntity> expensesByDayType(ExpensesByDayTypeRef ref, PeriodFilter fil
   return (income: summary.income, expense: summary.expense);
 }
 
-/// ຄິດໄລ່ chart data 14 ວັນລ່າສຸດ ຈາກ transaction ຈິງ
-@riverpod
-List<DailyChartData> dailyChartData(DailyChartDataRef ref) {
-  final all = ref.watch(expenseListProvider).valueOrNull ?? [];
-  final today = DateTime.now();
-  final startDay = DateTime(today.year, today.month, today.day);
-
-  return List.generate(14, (i) {
-    final day = startDay.subtract(Duration(days: 13 - i));
-    final dayItems = all.where(
-      (e) => e.date.year == day.year && e.date.month == day.month && e.date.day == day.day,
-    );
-    final income = dayItems.where((e) => e.isIncome).fold(0.0, (sum, e) => sum + e.amount);
-    final expense = dayItems.where((e) => !e.isIncome).fold(0.0, (sum, e) => sum + e.amount);
-    return DailyChartData(date: day, income: income, expense: expense);
-  });
-}
-
-/// ຍອດລວມ income/expense ທັງໝົດ (all-time) - ໃຊ້ໃນ ExpenseScreen
-@riverpod
-({double totalIncome, double totalExpense}) expenseTotals(ExpenseTotalsRef ref) {
-  final all = ref.watch(expenseListProvider).valueOrNull ?? [];
-  final income = all.where((e) => e.isIncome).fold(0.0, (sum, e) => sum + e.amount);
-  final expense = all.where((e) => !e.isIncome).fold(0.0, (sum, e) => sum + e.amount);
-  return (totalIncome: income, totalExpense: expense);
-}
-
 // ---------------------------------------------------------------------------
 // Range-based providers (DateRange / ExpenseStats)
 // ---------------------------------------------------------------------------

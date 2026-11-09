@@ -314,47 +314,6 @@ class _ExpenseSummaryProviderElement
   PeriodFilter get filter => (origin as ExpenseSummaryProvider).filter;
 }
 
-String _$dailyChartDataHash() => r'd03edda00f4ac00ae453944a8a86aa1b1e838933';
-
-/// ຄິດໄລ່ chart data 14 ວັນລ່າສຸດ ຈາກ transaction ຈິງ
-///
-/// Copied from [dailyChartData].
-@ProviderFor(dailyChartData)
-final dailyChartDataProvider =
-    AutoDisposeProvider<List<DailyChartData>>.internal(
-      dailyChartData,
-      name: r'dailyChartDataProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$dailyChartDataHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef DailyChartDataRef = AutoDisposeProviderRef<List<DailyChartData>>;
-String _$expenseTotalsHash() => r'b4536a6e7deae6ff8646671d81a982f7c99f77d4';
-
-/// ຍອດລວມ income/expense ທັງໝົດ (all-time) - ໃຊ້ໃນ ExpenseScreen
-///
-/// Copied from [expenseTotals].
-@ProviderFor(expenseTotals)
-final expenseTotalsProvider =
-    AutoDisposeProvider<({double totalIncome, double totalExpense})>.internal(
-      expenseTotals,
-      name: r'expenseTotalsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$expenseTotalsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ExpenseTotalsRef =
-    AutoDisposeProviderRef<({double totalIncome, double totalExpense})>;
 String _$expensesInRangeHash() => r'793fda4d87a7f39d8ad8a9b635fdd5884c489833';
 
 /// Transactions inside [range], in source order (newest first).
