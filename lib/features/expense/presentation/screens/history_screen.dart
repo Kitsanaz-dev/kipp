@@ -49,7 +49,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
               }),
-              onPageChanged: (focusedDay) => _focusedDay = focusedDay,
+              onPageChanged: (focusedDay) =>
+                  setState(() => _focusedDay = focusedDay),
               onMonthPicked: (month) => setState(() => _focusedDay = month),
               onJumpToToday: () => setState(() {
                 final now = DateTime.now();
