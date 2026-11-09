@@ -39,12 +39,19 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             ExpenseCalendar(
               focusedDay: _focusedDay,
               selectedDay: _selectedDay,
+              firstMonth: ref.watch(earliestExpenseMonthProvider),
               eventLoader: (day) => _transactionsForDay(allExpenses, day),
               onDaySelected: (selectedDay, focusedDay) => setState(() {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
               }),
               onPageChanged: (focusedDay) => _focusedDay = focusedDay,
+              onMonthPicked: (month) => setState(() => _focusedDay = month),
+              onJumpToToday: () => setState(() {
+                final now = DateTime.now();
+                _focusedDay = now;
+                _selectedDay = now;
+              }),
             ),
             const SizedBox(height: 20),
             Text(
