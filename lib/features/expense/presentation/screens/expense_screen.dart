@@ -93,7 +93,10 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
             const SizedBox(height: 20),
             _buildToggle(context),
             const SizedBox(height: 12),
-            GroupedTransactionList(transactions: transactions),
+            GroupedTransactionList(
+              transactions: transactions,
+              emptyText: context.text.noTransactionsThisMonth,
+            ),
           ],
         ),
       ),

@@ -83,4 +83,12 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(title(thisMonth)), findsOneWidget);
   });
+
+  testWidgets('month without transactions shows the month empty state', (
+    tester,
+  ) async {
+    await pumpApp(tester, const ExpenseScreen());
+    expect(find.text('No transactions in this month'), findsOneWidget);
+    expect(find.text('No transactions yet'), findsNothing);
+  });
 }
