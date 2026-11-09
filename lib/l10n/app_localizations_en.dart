@@ -316,4 +316,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanRateLimited => 'Too many scans. Please wait and try again.';
+
+  @override
+  String get periodDay => 'Day';
+
+  @override
+  String get periodWeek => 'Week';
+
+  @override
+  String get periodMonth => 'Month';
+
+  @override
+  String get periodYear => 'Year';
+
+  @override
+  String get thisYearShortcut => 'This year';
+
+  @override
+  String get noTransactionsInPeriod => 'No transactions in this period';
 }

@@ -125,5 +125,11 @@
     "dayExpense": "Day expense",
     "scanUnavailable": "Receipt scanning is currently unavailable. Please try again later.",
     "scanTimeout": "Receipt scanning timed out. Please try again.",
-    "scanRateLimited": "Too many scans. Please wait and try again."
+    "scanRateLimited": "Too many scans. Please wait and try again.",
+    "periodDay": "Day",
+    "periodWeek": "Week",
+    "periodMonth": "Month",
+    "periodYear": "Year",
+    "thisYearShortcut": "This year",
+    "noTransactionsInPeriod": "No transactions in this period"
 }

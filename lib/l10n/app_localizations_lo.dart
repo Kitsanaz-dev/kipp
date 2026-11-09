@@ -315,4 +315,22 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get scanRateLimited => 'ສະແກນຫຼາຍເກີນໄປ. ກະລຸນາລໍຖ້າແລ້ວລອງໃໝ່.';
+
+  @override
+  String get periodDay => 'ວັນ';
+
+  @override
+  String get periodWeek => 'ອາທິດ';
+
+  @override
+  String get periodMonth => 'ເດືອນ';
+
+  @override
+  String get periodYear => 'ປີ';
+
+  @override
+  String get thisYearShortcut => 'ປີນີ້';
+
+  @override
+  String get noTransactionsInPeriod => 'ບໍ່ມີລາຍການໃນຊ່ວງເວລານີ້';
 }

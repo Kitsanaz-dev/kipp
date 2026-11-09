@@ -111,5 +111,11 @@
   "dayExpense": "ລາຍຈ່າຍຂອງວັນ",
   "scanUnavailable": "ບໍລິການສະແກນໃບບິນບໍ່ພ້ອມໃຊ້ງານ. ກະລຸນາລອງໃໝ່ພາຍຫຼັງ.",
   "scanTimeout": "ການສະແກນໃບບິນໝົດເວລາ. ກະລຸນາລອງໃໝ່.",
-  "scanRateLimited": "ສະແກນຫຼາຍເກີນໄປ. ກະລຸນາລໍຖ້າແລ້ວລອງໃໝ່."
+  "scanRateLimited": "ສະແກນຫຼາຍເກີນໄປ. ກະລຸນາລໍຖ້າແລ້ວລອງໃໝ່.",
+  "periodDay": "ວັນ",
+  "periodWeek": "ອາທິດ",
+  "periodMonth": "ເດືອນ",
+  "periodYear": "ປີ",
+  "thisYearShortcut": "ປີນີ້",
+  "noTransactionsInPeriod": "ບໍ່ມີລາຍການໃນຊ່ວງເວລານີ້"
 }
