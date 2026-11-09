@@ -40,17 +40,17 @@ class ExpenseList extends _$ExpenseList {
   }
 }
 
-/// Filter ຕາມ dayType (0=Today, 1=Week, 2=Month) - derived ຈາກ expenseListProvider
+/// Filter ຕາມ PeriodFilter (Today / Week / Month) - derived ຈາກ expenseListProvider
 @riverpod
-List<ExpenseEntity> expensesByDayType(ExpensesByDayTypeRef ref, int dayType) {
-  final range = PeriodFilter.values[dayType].toRange(DateTime.now());
+List<ExpenseEntity> expensesByDayType(ExpensesByDayTypeRef ref, PeriodFilter filter) {
+  final range = filter.toRange(DateTime.now());
   return ref.watch(expensesInRangeProvider(range));
 }
 
 /// ຄິດໄລ່ income/expense sum ຈາກ list ທີ່ filter ແລ້ວ
 @riverpod
-({double income, double expense}) expenseSummary(ExpenseSummaryRef ref, int dayType) {
-  final range = PeriodFilter.values[dayType].toRange(DateTime.now());
+({double income, double expense}) expenseSummary(ExpenseSummaryRef ref, PeriodFilter filter) {
+  final range = filter.toRange(DateTime.now());
   final summary = ref.watch(periodSummaryProvider(range));
   return (income: summary.income, expense: summary.expense);
 }

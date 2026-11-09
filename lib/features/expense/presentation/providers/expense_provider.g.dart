@@ -24,7 +24,7 @@ final expenseRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ExpenseRepositoryRef = AutoDisposeProviderRef<ExpenseRepository>;
-String _$expensesByDayTypeHash() => r'e35523ab4b46d82d76d03fca83be1475f6c8f0c0';
+String _$expensesByDayTypeHash() => r'998097304835683b382009f6950dc8dc64a56514';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -47,33 +47,33 @@ class _SystemHash {
   }
 }
 
-/// Filter ຕາມ dayType (0=Today, 1=Week, 2=Month) - derived ຈາກ expenseListProvider
+/// Filter ຕາມ PeriodFilter (Today / Week / Month) - derived ຈາກ expenseListProvider
 ///
 /// Copied from [expensesByDayType].
 @ProviderFor(expensesByDayType)
 const expensesByDayTypeProvider = ExpensesByDayTypeFamily();
 
-/// Filter ຕາມ dayType (0=Today, 1=Week, 2=Month) - derived ຈາກ expenseListProvider
+/// Filter ຕາມ PeriodFilter (Today / Week / Month) - derived ຈາກ expenseListProvider
 ///
 /// Copied from [expensesByDayType].
 class ExpensesByDayTypeFamily extends Family<List<ExpenseEntity>> {
-  /// Filter ຕາມ dayType (0=Today, 1=Week, 2=Month) - derived ຈາກ expenseListProvider
+  /// Filter ຕາມ PeriodFilter (Today / Week / Month) - derived ຈາກ expenseListProvider
   ///
   /// Copied from [expensesByDayType].
   const ExpensesByDayTypeFamily();
 
-  /// Filter ຕາມ dayType (0=Today, 1=Week, 2=Month) - derived ຈາກ expenseListProvider
+  /// Filter ຕາມ PeriodFilter (Today / Week / Month) - derived ຈາກ expenseListProvider
   ///
   /// Copied from [expensesByDayType].
-  ExpensesByDayTypeProvider call(int dayType) {
-    return ExpensesByDayTypeProvider(dayType);
+  ExpensesByDayTypeProvider call(PeriodFilter filter) {
+    return ExpensesByDayTypeProvider(filter);
   }
 
   @override
   ExpensesByDayTypeProvider getProviderOverride(
     covariant ExpensesByDayTypeProvider provider,
   ) {
-    return call(provider.dayType);
+    return call(provider.filter);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -91,17 +91,17 @@ class ExpensesByDayTypeFamily extends Family<List<ExpenseEntity>> {
   String? get name => r'expensesByDayTypeProvider';
 }
 
-/// Filter ຕາມ dayType (0=Today, 1=Week, 2=Month) - derived ຈາກ expenseListProvider
+/// Filter ຕາມ PeriodFilter (Today / Week / Month) - derived ຈາກ expenseListProvider
 ///
 /// Copied from [expensesByDayType].
 class ExpensesByDayTypeProvider
     extends AutoDisposeProvider<List<ExpenseEntity>> {
-  /// Filter ຕາມ dayType (0=Today, 1=Week, 2=Month) - derived ຈາກ expenseListProvider
+  /// Filter ຕາມ PeriodFilter (Today / Week / Month) - derived ຈາກ expenseListProvider
   ///
   /// Copied from [expensesByDayType].
-  ExpensesByDayTypeProvider(int dayType)
+  ExpensesByDayTypeProvider(PeriodFilter filter)
     : this._internal(
-        (ref) => expensesByDayType(ref as ExpensesByDayTypeRef, dayType),
+        (ref) => expensesByDayType(ref as ExpensesByDayTypeRef, filter),
         from: expensesByDayTypeProvider,
         name: r'expensesByDayTypeProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -110,7 +110,7 @@ class ExpensesByDayTypeProvider
         dependencies: ExpensesByDayTypeFamily._dependencies,
         allTransitiveDependencies:
             ExpensesByDayTypeFamily._allTransitiveDependencies,
-        dayType: dayType,
+        filter: filter,
       );
 
   ExpensesByDayTypeProvider._internal(
@@ -120,10 +120,10 @@ class ExpensesByDayTypeProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.dayType,
+    required this.filter,
   }) : super.internal();
 
-  final int dayType;
+  final PeriodFilter filter;
 
   @override
   Override overrideWith(
@@ -138,7 +138,7 @@ class ExpensesByDayTypeProvider
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        dayType: dayType,
+        filter: filter,
       ),
     );
   }
@@ -150,13 +150,13 @@ class ExpensesByDayTypeProvider
 
   @override
   bool operator ==(Object other) {
-    return other is ExpensesByDayTypeProvider && other.dayType == dayType;
+    return other is ExpensesByDayTypeProvider && other.filter == filter;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, dayType.hashCode);
+    hash = _SystemHash.combine(hash, filter.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -165,8 +165,8 @@ class ExpensesByDayTypeProvider
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin ExpensesByDayTypeRef on AutoDisposeProviderRef<List<ExpenseEntity>> {
-  /// The parameter `dayType` of this provider.
-  int get dayType;
+  /// The parameter `filter` of this provider.
+  PeriodFilter get filter;
 }
 
 class _ExpensesByDayTypeProviderElement
@@ -175,10 +175,10 @@ class _ExpensesByDayTypeProviderElement
   _ExpensesByDayTypeProviderElement(super.provider);
 
   @override
-  int get dayType => (origin as ExpensesByDayTypeProvider).dayType;
+  PeriodFilter get filter => (origin as ExpensesByDayTypeProvider).filter;
 }
 
-String _$expenseSummaryHash() => r'e5124511cc96a607e7ad73d547bbebc886eda108';
+String _$expenseSummaryHash() => r'803e655b5a2917952342094f1372cb4061a75216';
 
 /// ຄິດໄລ່ income/expense sum ຈາກ list ທີ່ filter ແລ້ວ
 ///
@@ -198,15 +198,15 @@ class ExpenseSummaryFamily extends Family<({double income, double expense})> {
   /// ຄິດໄລ່ income/expense sum ຈາກ list ທີ່ filter ແລ້ວ
   ///
   /// Copied from [expenseSummary].
-  ExpenseSummaryProvider call(int dayType) {
-    return ExpenseSummaryProvider(dayType);
+  ExpenseSummaryProvider call(PeriodFilter filter) {
+    return ExpenseSummaryProvider(filter);
   }
 
   @override
   ExpenseSummaryProvider getProviderOverride(
     covariant ExpenseSummaryProvider provider,
   ) {
-    return call(provider.dayType);
+    return call(provider.filter);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -232,9 +232,9 @@ class ExpenseSummaryProvider
   /// ຄິດໄລ່ income/expense sum ຈາກ list ທີ່ filter ແລ້ວ
   ///
   /// Copied from [expenseSummary].
-  ExpenseSummaryProvider(int dayType)
+  ExpenseSummaryProvider(PeriodFilter filter)
     : this._internal(
-        (ref) => expenseSummary(ref as ExpenseSummaryRef, dayType),
+        (ref) => expenseSummary(ref as ExpenseSummaryRef, filter),
         from: expenseSummaryProvider,
         name: r'expenseSummaryProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -243,7 +243,7 @@ class ExpenseSummaryProvider
         dependencies: ExpenseSummaryFamily._dependencies,
         allTransitiveDependencies:
             ExpenseSummaryFamily._allTransitiveDependencies,
-        dayType: dayType,
+        filter: filter,
       );
 
   ExpenseSummaryProvider._internal(
@@ -253,10 +253,10 @@ class ExpenseSummaryProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.dayType,
+    required this.filter,
   }) : super.internal();
 
-  final int dayType;
+  final PeriodFilter filter;
 
   @override
   Override overrideWith(
@@ -272,7 +272,7 @@ class ExpenseSummaryProvider
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        dayType: dayType,
+        filter: filter,
       ),
     );
   }
@@ -285,13 +285,13 @@ class ExpenseSummaryProvider
 
   @override
   bool operator ==(Object other) {
-    return other is ExpenseSummaryProvider && other.dayType == dayType;
+    return other is ExpenseSummaryProvider && other.filter == filter;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, dayType.hashCode);
+    hash = _SystemHash.combine(hash, filter.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -301,8 +301,8 @@ class ExpenseSummaryProvider
 // ignore: unused_element
 mixin ExpenseSummaryRef
     on AutoDisposeProviderRef<({double income, double expense})> {
-  /// The parameter `dayType` of this provider.
-  int get dayType;
+  /// The parameter `filter` of this provider.
+  PeriodFilter get filter;
 }
 
 class _ExpenseSummaryProviderElement
@@ -311,7 +311,7 @@ class _ExpenseSummaryProviderElement
   _ExpenseSummaryProviderElement(super.provider);
 
   @override
-  int get dayType => (origin as ExpenseSummaryProvider).dayType;
+  PeriodFilter get filter => (origin as ExpenseSummaryProvider).filter;
 }
 
 String _$dailyChartDataHash() => r'd03edda00f4ac00ae453944a8a86aa1b1e838933';

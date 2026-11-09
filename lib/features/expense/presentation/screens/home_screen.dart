@@ -89,7 +89,7 @@ class _HomeTab extends ConsumerStatefulWidget {
 }
 
 class _HomeTabState extends ConsumerState<_HomeTab> {
-  int _dayType = 0;
+  PeriodFilter _filter = PeriodFilter.today;
 
   void _openPeriodSummary() {
     final titles = [
@@ -99,15 +99,15 @@ class _HomeTabState extends ConsumerState<_HomeTab> {
     ];
     showPeriodSummarySheet(
       context,
-      PeriodFilter.values[_dayType].toRange(DateTime.now()),
-      titles[_dayType],
+      _filter.toRange(DateTime.now()),
+      titles[_filter.index],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final summary = ref.watch(expenseSummaryProvider(_dayType));
-    final transactions = ref.watch(expensesByDayTypeProvider(_dayType));
+    final summary = ref.watch(expenseSummaryProvider(_filter));
+    final transactions = ref.watch(expensesByDayTypeProvider(_filter));
     final userName = ref.watch(authProvider).valueOrNull?.name ?? '';
 
     return SafeArea(
@@ -128,14 +128,14 @@ class _HomeTabState extends ConsumerState<_HomeTab> {
             ),
             const SizedBox(height: 16.0),
             DayTypeNavBar(
-              currentDayType: _dayType,
-              onTap: (value) => setState(() => _dayType = value),
+              current: _filter,
+              onTap: (value) => setState(() => _filter = value),
             ),
             const SizedBox(height: 16),
             ExpenseCard(
               expense: summary.expense,
               income: summary.income,
-              dayType: _dayType,
+              period: _filter,
               onTap: _openPeriodSummary,
             ),
             const SizedBox(height: 24),

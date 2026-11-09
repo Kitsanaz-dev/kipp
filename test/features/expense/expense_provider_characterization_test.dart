@@ -1,14 +1,15 @@
 // Characterization tests: pin the CURRENT behavior of the derived expense
 // providers so later refactors can be checked against it.
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 
 import 'expense_test_helpers.dart';
 
-// Day-type filter indices as used by the home screen.
-const _today = 0;
-const _thisWeek = 1;
-const _thisMonth = 2;
+// Period filters as used by the home screen.
+const _today = PeriodFilter.today;
+const _thisWeek = PeriodFilter.thisWeek;
+const _thisMonth = PeriodFilter.thisMonth;
 
 void main() {
   group('expensesByDayType', () {

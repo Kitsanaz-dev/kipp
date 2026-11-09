@@ -3,19 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/utils/currency_formatter.dart';
+import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
 
 class ExpenseCard extends StatelessWidget {
   const ExpenseCard({
     super.key,
     required this.expense,
     required this.income,
-    this.dayType = 0,
+    this.period = PeriodFilter.today,
     this.onTap,
   });
 
   final double expense;
   final double income;
-  final int dayType; // 0 = Today, 1 = This Week, 2 = This Month
+  final PeriodFilter period;
 
   /// When set, the card gets a ripple, a "See details ›" hint, and calls this.
   final VoidCallback? onTap;
@@ -83,7 +84,7 @@ class ExpenseCard extends StatelessWidget {
                 FadeTransition(opacity: animation, child: child),
             child: Text(
               CurrencyFormatter.formatKip(balance),
-              key: ValueKey('balance-$dayType-$balance'),
+              key: ValueKey('balance-${period.index}-$balance'),
               style: context.typo.h1.copyWith(color: context.colors.white),
             ),
           ),
@@ -117,7 +118,7 @@ class ExpenseCard extends StatelessWidget {
   }
 
   Widget _buildBalanceLabel(BuildContext context) {
-    // ✅ ປ່ຽນ label smooth ຕາມ dayType (0/1/2)
+    // ✅ ປ່ຽນ label smooth ຕາມ period (today / week / month)
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 220),
       transitionBuilder: (child, animation) => FadeTransition(
@@ -131,8 +132,8 @@ class ExpenseCard extends StatelessWidget {
         ),
       ),
       child: Text(
-        _balanceLabels(context)[dayType],
-        key: ValueKey(dayType), // ✅ ຕ້ອງມີ key ບໍ່ຄືກັນ ຈຶ່ງ trigger animation
+        _balanceLabels(context)[period.index],
+        key: ValueKey(period), // ✅ ຕ້ອງມີ key ບໍ່ຄືກັນ ຈຶ່ງ trigger animation
         style: context.typo.title.copyWith(color: context.colors.white),
       ),
     );

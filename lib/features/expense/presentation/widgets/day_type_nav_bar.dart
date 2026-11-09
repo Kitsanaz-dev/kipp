@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:kipp/core/constant/radius.dart';
+import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
 
 class DayTypeNavBar extends StatelessWidget {
   const DayTypeNavBar({
     super.key,
-    required this.currentDayType,
+    required this.current,
     required this.onTap,
   });
 
-  final int currentDayType;
-  final ValueChanged<int> onTap;
+  final PeriodFilter current;
+  final ValueChanged<PeriodFilter> onTap;
 
   List<String> _labels(BuildContext context) => [
     context.text.today,
@@ -48,7 +49,7 @@ class DayTypeNavBar extends StatelessWidget {
                 alignment: Alignment(
                   itemCount == 1
                       ? 0
-                      : -1 + (2 * currentDayType) / (itemCount - 1),
+                      : -1 + (2 * current.index) / (itemCount - 1),
                   0,
                 ),
                 child: FakeGlass(
@@ -69,10 +70,10 @@ class DayTypeNavBar extends StatelessWidget {
               // ---- ຊັ້ນ 2: Label ວາງທັບ ----
               Row(
                 children: List.generate(itemCount, (index) {
-                  final isSelected = currentDayType == index;
+                  final isSelected = current.index == index;
                   return Expanded(
                     child: GestureDetector(
-                      onTap: () => onTap(index),
+                      onTap: () => onTap(PeriodFilter.values[index]),
                       behavior: HitTestBehavior.opaque,
                       child: Container(
                         alignment: Alignment.center,
