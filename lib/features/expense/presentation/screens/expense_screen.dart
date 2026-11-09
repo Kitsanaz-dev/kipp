@@ -1,12 +1,11 @@
 // features/expense/presentation/screens/expense_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
-import 'package:kipp/core/utils/currency_formatter.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/widgets/daily_bar_chart.dart';
 import 'package:kipp/features/expense/presentation/widgets/grouped_transaction_list.dart';
+import 'package:kipp/features/expense/presentation/widgets/total_card.dart';
 
 class ExpenseScreen extends ConsumerStatefulWidget {
   const ExpenseScreen({super.key});
@@ -39,7 +38,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
             Row(
               children: [
                 Expanded(
-                  child: _TotalCard(
+                  child: TotalCard(
                     label: context.text.totalIncome,
                     amount: totals.totalIncome,
                     color: colors.ok,
@@ -48,7 +47,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: _TotalCard(
+                  child: TotalCard(
                     label: context.text.totalExpense,
                     amount: totals.totalExpense,
                     color: colors.danger,
@@ -89,55 +88,6 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
       selected: {_showIncome},
       onSelectionChanged: (newSelection) =>
           setState(() => _showIncome = newSelection.first),
-    );
-  }
-}
-
-class _TotalCard extends StatelessWidget {
-  const _TotalCard({
-    required this.label,
-    required this.amount,
-    required this.color,
-    required this.icon,
-  });
-
-  final String label;
-  final double amount;
-  final Color color;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: AppRadius.lgAll,
-        border: Border.all(color: color.withValues(alpha: 0.3)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: color, size: 16),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: context.typo.caption.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            CurrencyFormatter.formatKip(amount),
-            style: context.typo.title.copyWith(color: context.colors.text),
-          ),
-        ],
-      ),
     );
   }
 }
