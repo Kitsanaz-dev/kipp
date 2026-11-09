@@ -122,5 +122,8 @@
     "jumpToToday": "Today",
     "noTransactionsThisMonth": "No transactions in this month",
     "dayIncome": "Day income",
-    "dayExpense": "Day expense"
+    "dayExpense": "Day expense",
+    "scanUnavailable": "Receipt scanning is currently unavailable. Please try again later.",
+    "scanTimeout": "Receipt scanning timed out. Please try again.",
+    "scanRateLimited": "Too many scans. Please wait and try again."
 }

@@ -306,4 +306,13 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get dayExpense => 'ລາຍຈ່າຍຂອງວັນ';
+
+  @override
+  String get scanUnavailable => 'ບໍລິການສະແກນໃບບິນບໍ່ພ້ອມໃຊ້ງານ. ກະລຸນາລອງໃໝ່ພາຍຫຼັງ.';
+
+  @override
+  String get scanTimeout => 'ການສະແກນໃບບິນໝົດເວລາ. ກະລຸນາລອງໃໝ່.';
+
+  @override
+  String get scanRateLimited => 'ສະແກນຫຼາຍເກີນໄປ. ກະລຸນາລໍຖ້າແລ້ວລອງໃໝ່.';
 }

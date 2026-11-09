@@ -664,6 +664,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Day expense'**
   String get dayExpense;
+
+  /// No description provided for @scanUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt scanning is currently unavailable. Please try again later.'**
+  String get scanUnavailable;
+
+  /// No description provided for @scanTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt scanning timed out. Please try again.'**
+  String get scanTimeout;
+
+  /// No description provided for @scanRateLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many scans. Please wait and try again.'**
+  String get scanRateLimited;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

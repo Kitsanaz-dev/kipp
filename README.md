@@ -85,7 +85,26 @@ dart run build_runner build --delete-conflicting-outputs
 flutter run
 ```
 
-Copy `.env.example` to `.env` and set `API_BASE_URL` to point at your running Go backend (`http://10.0.2.2:8080` for the Android emulator, `http://localhost:8080` for the iOS simulator, the host LAN IP for a physical device).
+Configure the public API URL at build time (default: `http://localhost:3000`):
+
+```bash
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:3000
+flutter build apk --dart-define=API_BASE_URL=https://api.example.com
+```
+
+Alternatively, copy `dart_defines.example.json` to the gitignored
+`dart_defines.json`, set `API_BASE_URL`, and use:
+
+```bash
+flutter run --dart-define-from-file=dart_defines.json
+flutter build apk --dart-define-from-file=dart_defines.json
+```
+
+The committed VS Code launch configurations use that file. Use `10.0.2.2`
+for the Android emulator and `localhost` for the iOS simulator. Use HTTPS
+for release builds and physical devices. Defines and bundled assets are public;
+server credentials belong only on the backend. Receipt images are sent with
+the JWT to `POST /api/receipts/scan`.
 
 Re-run `build_runner` any time a `@riverpod` provider is added or changed.
 
@@ -97,7 +116,7 @@ Re-run `build_runner` any time a `@riverpod` provider is added or changed.
 - ✅ Offline / unreachable-backend handling — repositories surface a localized "could not connect" message
 - ✅ Routing via `go_router` with custom page transitions
 - ⏳ Avatar photos are still device-local (`shared_preferences`, keyed by user id) — waiting on a backend image-upload endpoint
-- ⏳ Receipt scanning (camera → OCR → auto-fill amount) planned via `google_mlkit_text_recognition` + `google_mlkit_entity_extraction`, not yet implemented
+- ✅ Receipt scanning through the authenticated backend API
 
 ## Backend integration
 

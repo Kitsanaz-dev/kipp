@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:kipp/core/network/network_providers.dart';
+import 'package:kipp/core/network/api_exceptions.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +26,8 @@ class AddExpenseDetailScreen extends ConsumerStatefulWidget {
       _AddExpenseDetailScreenState();
 }
 
-class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen> {
+class _AddExpenseDetailScreenState
+    extends ConsumerState<AddExpenseDetailScreen> {
   // -------- keys --------
   final _formKey = GlobalKey<FormState>();
 
@@ -93,7 +96,7 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
     if (capturedFile == null || !mounted) return;
 
     setState(() => _isScanning = true);
-    final scanner = ReceiptScannerService();
+    final scanner = ReceiptScannerService(ref.read(apiClientProvider));
 
     try {
       // ສົ່ງ List ຂອງ Categories ໄປໃຫ້ AI ເພື່ອໃຫ້ມັນເລືອກໄດ້ກົງກັບ Dropdown ຂອງເຮົາ
@@ -138,7 +141,17 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
         throw Exception("AI response is empty");
       }
     } catch (e) {
-      AppSnackbar.showError(context, context.text.fetchDataError);
+      final message = e is ScanException
+          ? switch (e.code) {
+              'scan_unavailable' => context.text.scanUnavailable,
+              'scan_timeout' => context.text.scanTimeout,
+              'rate_limited' => context.text.scanRateLimited,
+              _ => context.text.fetchDataError,
+            }
+          : e is NetworkException
+          ? context.text.networkError
+          : context.text.fetchDataError;
+      AppSnackbar.showError(context, message);
     } finally {
       if (mounted) setState(() => _isScanning = false);
     }
@@ -197,7 +210,9 @@ class _AddExpenseDetailScreenState extends ConsumerState<AddExpenseDetailScreen>
                 decoration: InputDecoration(
                   labelText: context.text.description,
                   border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(AppRadius.xl)),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(AppRadius.xl),
+                    ),
                   ),
                 ),
               ),

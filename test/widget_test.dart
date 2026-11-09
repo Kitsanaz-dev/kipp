@@ -1,11 +1,15 @@
-// Basic smoke test for the Kipp app.
+// Verify the logged-out route without platform storage or network access.
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:kipp/app.dart';
+import 'package:kipp/core/network/api_client.dart';
+import 'package:kipp/core/network/network_providers.dart';
+import 'package:kipp/features/auth/presentation/screens/start_screen.dart';
+import 'helpers/fake_token_storage.dart';
 
 void main() {
   late Directory tempDir;
@@ -22,9 +26,32 @@ void main() {
   });
 
   testWidgets('App builds and shows the start screen', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: KippApp()));
+    final storage = FakeTokenStorage();
+    final dio = Dio()
+      ..interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) => handler.reject(
+            DioException(
+              requestOptions: options,
+              error: StateError('Unexpected HTTP request'),
+            ),
+          ),
+        ),
+      );
+    addTearDown(() => dio.close(force: true));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          tokenStorageProvider.overrideWithValue(storage),
+          apiClientProvider.overrideWithValue(ApiClient(storage, dio: dio)),
+        ],
+        child: const KippApp(),
+      ),
+    );
     await tester.pumpAndSettle();
 
-    expect(find.byType(MaterialApp), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    expect(find.byType(StartScreen), findsOneWidget);
+    expect(find.text('Kipp'), findsOneWidget);
   });
 }

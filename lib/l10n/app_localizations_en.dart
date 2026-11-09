@@ -307,4 +307,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dayExpense => 'Day expense';
+
+  @override
+  String get scanUnavailable => 'Receipt scanning is currently unavailable. Please try again later.';
+
+  @override
+  String get scanTimeout => 'Receipt scanning timed out. Please try again.';
+
+  @override
+  String get scanRateLimited => 'Too many scans. Please wait and try again.';
 }

@@ -1,9 +1,11 @@
-// features/expense/data/services/receipt_scanner_service.dart
-import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
+
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:image/image.dart' as img;
+import 'package:kipp/core/network/api_client.dart';
+import 'package:kipp/core/network/dio_error_mapper.dart';
 
 class ScannedReceiptData {
   final double? amount;
@@ -19,85 +21,80 @@ class ScannedReceiptData {
   });
 }
 
+/// The presentation layer translates the stable backend code for the locale.
+class ScanException implements Exception {
+  final String code;
+  const ScanException(this.code);
+}
+
+Uint8List _prepareImage(Uint8List bytes) {
+  final decoded = img.decodeImage(bytes);
+  if (decoded == null) throw const ScanException('invalid_image');
+  var image = img.bakeOrientation(decoded);
+  final longEdge = math.max(image.width, image.height);
+  if (longEdge > 1600) {
+    final scale = 1600 / longEdge;
+    image = img.copyResize(
+      image,
+      width: (image.width * scale).round(),
+      height: (image.height * scale).round(),
+    );
+  }
+  var jpeg = img.encodeJpg(image, quality: 85);
+  while (jpeg.length > 2 * 1024 * 1024 && image.width > 1 && image.height > 1) {
+    image = img.copyResize(
+      image,
+      width: math.max(1, (image.width * .8).round()),
+      height: math.max(1, (image.height * .8).round()),
+    );
+    jpeg = img.encodeJpg(image, quality: 85);
+  }
+  return jpeg;
+}
+
 class ReceiptScannerService {
-  static final _apiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
+  final ApiClient _client;
+  ReceiptScannerService(this._client);
 
   Future<ScannedReceiptData?> scan(
     File imageFile,
     List<String> expenseTypes,
     List<String> incomeTypes,
   ) async {
-    if (_apiKey.isEmpty) {
-      debugPrint('AI Scan Error: GEMINI_API_KEY isn\'t set');
-      return null;
-    }
+    final bytes = await compute(_prepareImage, await imageFile.readAsBytes());
     try {
-      final model = GenerativeModel(
-        model: 'gemini-3.6-flash',
-        apiKey: _apiKey,
-        generationConfig: GenerationConfig(
-          responseMimeType: 'application/json', // ບັງຄັບໃຫ້ຕອບເປັນ JSON
-        ),
+      final response = await _client.dio.post<Map<String, dynamic>>(
+        '/api/receipts/scan',
+        data: FormData.fromMap({
+          'image': MultipartFile.fromBytes(
+            bytes,
+            filename: 'receipt.jpg',
+            contentType: DioMediaType('image', 'jpeg'),
+          ),
+          'expense_types': expenseTypes.join(','),
+          'income_types': incomeTypes.join(','),
+        }),
+        options: Options(receiveTimeout: const Duration(seconds: 35)),
       );
-
-      final imageBytes = await imageFile.readAsBytes();
-      final mimeType = _detectMimeType(imageFile.path);
-      final prompt =
-          '''
-      You are an expert accountant parsing receipts. 
-      Analyze the attached image and extract the following information.
-      Return ONLY a JSON object with no additional text or markdown formatting.
-      
-      Rules:
-      - "amount": The total final amount as a number (double).
-      - "isIncome": Boolean. True if this is a receipt for receiving money, False if it's a payment/expense bill.
-      - "category": If isIncome is true, match from: ${incomeTypes.join(", ")}.
-                If isIncome is false, match from: ${expenseTypes.join(", ")}.
-                If unsure, use "Other".
-      - "description": A short, concise summary of the transaction (e.g., "KFC Lunch", "Electricity Bill").
-      
-      JSON format expected:
-      {
-        "amount": 150000,
-        "isIncome": false,
-        "category": "Food",
-        "description": "KFC Lunch"
+      final data = response.data;
+      if (data == null) return null;
+      return ScannedReceiptData(
+        amount: (data['amount'] as num?)?.toDouble(),
+        isIncome: data['is_income'] as bool?,
+        category: data['category'] as String?,
+        description: data['description'] as String?,
+      );
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final code = data is Map ? data['code'] : null;
+      if (const [
+        'scan_unavailable',
+        'scan_timeout',
+        'rate_limited',
+      ].contains(code)) {
+        throw ScanException(code as String);
       }
-      ''';
-
-      final content = [
-        Content.multi([TextPart(prompt), DataPart(mimeType, imageBytes)]),
-      ];
-
-      final response = await model.generateContent(content);
-      final jsonText = response.text;
-
-      if (jsonText != null) {
-        final Map<String, dynamic> data = jsonDecode(jsonText);
-        return ScannedReceiptData(
-          amount: (data['amount'] as num?)?.toDouble(),
-          isIncome: data['isIncome'] as bool?,
-          category: data['category'] as String?,
-          description: data['description'] as String?,
-        );
-      }
-    } catch (e) {
-      debugPrint('AI Scan Error: $e');
-    }
-    return null;
-  }
-
-  String _detectMimeType(String path) {
-    final ext = path.split('.').last.toLowerCase();
-    switch (ext) {
-      case 'png':
-        return 'image/png';
-      case 'webp':
-        return 'image/webp';
-      case 'heic':
-        return 'image/heic';
-      default:
-        return 'image/jpeg';
+      rethrowDio(e);
     }
   }
 }
