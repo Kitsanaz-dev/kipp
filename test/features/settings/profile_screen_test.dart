@@ -34,6 +34,9 @@ class _FakeAuth extends Auth {
 class _FakeThemeService extends ThemeService {
   @override
   ThemeMode build() => ThemeMode.light;
+
+  @override
+  Future<void> setMode(ThemeMode mode) async => state = mode;
 }
 
 class _FakeLocaleService extends LocaleService {
@@ -41,7 +44,10 @@ class _FakeLocaleService extends LocaleService {
   Locale build() => const Locale('en');
 }
 
-Future<void> _pumpProfile(WidgetTester tester, _FakeAuth auth) async {
+Future<ProviderContainer> _pumpProfile(
+  WidgetTester tester,
+  _FakeAuth auth,
+) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
@@ -66,6 +72,7 @@ Future<void> _pumpProfile(WidgetTester tester, _FakeAuth auth) async {
     ),
   );
   await tester.pumpAndSettle();
+  return ProviderScope.containerOf(tester.element(find.byType(ProfileScreen)));
 }
 
 void main() {
@@ -120,5 +127,14 @@ void main() {
     await tester.pump(AppSnackbar.displayDuration);
     await tester.pumpAndSettle();
     expect(find.text('Something went wrong, please try again'), findsNothing);
+  });
+
+  testWidgets('settings section rows stay interactive', (tester) async {
+    final container = await _pumpProfile(tester, _FakeAuth());
+
+    expect(find.text('Edit Profile Info'), findsOneWidget);
+    await tester.tap(find.text('Dark'));
+    await tester.pumpAndSettle();
+    expect(container.read(themeServiceProvider), ThemeMode.dark);
   });
 }

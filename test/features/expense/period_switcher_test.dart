@@ -167,4 +167,30 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('March 2026'), findsOneWidget);
   });
+
+  testWidgets('next is disabled at the current period and enables after '
+      'stepping back', (tester) async {
+    final now = DateTime(2026, 11, 9);
+    await pumpApp(
+      tester,
+      _Host(
+        unit: PeriodUnit.week,
+        initial: now,
+        first: DateTime(2026, 1),
+        last: now,
+      ),
+    );
+
+    expect(_button(tester, Icons.chevron_right).onPressed, isNull);
+    expect(_button(tester, Icons.chevron_left).onPressed, isNotNull);
+
+    await _tapChevron(tester, Icons.chevron_left);
+    expect(_button(tester, Icons.chevron_right).onPressed, isNotNull);
+
+    // Tapping a disabled glass button does nothing.
+    await _tapChevron(tester, Icons.chevron_right);
+    expect(_button(tester, Icons.chevron_right).onPressed, isNull);
+    await _tapChevron(tester, Icons.chevron_right);
+    expect(find.text('Nov 9 – Nov 15, 2026'), findsOneWidget);
+  });
 }
