@@ -9,6 +9,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/widgets/adaptive_spinner.dart';
 import 'package:kipp/core/constant/radius.dart';
+import 'package:kipp/core/widgets/glass_body.dart';
+import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 class ReceiptCaptureScreen extends StatefulWidget {
   const ReceiptCaptureScreen({super.key});
@@ -109,65 +112,79 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
   @override
   Widget build(BuildContext context) {
     // ໜ້ານີ້ເປັນ camera viewfinder - ຄົງທີ່ດຳ/ຂາວ ບໍ່ຂຶ້ນກັບ theme ຂອງແອັບ
-    return Scaffold(
+    // The transparent glass bar floats over the black viewfinder; the body
+    // extends behind it so the preview shows through the glass buttons.
+    return GlassScaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        iconTheme: const IconThemeData(color: Colors.white),
+      statusBarStyle: GlassStatusBarStyle.light,
+      edgeFade: false,
+      appBar: GlassAppBar(
+        toolbarHeight: kToolbarHeight,
+        leading: const KippBackButton(color: Colors.white),
         title: Text(
           context.text.scanReceipt,
           style: const TextStyle(color: Colors.white),
         ),
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: AppRadius.lgAll,
-                child: _buildPreview(),
+      body: GlassBody(
+        removeTop: false,
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: AppRadius.lgAll,
+                  child: _buildPreview(),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // ✅ ປຸ່ມ gallery (ຊ້າຍ)
-                  IconButton(
-                    onPressed: _pickFromGallery,
-                    icon: const Icon(
-                      CupertinoIcons.photo_fill,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                  ),
-
-                  // ປຸ່ມຖ່າຍ (ກາງ, ໃຫຍ່ສຸດ)
-                  GestureDetector(
-                    onTap: _capture,
-                    child: Container(
-                      width: 68,
-                      height: 68,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: context.colors.primary,
-                        border: Border.all(color: Colors.white, width: 3),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 24,
+                  horizontal: 40,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // ✅ ປຸ່ມ gallery (ຊ້າຍ)
+                    GlassIconButton(
+                      size: 48,
+                      iconSize: 26,
+                      semanticLabel: context.text.chooseFromGallery,
+                      onPressed: _pickFromGallery,
+                      icon: const Icon(
+                        CupertinoIcons.photo_fill,
+                        color: Colors.white,
                       ),
-                      child: _isCapturing
-                          ? Padding(
-                              padding: const EdgeInsets.all(18),
-                              child: const AdaptiveSpinner(color: Colors.white),
-                            )
-                          : null,
                     ),
-                  ),
-                  const SizedBox(width: 48),
-                ],
+
+                    // ປຸ່ມຖ່າຍ (ກາງ, ໃຫຍ່ສຸດ)
+                    GestureDetector(
+                      onTap: _capture,
+                      child: Container(
+                        width: 68,
+                        height: 68,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: context.colors.primary,
+                          border: Border.all(color: Colors.white, width: 3),
+                        ),
+                        child: _isCapturing
+                            ? Padding(
+                                padding: const EdgeInsets.all(18),
+                                child: const AdaptiveSpinner(
+                                  color: Colors.white,
+                                ),
+                              )
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(width: 48),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -189,9 +206,7 @@ class _ReceiptCaptureScreenState extends State<ReceiptCaptureScreen> {
 
     final controller = _controller;
     if (controller == null || !controller.value.isInitialized) {
-      return Center(
-        child: const AdaptiveSpinner(color: Colors.white),
-      );
+      return Center(child: const AdaptiveSpinner(color: Colors.white));
     }
 
     return AspectRatio(
