@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:kipp/core/widgets/glass_cta_button.dart';
 import 'package:kipp/core/router/route_paths.dart';
 import 'package:kipp/core/widgets/wave_clipper.dart';
 
@@ -70,37 +70,26 @@ class StartScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-                SizedBox(
-                  width: double.infinity,
-                  height: 54,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.push(RoutePaths.login);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.colors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppRadius.xlAll,
-                      ),
-                      elevation: 0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          context.text.getStarted,
-                          style: context.typo.title.copyWith(
-                            color: context.colors.onPrimary,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Icon(
-                          CupertinoIcons.arrow_right,
+                GlassCtaButton(
+                  onPressed: () {
+                    context.push(RoutePaths.login);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        context.text.getStarted,
+                        style: context.typo.title.copyWith(
                           color: context.colors.onPrimary,
-                          size: 20,
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(
+                        CupertinoIcons.arrow_right,
+                        color: context.colors.onPrimary,
+                        size: 20,
+                      ),
+                    ],
                   ),
                 ),
               ],

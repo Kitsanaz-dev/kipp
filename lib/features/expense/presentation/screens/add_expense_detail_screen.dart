@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:kipp/core/widgets/glass_cta_button.dart';
 import 'package:kipp/core/widgets/adaptive_spinner.dart';
 import 'package:kipp/core/widgets/app_snackbar.dart';
 import 'package:kipp/core/widgets/glass_body.dart';
@@ -231,40 +232,15 @@ class _AddExpenseDetailScreenState
                 const SizedBox(height: 16),
 
                 // ປຸ່ມ Save
-                SizedBox(
-                  width: double.infinity,
-                  height: 54,
-                  child: ElevatedButton(
-                    onPressed: _isSaving
-                        ? null
-                        : _saveTransaction, // ✅ disable ຕອນ saving
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.colors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppRadius.xlAll,
-                      ),
-                      elevation: 0,
+                GlassCtaButton(
+                  onPressed: _saveTransaction,
+                  // ✅ disable + spinner ຕອນ saving
+                  isLoading: _isSaving,
+                  child: Text(
+                    context.text.save,
+                    style: context.typo.title.copyWith(
+                      color: context.colors.onPrimary,
                     ),
-                    child: _isSaving
-                        ? SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: context.colors.onPrimary,
-                            ),
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                context.text.save,
-                                style: context.typo.title.copyWith(
-                                  color: context.colors.onPrimary,
-                                ),
-                              ),
-                            ],
-                          ),
                   ),
                 ),
               ],

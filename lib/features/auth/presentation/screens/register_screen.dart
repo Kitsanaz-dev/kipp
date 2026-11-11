@@ -3,9 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
-import 'package:kipp/core/widgets/adaptive_spinner.dart';
+import 'package:kipp/core/widgets/glass_cta_button.dart';
 import 'package:kipp/core/router/route_paths.dart';
 import 'package:kipp/core/utils/auth_error_mapper.dart';
 import 'package:kipp/core/widgets/app_snackbar.dart';
@@ -43,7 +42,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await ref.read(authProvider.notifier).register(
+      await ref
+          .read(authProvider.notifier)
+          .register(
             _nameCtrl.text.trim(),
             _emailCtrl.text.trim(),
             _passCtrl.text,
@@ -167,32 +168,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       : null,
                 ),
                 const SizedBox(height: 28),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 54,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _handleRegister,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colors.primary,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppRadius.xlAll,
-                      ),
-                    ),
-                    child: _isLoading
-                        ? AdaptiveSpinner(
-                            size: 22,
-                            color: colors.onPrimary,
-                            // CircularProgressIndicator's default, kept as-is.
-                            strokeWidth: 4,
-                          )
-                        : Text(
-                            context.text.signUp,
-                            style: context.typo.title.copyWith(
-                              color: colors.onPrimary,
-                            ),
-                          ),
+                GlassCtaButton(
+                  onPressed: _handleRegister,
+                  isLoading: _isLoading,
+                  // CircularProgressIndicator's default, kept as-is.
+                  spinnerStrokeWidth: 4,
+                  child: Text(
+                    context.text.signUp,
+                    style: context.typo.title.copyWith(color: colors.onPrimary),
                   ),
                 ),
                 const SizedBox(height: 20),

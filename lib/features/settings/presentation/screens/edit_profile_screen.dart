@@ -10,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
-import 'package:kipp/core/widgets/adaptive_spinner.dart';
+import 'package:kipp/core/widgets/glass_cta_button.dart';
 import 'package:kipp/core/widgets/app_snackbar.dart';
 import 'package:kipp/core/widgets/glass_body.dart';
 import 'package:kipp/core/widgets/user_avatar.dart';
@@ -227,29 +227,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           },
                         ),
                         const SizedBox(height: 32),
-
-                        SizedBox(
-                          height: 54,
-                          child: ElevatedButton(
-                            onPressed: _isSaving ? null : _save,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: colors.primary,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: AppRadius.xlAll,
-                              ),
+                        GlassCtaButton(
+                          onPressed: _save,
+                          isLoading: _isSaving,
+                          child: Text(
+                            context.text.save,
+                            style: context.typo.title.copyWith(
+                              color: colors.onPrimary,
                             ),
-                            child: _isSaving
-                                ? AdaptiveSpinner(
-                                    size: 22,
-                                    color: colors.onPrimary,
-                                  )
-                                : Text(
-                                    context.text.save,
-                                    style: context.typo.title.copyWith(
-                                      color: colors.onPrimary,
-                                    ),
-                                  ),
                           ),
                         ),
                       ],
