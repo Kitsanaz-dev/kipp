@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
 import 'package:kipp/features/expense/presentation/widgets/period_switcher.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 import '../../helpers/pump_app.dart';
 
@@ -36,8 +37,14 @@ class _HostState extends State<_Host> {
   );
 }
 
-IconButton _button(WidgetTester tester, IconData icon) => tester.widget(
-  find.ancestor(of: find.byIcon(icon), matching: find.byType(IconButton)),
+/// The prev/next button, found by its tooltip ('Previous page' / 'Next page').
+GlassIconButton _button(WidgetTester tester, IconData icon) => tester.widget(
+  find.descendant(
+    of: find.byTooltip(
+      icon == Icons.chevron_left ? 'Previous page' : 'Next page',
+    ),
+    matching: find.byType(GlassIconButton),
+  ),
 );
 
 Future<void> _tapChevron(WidgetTester tester, IconData icon) async {

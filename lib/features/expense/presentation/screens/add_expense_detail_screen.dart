@@ -11,6 +11,7 @@ import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/widgets/adaptive_spinner.dart';
 import 'package:kipp/core/widgets/app_snackbar.dart';
 import 'package:kipp/core/widgets/glass_body.dart';
+import 'package:kipp/core/widgets/glass_segmented_bar.dart';
 import 'package:kipp/features/expense/data/services/receipt_scanner_service.dart';
 import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
 import 'package:kipp/core/router/route_paths.dart';

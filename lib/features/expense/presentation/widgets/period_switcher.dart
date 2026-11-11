@@ -7,6 +7,7 @@ import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/widgets/month_year_picker.dart';
 import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 /// `‹  November 2026  ›` row for any [PeriodUnit]. Chevrons step one unit;
 /// tapping the title opens a picker (date picker for day/week, month/year
@@ -119,12 +120,10 @@ class _PeriodSwitcherState extends State<PeriodSwitcher> {
 
     return Row(
       children: [
-        IconButton(
+        _Chevron(
           tooltip: material.previousPageTooltip,
+          icon: Icons.chevron_left,
           onPressed: _canGoBack ? () => _step(_previous) : null,
-          icon: const Icon(Icons.chevron_left),
-          color: colors.primary,
-          disabledColor: colors.inactive.withValues(alpha: 0.4),
         ),
         Expanded(
           child: Semantics(
@@ -183,14 +182,48 @@ class _PeriodSwitcherState extends State<PeriodSwitcher> {
             ),
           ),
         ),
-        IconButton(
+        _Chevron(
           tooltip: material.nextPageTooltip,
+          icon: Icons.chevron_right,
           onPressed: _canGoForward ? () => _step(_next) : null,
-          icon: const Icon(Icons.chevron_right),
-          color: colors.primary,
-          disabledColor: colors.inactive.withValues(alpha: 0.4),
         ),
       ],
+    );
+  }
+}
+
+/// Glass prev/next button. `onPressed: null` disables it: the glass dims and
+/// the chevron greys out, as the IconButton's disabledColor did.
+class _Chevron extends StatelessWidget {
+  const _Chevron({
+    required this.tooltip,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final String tooltip;
+  final IconData icon;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Tooltip(
+      message: tooltip,
+      // The button carries the same label for screen readers.
+      excludeFromSemantics: true,
+      child: GlassIconButton(
+        size: 40,
+        iconSize: 24,
+        semanticLabel: tooltip,
+        onPressed: onPressed,
+        icon: Icon(
+          icon,
+          color: onPressed == null
+              ? colors.inactive.withValues(alpha: 0.4)
+              : colors.primary,
+        ),
+      ),
     );
   }
 }

@@ -13,31 +13,16 @@ class _TransactionTypeToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SegmentedButton<bool>(
-      style: ButtonStyle(
-        // ຈັດການສີພື້ນຫຼັງ (Background Color)
-        backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
-          if (states.contains(WidgetState.selected)) {
-            return context.colors.primary; // ສີ Primary ເມື່ອຖືກເລືອກ
-          }
-          return Colors.transparent; // ສີຕອນບໍ່ໄດ້ເລືອກ
-        }),
-        // ຈັດການສີຕົວໜັງສື ແລະ ໄອຄອນ (Foreground Color)
-        foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
-          if (states.contains(WidgetState.selected)) {
-            return context.colors.onPrimary; // ສີຕົວໜັງສືຕອນເລືອກ
-          }
-          return context.colors.text; // ສີຕົວໜັງສືຕອນບໍ່ໄດ້ເລືອກ
-        }),
-        elevation: const WidgetStatePropertyAll(0),
-      ),
-      segments: [
-        ButtonSegment(value: true, label: Text(context.text.expenses)),
-        ButtonSegment(value: false, label: Text(context.text.income)),
-      ],
-      selected: {isExpense},
-      onSelectionChanged: (Set<bool> newSelection) =>
-          onChanged(newSelection.first),
+    return GlassSegmentedBar(
+      height: 44,
+      labels: [context.text.expenses, context.text.income],
+      selectedIndex: isExpense ? 0 : 1,
+      // Like SegmentedButton, re-tapping the selected segment is a no-op
+      // (a change resets the chosen category).
+      onSelected: (index) {
+        final expense = index == 0;
+        if (expense != isExpense) onChanged(expense);
+      },
     );
   }
 }
@@ -181,7 +166,7 @@ class _CategoryPickerField extends StatelessWidget {
   }
 }
 
-/// Receipt-scan floating action button (spinner while scanning).
+/// Floating glass receipt-scan button (spinner and disabled while scanning).
 class _ScanReceiptFab extends StatelessWidget {
   const _ScanReceiptFab({required this.isScanning, required this.onPressed});
 
@@ -190,15 +175,21 @@ class _ScanReceiptFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      shape: const CircleBorder(),
-      backgroundColor: context.colors.primary,
+    final colors = context.colors;
+    return GlassIconButton(
+      size: 56,
+      iconSize: 24,
+      semanticLabel: context.text.scanReceipt,
+      // Brand-tinted glass, like the coral FAB it replaces.
+      settings: LiquidGlassSettings(
+        glassColor: colors.primary.withValues(alpha: 0.85),
+      ),
       onPressed: isScanning ? null : onPressed,
-      child: isScanning
-          ? AdaptiveSpinner(size: 20, color: context.colors.onPrimary)
+      icon: isScanning
+          ? AdaptiveSpinner(size: 20, color: colors.onPrimary)
           : Icon(
               Platform.isAndroid ? Icons.camera_alt : CupertinoIcons.camera,
-              color: context.colors.onPrimary,
+              color: colors.onPrimary,
             ),
     );
   }

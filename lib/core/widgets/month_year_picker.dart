@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:kipp/core/constant/durations.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 /// Shows a bottom sheet for picking a month and year.
 ///
@@ -250,7 +249,7 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
           final cellWidth = constraints.maxWidth / _columns;
           return Stack(
             children: [
-              // ---- Glass indicator, same look as DayTypeNavBar ----
+              // ---- Selected-month highlight (solid: dense grid, no glass) ----
               AnimatedAlign(
                 duration: AppDurations.slide,
                 curve: Curves.easeOutCubic,
@@ -261,15 +260,13 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
                 child: AnimatedOpacity(
                   duration: AppDurations.fast,
                   opacity: showIndicator ? 1 : 0,
-                  child: FakeGlass(
-                    shape: LiquidRoundedSuperellipse(
-                      borderRadius: AppRadius.md,
+                  child: Container(
+                    width: cellWidth,
+                    height: _cellHeight,
+                    decoration: BoxDecoration(
+                      color: colors.primary,
+                      borderRadius: AppRadius.mdAll,
                     ),
-                    settings: LiquidGlassSettings(
-                      blur: 6,
-                      glassColor: colors.primary.withValues(alpha: 0.65),
-                    ),
-                    child: SizedBox(width: cellWidth, height: _cellHeight),
                   ),
                 ),
               ),
