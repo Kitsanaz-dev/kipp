@@ -5,6 +5,8 @@ import 'package:kipp/core/theme/theme_builder.dart';
 import 'package:kipp/core/widgets/month_year_picker.dart';
 import 'package:kipp/l10n/app_localizations.dart';
 
+import '../../helpers/glass_test_app.dart';
+
 /// Holds what the picker returned once it closes.
 class _Result {
   bool closed = false;
@@ -21,29 +23,31 @@ Future<_Result> _openPicker(
 }) async {
   final result = _Result();
   await tester.pumpWidget(
-    MaterialApp(
-      theme: lightThemeData,
-      locale: locale,
-      supportedLocales: const [Locale('lo'), Locale('en')],
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      home: Builder(
-        builder: (context) => TextButton(
-          onPressed: () async {
-            result.value = await showMonthYearPicker(
-              context,
-              initial: initial,
-              first: first,
-              last: last,
-              yearOnly: yearOnly,
-            );
-            result.closed = true;
-          },
-          child: const Text('open'),
+    wrapWithGlass(
+      MaterialApp(
+        theme: lightThemeData,
+        locale: locale,
+        supportedLocales: const [Locale('lo'), Locale('en')],
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        home: Builder(
+          builder: (context) => TextButton(
+            onPressed: () async {
+              result.value = await showMonthYearPicker(
+                context,
+                initial: initial,
+                first: first,
+                last: last,
+                yearOnly: yearOnly,
+              );
+              result.closed = true;
+            },
+            child: const Text('open'),
+          ),
         ),
       ),
     ),

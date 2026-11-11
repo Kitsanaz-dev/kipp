@@ -7,6 +7,8 @@ import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/l10n/app_localizations.dart';
 
+import 'glass_test_app.dart';
+
 class _FakeExpenseList extends ExpenseList {
   _FakeExpenseList(this._items);
 
@@ -30,17 +32,19 @@ Future<void> pumpApp(
       overrides: [
         expenseListProvider.overrideWith(() => _FakeExpenseList(items)),
       ],
-      child: MaterialApp(
-        theme: dark ? darkThemeData : lightThemeData,
-        locale: locale,
-        supportedLocales: const [Locale('lo'), Locale('en')],
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        home: Scaffold(body: home),
+      child: wrapWithGlass(
+        MaterialApp(
+          theme: dark ? darkThemeData : lightThemeData,
+          locale: locale,
+          supportedLocales: const [Locale('lo'), Locale('en')],
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          home: Scaffold(body: home),
+        ),
       ),
     ),
   );

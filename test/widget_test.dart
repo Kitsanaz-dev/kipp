@@ -10,6 +10,7 @@ import 'package:kipp/core/network/api_client.dart';
 import 'package:kipp/core/network/network_providers.dart';
 import 'package:kipp/features/auth/presentation/screens/start_screen.dart';
 import 'helpers/fake_token_storage.dart';
+import 'helpers/glass_test_app.dart';
 
 void main() {
   late Directory tempDir;
@@ -45,7 +46,7 @@ void main() {
           tokenStorageProvider.overrideWithValue(storage),
           apiClientProvider.overrideWithValue(ApiClient(storage, dio: dio)),
         ],
-        child: const KippApp(),
+        child: wrapWithGlass(const KippApp()),
       ),
     );
     await tester.pumpAndSettle();

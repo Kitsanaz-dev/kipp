@@ -64,6 +64,7 @@ dependencies:
   path_provider: ^2.1.6
   permission_handler: ^12.0.3
   image: ^4.5.4
+  liquid_glass_widgets: ^1.17.1
 
 dev_dependencies:
   hive_ce_generator: ^1.7.0

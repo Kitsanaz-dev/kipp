@@ -6,7 +6,7 @@ part of 'auth_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authRepositoryHash() => r'7f702f31696056932280a3a54b2a633293408390';
+String _$authRepositoryHash() => r'b46f88de1fbb7a5cac25f4bd4038eac8b8c0b2c3';
 
 /// See also [authRepository].
 @ProviderFor(authRepository)
@@ -23,7 +23,7 @@ final authRepositoryProvider = AutoDisposeProvider<AuthRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AuthRepositoryRef = AutoDisposeProviderRef<AuthRepository>;
-String _$authHash() => r'47d1e4b6612cce067e14940805ec858b7847c54d';
+String _$authHash() => r'5f8e7702d203c71e81048c5c643f4008fc5eab91';
 
 /// Current signed-in user - single source of truth ສຳລັບ auth state.
 /// build() ອ່ານ session ຈາກ Hive ຕອນເປີດແອັບ.
