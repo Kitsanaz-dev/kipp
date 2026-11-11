@@ -11,6 +11,7 @@ import 'package:kipp/core/widgets/user_avatar.dart';
 import 'package:kipp/features/auth/presentation/providers/auth_provider.dart';
 import 'package:kipp/features/settings/presentation/widgets/theme_mode_selector.dart';
 import 'package:kipp/features/settings/presentation/widgets/language_selector.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -145,40 +146,33 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   void _confirmLogout(BuildContext context, WidgetRef ref) {
-    final colors = context.colors;
-    showDialog(
+    GlassDialog.show<void>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.lgAll),
-        title: Text(context.text.logOut),
-        content: Text(context.text.logOutConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(context.text.cancel, style: TextStyle(color: colors.subtext)),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(dialogContext);
-              try {
-                await ref.read(authProvider.notifier).logout();
-                if (!context.mounted) return;
-                context.go(RoutePaths.start);
-              } catch (_) {
-                if (!context.mounted) return;
-                AppSnackbar.showError(context, context.text.somethingWentWrong);
-              }
-            },
-            child: Text(
-              context.text.logOut,
-              style: TextStyle(
-                color: colors.danger,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
+      barrierDismissible: true,
+      title: context.text.logOut,
+      message: context.text.logOutConfirm,
+      actions: [
+        GlassDialogAction(
+          label: context.text.cancel,
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+        ),
+        GlassDialogAction(
+          label: context.text.logOut,
+          isDestructive: true,
+          onPressed: () async {
+            // Close the dialog (it lives on the root navigator), then log out.
+            Navigator.of(context, rootNavigator: true).pop();
+            try {
+              await ref.read(authProvider.notifier).logout();
+              if (!context.mounted) return;
+              context.go(RoutePaths.start);
+            } catch (_) {
+              if (!context.mounted) return;
+              AppSnackbar.showError(context, context.text.somethingWentWrong);
+            }
+          },
+        ),
+      ],
     );
   }
 }

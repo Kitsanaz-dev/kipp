@@ -47,31 +47,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Future<void> _showPhotoOptions() async {
-    await showCupertinoModalPopup<void>(
+    await showGlassActionSheet<void>(
       context: context,
-      builder: (sheetContext) => CupertinoActionSheet(
-        actions: [
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(sheetContext);
-              _pickImage(ImageSource.camera);
-            },
-            child: Text(context.text.takePhoto),
-          ),
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(sheetContext);
-              _pickImage(ImageSource.gallery);
-            },
-            child: Text(context.text.chooseFromGallery),
-          ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          isDefaultAction: true,
-          onPressed: () => Navigator.pop(sheetContext),
-          child: Text(context.text.cancel),
+      cancelLabel: context.text.cancel,
+      actions: [
+        GlassActionSheetAction(
+          label: context.text.takePhoto,
+          onPressed: () => _pickImage(ImageSource.camera),
         ),
-      ),
+        GlassActionSheetAction(
+          label: context.text.chooseFromGallery,
+          onPressed: () => _pickImage(ImageSource.gallery),
+        ),
+      ],
     );
   }
 

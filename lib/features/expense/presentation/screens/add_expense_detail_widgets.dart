@@ -102,35 +102,22 @@ class _CategoryPickerField extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                // ສະແດງ Bottom Sheet ແບບ iOS Native
-                showCupertinoModalPopup<void>(
+                // ສະແດງ glass action sheet (ປິດເອງເມື່ອເລືອກ)
+                showGlassActionSheet<void>(
                   context: context,
-                  builder: (BuildContext context) => CupertinoActionSheet(
-                    title: Text(context.text.selectTypeTitle),
-                    actions: types.map((type) {
-                      return CupertinoActionSheetAction(
+                  title: context.text.selectTypeTitle,
+                  cancelLabel: context.text.cancel,
+                  actions: [
+                    for (final type in types)
+                      GlassActionSheetAction(
+                        label: type,
                         onPressed: () {
                           onSelected(type);
-                          state.didChange(
-                            type,
-                          ); // ອັບເດດ state ໃຫ້ Form Validation ເຫັນ
-                          Navigator.pop(context);
+                          // ອັບເດດ state ໃຫ້ Form Validation ເຫັນ
+                          state.didChange(type);
                         },
-                        child: Text(
-                          type,
-                          style: TextStyle(
-                            color: context.colors.primary,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                    cancelButton: CupertinoActionSheetAction(
-                      isDefaultAction: true,
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(context.text.cancel),
-                    ),
-                  ),
+                      ),
+                  ],
                 );
               },
               child: InputDecorator(

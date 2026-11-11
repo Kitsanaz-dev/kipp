@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:kipp/core/constant/durations.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 /// Shows a bottom sheet for picking a month and year.
 ///
@@ -26,10 +27,12 @@ Future<DateTime?> showMonthYearPicker(
   if (initialMonth.isBefore(firstMonth)) initialMonth = firstMonth;
   if (initialMonth.isAfter(lastMonth)) initialMonth = lastMonth;
 
-  return showModalBottomSheet<DateTime>(
+  return GlassModalSheet.show<DateTime>(
     context: context,
-    backgroundColor: Colors.transparent,
-    isScrollControlled: true,
+    // Content-sized picker: a single resting height that fits the year row
+    // and the 4x3 month grid (a shorter one for year-only).
+    halfSize: yearOnly ? 0.3 : 0.6,
+    detents: const {GlassSheetDetent.medium},
     builder: (_) => MonthYearPickerSheet(
       initial: initialMonth,
       first: firstMonth,
@@ -109,74 +112,66 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
         ? _isYearEnabled(now.year)
         : _isEnabled(thisMonth);
 
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-        20,
-        12,
-        20,
-        MediaQuery.of(context).padding.bottom + 20,
-      ),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(AppRadius.xxl),
+    // The glass sheet draws its own surface and drag indicator. Material
+    // hosts the "This month" TextButton; the scroll view keeps the grid
+    // reachable on short screens.
+    return Material(
+      type: MaterialType.transparency,
+      child: SingleChildScrollView(
+        controller: ScrollControllerProvider.of(context)?.controller,
+        padding: EdgeInsets.fromLTRB(
+          20,
+          12,
+          20,
+          MediaQuery.of(context).padding.bottom + 20,
         ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                color: colors.inactiveContainer,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  yearOnly ? context.text.selectYear : context.text.selectMonth,
-                  style: context.typo.title.copyWith(color: colors.text),
-                ),
-              ),
-              TextButton(
-                onPressed: shortcutEnabled
-                    ? () => Navigator.of(
-                        context,
-                      ).pop(yearOnly ? DateTime(now.year) : thisMonth)
-                    : null,
-                style: TextButton.styleFrom(foregroundColor: colors.primary),
-                child: Text(
-                  yearOnly
-                      ? context.text.thisYearShortcut
-                      : context.text.thisMonthShortcut,
-                  style: context.typo.subtitle.copyWith(
-                    color: shortcutEnabled ? colors.primary : colors.inactive,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    yearOnly
+                        ? context.text.selectYear
+                        : context.text.selectMonth,
+                    style: context.typo.title.copyWith(color: colors.text),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          if (yearOnly)
-            _buildYearRow(context)
-          else ...[
-            Text(
-              context.text.selectYear,
-              style: context.typo.caption.copyWith(color: colors.subtext),
+                TextButton(
+                  onPressed: shortcutEnabled
+                      ? () => Navigator.of(
+                          context,
+                        ).pop(yearOnly ? DateTime(now.year) : thisMonth)
+                      : null,
+                  style: TextButton.styleFrom(foregroundColor: colors.primary),
+                  child: Text(
+                    yearOnly
+                        ? context.text.thisYearShortcut
+                        : context.text.thisMonthShortcut,
+                    style: context.typo.subtitle.copyWith(
+                      color: shortcutEnabled ? colors.primary : colors.inactive,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
-            _buildYearRow(context),
-            const SizedBox(height: 20),
-            _buildMonthGrid(context, thisMonth),
+            if (yearOnly)
+              _buildYearRow(context)
+            else ...[
+              Text(
+                context.text.selectYear,
+                style: context.typo.caption.copyWith(color: colors.subtext),
+              ),
+              const SizedBox(height: 8),
+              _buildYearRow(context),
+              const SizedBox(height: 20),
+              _buildMonthGrid(context, thisMonth),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
