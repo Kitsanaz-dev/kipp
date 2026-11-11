@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kipp/features/expense/presentation/screens/add_expense_detail_screen.dart';
@@ -37,7 +36,7 @@ void main() {
     // Category sheet lists expense categories by default.
     await tester.tap(find.text('Select Type'));
     await tester.pumpAndSettle();
-    expect(find.byType(CupertinoActionSheet), findsOneWidget);
+    expect(find.text('Select Type...'), findsOneWidget); // sheet title
     expect(find.text('Salary'), findsNothing);
     await tester.tap(find.text('Travel'));
     await tester.pumpAndSettle();

@@ -1,12 +1,9 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
-import 'package:kipp/core/router/route_paths.dart';
+import 'package:kipp/core/widgets/app_snackbar.dart';
+import 'package:kipp/core/widgets/glass_body.dart';
 import 'package:kipp/core/theme/theme_builder.dart';
 import 'package:kipp/features/auth/presentation/providers/auth_provider.dart';
 import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
@@ -20,6 +17,7 @@ import 'package:kipp/features/expense/presentation/widgets/expense_card.dart';
 import 'package:kipp/features/expense/presentation/widgets/grouped_transaction_list.dart';
 import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
 import 'package:kipp/features/expense/presentation/widgets/period_summary_sheet.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 /// Bottom-navigation destinations, in tab order.
 enum HomeTab { home, expense, history, profile }
@@ -50,30 +48,45 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appBar = _appBar(context);
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: systemOverlayStyleFor(Theme.of(context).brightness),
-      child: Scaffold(
-        appBar: _appBar(context),
-        body: IndexedStack(
-          index: _tab.index,
-          children: const [
-            _HomeTab(),
-            ExpenseScreen(),
-            HistoryScreen(),
-            ProfileScreen(),
+      child: GlassScaffold(
+        backgroundColor: context.colors.background,
+        // Tabs lay themselves out between the bars, as under Scaffold.
+        extendBody: false,
+        appBar: appBar,
+        // The bar sits in the body column rather than `bottomBar:` because
+        // its height is only known after layout (native iOS bar vs. glass
+        // fallback); the column sizes it exactly like
+        // Scaffold.bottomNavigationBar did. The add action lives in the bar
+        // itself (native plus action / glass extra button).
+        body: Column(
+          children: [
+            Expanded(
+              child: GlassBody(
+                removeTop: appBar != null,
+                removeBottom: true,
+                child: IndexedStack(
+                  index: _tab.index,
+                  children: const [
+                    _HomeTab(),
+                    ExpenseScreen(),
+                    HistoryScreen(),
+                    ProfileScreen(),
+                  ],
+                ),
+              ),
+            ),
+            AppSnackbarAnchor(
+              child: BottomBar(
+                currentIndex: _tab.index,
+                onTap: (index) => setState(() => _tab = HomeTab.values[index]),
+              ),
+            ),
           ],
         ),
-        bottomNavigationBar: BottomBar(
-          currentIndex: _tab.index,
-          onTap: (index) => setState(() => _tab = HomeTab.values[index]),
-        ),
-        floatingActionButton: (!kIsWeb && Platform.isIOS)
-            ? null
-            : FloatingActionButton(
-                backgroundColor: context.colors.primary,
-                onPressed: () => context.push(RoutePaths.addExpense),
-                child: Icon(Icons.add, color: context.colors.onPrimary),
-              ),
       ),
     );
   }

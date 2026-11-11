@@ -6,7 +6,7 @@ part of 'network_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tokenStorageHash() => r'a1b2c3d4e5f60718293a4b5c6d7e8f9012345678';
+String _$tokenStorageHash() => r'c55b482201cf22ebfe8999c77ff19ff449cb49e8';
 
 /// See also [tokenStorage].
 @ProviderFor(tokenStorage)
@@ -23,7 +23,7 @@ final tokenStorageProvider = AutoDisposeProvider<TokenStorage>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef TokenStorageRef = AutoDisposeProviderRef<TokenStorage>;
-String _$apiClientHash() => r'b2c3d4e5f60718293a4b5c6d7e8f901234567890a';
+String _$apiClientHash() => r'0b7a3e1d960da7203e42f4080b2b8944d7be017a';
 
 /// See also [apiClient].
 @ProviderFor(apiClient)

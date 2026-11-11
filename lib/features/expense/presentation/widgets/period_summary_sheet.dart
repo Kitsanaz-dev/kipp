@@ -13,6 +13,7 @@ import 'package:kipp/features/expense/presentation/providers/expense_provider.da
 import 'package:kipp/features/expense/presentation/widgets/expense_detail_bottom_sheet.dart';
 import 'package:kipp/features/expense/presentation/widgets/total_card.dart';
 import 'package:kipp/features/expense/presentation/widgets/transaction_tile.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 /// Opens a draggable sheet summarising the transactions in [range].
 Future<void> showPeriodSummarySheet(
@@ -20,10 +21,12 @@ Future<void> showPeriodSummarySheet(
   DateRange range,
   String title,
 ) {
-  return showModalBottomSheet(
+  return GlassModalSheet.show<void>(
     context: context,
-    backgroundColor: Colors.transparent,
-    isScrollControlled: true,
+    // Was a DraggableScrollableSheet (initial 0.6, max 0.9): rests at 60%,
+    // drags up to the full detent; scrolling the list up first expands it.
+    halfSize: 0.6,
+    detents: const {GlassSheetDetent.medium, GlassSheetDetent.large},
     builder: (_) =>
         PeriodSummarySheet(range: range, title: title, hostContext: context),
   );
@@ -49,120 +52,100 @@ class PeriodSummarySheet extends ConsumerWidget {
     final colors = context.colors;
     final summary = ref.watch(periodSummaryProvider(range));
 
-    return DraggableScrollableSheet(
-      expand: false,
-      initialChildSize: 0.6,
-      minChildSize: 0.3,
-      maxChildSize: 0.9,
-      builder: (context, scrollController) => Container(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(AppRadius.xxl),
-          ),
+    final sheetScroll = ScrollControllerProvider.of(context);
+
+    // The glass sheet draws its own surface and drag indicator; its scroll
+    // controller links the list to the sheet drag (expand first, then scroll).
+    return Material(
+      type: MaterialType.transparency,
+      child: ListView(
+        controller: sheetScroll?.controller,
+        padding: EdgeInsets.fromLTRB(
+          20,
+          16,
+          20,
+          MediaQuery.of(context).padding.bottom + 24,
         ),
-        child: ListView(
-          controller: scrollController,
-          padding: EdgeInsets.fromLTRB(
-            20,
-            20,
-            20,
-            MediaQuery.of(context).padding.bottom + 24,
+        children: [
+          // ---- Header ----
+          Text(
+            context.text.periodDetails,
+            style: context.typo.caption.copyWith(color: colors.subtext),
           ),
-          children: [
-            // ---- Drag handle ----
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                  color: colors.inactiveContainer,
-                  borderRadius: BorderRadius.circular(2),
+          const SizedBox(height: 2),
+          Text(title, style: context.typo.title.copyWith(color: colors.text)),
+          const SizedBox(height: 4),
+          Text(
+            CurrencyFormatter.formatKip(summary.balance),
+            style: context.typo.h2.copyWith(color: colors.text),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            context.text.transactionCount(summary.count),
+            style: context.typo.bodySmall.copyWith(color: colors.subtext),
+          ),
+          const SizedBox(height: 20),
+
+          if (summary.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 32),
+              child: Center(
+                child: Text(
+                  context.text.noTransactions,
+                  style: context.typo.body.copyWith(color: colors.subtext),
                 ),
               ),
-            ),
-
-            // ---- Header ----
-            Text(
-              context.text.periodDetails,
-              style: context.typo.caption.copyWith(color: colors.subtext),
-            ),
-            const SizedBox(height: 2),
-            Text(title, style: context.typo.title.copyWith(color: colors.text)),
-            const SizedBox(height: 4),
-            Text(
-              CurrencyFormatter.formatKip(summary.balance),
-              style: context.typo.h2.copyWith(color: colors.text),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              context.text.transactionCount(summary.count),
-              style: context.typo.bodySmall.copyWith(color: colors.subtext),
-            ),
-            const SizedBox(height: 20),
-
-            if (summary.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 32),
-                child: Center(
-                  child: Text(
-                    context.text.noTransactions,
-                    style: context.typo.body.copyWith(color: colors.subtext),
+            )
+          else ...[
+            // ---- Income / Expense ----
+            Row(
+              children: [
+                Expanded(
+                  child: TotalCard(
+                    label: context.text.income,
+                    amount: summary.income,
+                    color: colors.ok,
+                    icon: Icons.arrow_downward,
                   ),
                 ),
-              )
-            else ...[
-              // ---- Income / Expense ----
-              Row(
-                children: [
-                  Expanded(
-                    child: TotalCard(
-                      label: context.text.income,
-                      amount: summary.income,
-                      color: colors.ok,
-                      icon: Icons.arrow_downward,
-                    ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TotalCard(
+                    label: context.text.expenses,
+                    amount: summary.expense,
+                    color: colors.danger,
+                    icon: Icons.arrow_upward,
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: TotalCard(
-                      label: context.text.expenses,
-                      amount: summary.expense,
-                      color: colors.danger,
-                      icon: Icons.arrow_upward,
-                    ),
-                  ),
-                ],
-              ),
-
-              // ---- By category ----
-              if (summary.byCategory.isNotEmpty) ...[
-                const SizedBox(height: 24),
-                _SectionTitle(context.text.byCategory),
-                const SizedBox(height: 8),
-                for (final c in summary.byCategory) _CategoryRow(total: c),
+                ),
               ],
+            ),
 
-              // ---- Top expenses ----
-              if (summary.topExpenses.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                _SectionTitle(context.text.topExpenses),
-                const SizedBox(height: 4),
-                for (final tx in summary.topExpenses)
-                  TransactionTile(
-                    transaction: tx,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      if (hostContext.mounted) {
-                        showExpenseDetailBottomSheet(hostContext, tx);
-                      }
-                    },
-                  ),
-              ],
+            // ---- By category ----
+            if (summary.byCategory.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              _SectionTitle(context.text.byCategory),
+              const SizedBox(height: 8),
+              for (final c in summary.byCategory) _CategoryRow(total: c),
+            ],
+
+            // ---- Top expenses ----
+            if (summary.topExpenses.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              _SectionTitle(context.text.topExpenses),
+              const SizedBox(height: 4),
+              for (final tx in summary.topExpenses)
+                TransactionTile(
+                  transaction: tx,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    if (hostContext.mounted) {
+                      showExpenseDetailBottomSheet(hostContext, tx);
+                    }
+                  },
+                ),
             ],
           ],
-        ),
+        ],
       ),
     );
   }

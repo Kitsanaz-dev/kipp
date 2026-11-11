@@ -8,13 +8,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
+import 'package:kipp/core/widgets/glass_cta_button.dart';
 import 'package:kipp/core/widgets/adaptive_spinner.dart';
 import 'package:kipp/core/widgets/app_snackbar.dart';
+import 'package:kipp/core/widgets/glass_body.dart';
+import 'package:kipp/core/widgets/glass_segmented_bar.dart';
 import 'package:kipp/features/expense/data/services/receipt_scanner_service.dart';
 import 'package:kipp/features/expense/domain/entities/expense_entity.dart';
 import 'package:kipp/core/router/route_paths.dart';
 import 'package:kipp/features/expense/presentation/providers/expense_provider.dart';
 import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 part 'add_expense_detail_widgets.dart';
 
@@ -161,108 +165,88 @@ class _AddExpenseDetailScreenState
   Widget build(BuildContext context) {
     final currentTypes = _isExpense ? _expenseTypes : _incomeTypes;
 
-    return Scaffold(
+    return GlassScaffold(
+      backgroundColor: context.colors.background,
+      extendBody: false,
       appBar: KippAppBar(
         title: context.text.addTransaction,
-        leading: IconButton(
-          onPressed: () => context.pop(), // ✅ go_router
-          icon: Icon(
-            CupertinoIcons.back,
-            color: context.colors.onPrimary,
-            size: 32,
-          ),
-        ),
+        leading: const KippBackButton(), // ✅ go_router pop
       ),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 1. ເລືອກ Income ຫຼື Expense
-              _TransactionTypeToggle(
-                isExpense: _isExpense,
-                onChanged: (isExpense) => setState(() {
-                  _isExpense = isExpense;
-                  _selectedType = null; // Reset category ເມື່ອປ່ຽນປະເພດ
-                }),
-              ),
-              const SizedBox(height: 16),
+      // GlassScaffold has no FAB slot: the scan button floats in an overlay
+      // at the end-float position, above the keyboard like a FAB.
+      bodyOverlays: [
+        Positioned(
+          right: 16,
+          bottom: 16 + MediaQuery.paddingOf(context).bottom,
+          child: _ScanReceiptFab(
+            isScanning: _isScanning,
+            onPressed: _scanReceipt,
+          ),
+        ),
+      ],
 
-              // 2. ປ້ອນຈຳນວນເງິນ
-              _AmountField(controller: _amountController),
-              const SizedBox(height: 16),
+      body: GlassBody(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // 1. ເລືອກ Income ຫຼື Expense
+                _TransactionTypeToggle(
+                  isExpense: _isExpense,
+                  onChanged: (isExpense) => setState(() {
+                    _isExpense = isExpense;
+                    _selectedType = null; // Reset category ເມື່ອປ່ຽນປະເພດ
+                  }),
+                ),
+                const SizedBox(height: 16),
 
-              // 3. ເລືອກ Type ຂອງການຈ່າຍ/ຮັບ
-              _CategoryPickerField(
-                types: currentTypes,
-                selectedType: _selectedType,
-                onSelected: (type) => setState(() => _selectedType = type),
-              ),
-              const SizedBox(height: 16),
+                // 2. ປ້ອນຈຳນວນເງິນ
+                _AmountField(controller: _amountController),
+                const SizedBox(height: 16),
 
-              // 4. ຄຳອະທິບາຍ (Description)
-              TextFormField(
-                controller: _descController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: context.text.description,
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(AppRadius.xl),
+                // 3. ເລືອກ Type ຂອງການຈ່າຍ/ຮັບ
+                _CategoryPickerField(
+                  types: currentTypes,
+                  selectedType: _selectedType,
+                  onSelected: (type) => setState(() => _selectedType = type),
+                ),
+                const SizedBox(height: 16),
+
+                // 4. ຄຳອະທິບາຍ (Description)
+                TextFormField(
+                  controller: _descController,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    labelText: context.text.description,
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(AppRadius.xl),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // ປຸ່ມ Save
-              SizedBox(
-                width: double.infinity,
-                height: 54,
-                child: ElevatedButton(
-                  onPressed: _isSaving
-                      ? null
-                      : _saveTransaction, // ✅ disable ຕອນ saving
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: context.colors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: AppRadius.xlAll,
+                // ປຸ່ມ Save
+                GlassCtaButton(
+                  onPressed: _saveTransaction,
+                  // ✅ disable + spinner ຕອນ saving
+                  isLoading: _isSaving,
+                  child: Text(
+                    context.text.save,
+                    style: context.typo.title.copyWith(
+                      color: context.colors.onPrimary,
                     ),
-                    elevation: 0,
                   ),
-                  child: _isSaving
-                      ? SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: context.colors.onPrimary,
-                          ),
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              context.text.save,
-                              style: context.typo.title.copyWith(
-                                color: context.colors.onPrimary,
-                              ),
-                            ),
-                          ],
-                        ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-
-      floatingActionButton: _ScanReceiptFab(
-        isScanning: _isScanning,
-        onPressed: _scanReceipt,
       ),
     );
   }

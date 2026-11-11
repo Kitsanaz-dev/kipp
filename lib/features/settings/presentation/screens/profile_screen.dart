@@ -3,14 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
 import 'package:kipp/core/router/route_paths.dart';
 import 'package:kipp/core/widgets/app_snackbar.dart';
+import 'package:kipp/core/widgets/glass_cta_button.dart';
 import 'package:kipp/core/widgets/user_avatar.dart';
 import 'package:kipp/features/auth/presentation/providers/auth_provider.dart';
 import 'package:kipp/features/settings/presentation/widgets/theme_mode_selector.dart';
 import 'package:kipp/features/settings/presentation/widgets/language_selector.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -58,83 +59,43 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 24),
 
-            // ---- Edit Profile Info ----
-            _ProfileMenuTile(
-              icon: Icons.edit_outlined,
-              label: context.text.editProfileInfo,
-              onTap: () => context.push(RoutePaths.editProfile),
-            ),
-
-            // ---- Theme (ຝັງ selector ຢູ່ນຳ ບໍ່ຕ້ອງໄປໜ້າແຍກ) ----
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.palette_outlined,
-                        size: 20,
-                        color: colors.text,
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        context.text.theme,
-                        style: context.typo.subtitle.copyWith(
-                          color: colors.text,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  const ThemeModeSelector(),
-                ],
-              ),
-            ),
-
-            // ---- Theme (ຝັງ selector ຢູ່ນຳ ບໍ່ຕ້ອງໄປໜ້າແຍກ) ----
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(CupertinoIcons.globe, size: 20, color: colors.text),
-                      const SizedBox(width: 12),
-                      Text(
-                        context.text.language,
-                        style: context.typo.subtitle.copyWith(
-                          color: colors.text,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  const LanguageSelector(),
-                ],
-              ),
+            // ---- Settings: one inset-grouped section (solid: it sits in
+            // scrolling content). Theme / language selectors are transient
+            // glass, which is allowed inside a solid section. ----
+            GlassGroupedSection(
+              surfaceStyle: GlassSurfaceStyle.solid,
+              margin: EdgeInsets.zero,
+              children: [
+                _ProfileMenuTile(
+                  icon: Icons.edit_outlined,
+                  label: context.text.editProfileInfo,
+                  onTap: () => context.push(RoutePaths.editProfile),
+                ),
+                _SettingTile(
+                  icon: Icons.palette_outlined,
+                  label: context.text.theme,
+                  child: const ThemeModeSelector(),
+                ),
+                _SettingTile(
+                  icon: CupertinoIcons.globe,
+                  label: context.text.language,
+                  child: const LanguageSelector(),
+                ),
+              ],
             ),
 
             const SizedBox(height: 40),
 
-            // ---- Log out ----
-            SizedBox(
-              width: double.infinity,
+            // ---- Log out (outside the section: standalone glass) ----
+            GlassCtaButton(
               height: 52,
-              child: OutlinedButton(
-                onPressed: () => _confirmLogout(context, ref),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: colors.danger, width: 1.5),
-                  shape: RoundedRectangleBorder(borderRadius: AppRadius.xlAll),
-                ),
-                child: Text(
-                  context.text.logOut,
-                  style: context.typo.subtitle.copyWith(
-                    color: colors.danger,
-                    fontWeight: FontWeight.w600,
-                  ),
+              tint: colors.danger.withValues(alpha: 0.15),
+              onPressed: () => _confirmLogout(context, ref),
+              child: Text(
+                context.text.logOut,
+                style: context.typo.subtitle.copyWith(
+                  color: colors.danger,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
@@ -145,40 +106,33 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   void _confirmLogout(BuildContext context, WidgetRef ref) {
-    final colors = context.colors;
-    showDialog(
+    GlassDialog.show<void>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.lgAll),
-        title: Text(context.text.logOut),
-        content: Text(context.text.logOutConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(context.text.cancel, style: TextStyle(color: colors.subtext)),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(dialogContext);
-              try {
-                await ref.read(authProvider.notifier).logout();
-                if (!context.mounted) return;
-                context.go(RoutePaths.start);
-              } catch (_) {
-                if (!context.mounted) return;
-                AppSnackbar.showError(context, context.text.somethingWentWrong);
-              }
-            },
-            child: Text(
-              context.text.logOut,
-              style: TextStyle(
-                color: colors.danger,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
+      barrierDismissible: true,
+      title: context.text.logOut,
+      message: context.text.logOutConfirm,
+      actions: [
+        GlassDialogAction(
+          label: context.text.cancel,
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+        ),
+        GlassDialogAction(
+          label: context.text.logOut,
+          isDestructive: true,
+          onPressed: () async {
+            // Close the dialog (it lives on the root navigator), then log out.
+            Navigator.of(context, rootNavigator: true).pop();
+            try {
+              await ref.read(authProvider.notifier).logout();
+              if (!context.mounted) return;
+              context.go(RoutePaths.start);
+            } catch (_) {
+              if (!context.mounted) return;
+              AppSnackbar.showError(context, context.text.somethingWentWrong);
+            }
+          },
+        ),
+      ],
     );
   }
 }
@@ -197,26 +151,40 @@ class _ProfileMenuTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: AppRadius.mdAll,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        child: Row(
-          children: [
-            Icon(icon, size: 20, color: colors.text),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                style: context.typo.subtitle.copyWith(color: colors.text),
-              ),
-            ),
-            Icon(Icons.chevron_right, size: 20, color: colors.subtext),
-          ],
-        ),
+    return GlassListTile(
+      leading: Icon(icon, size: 20, color: colors.text),
+      title: Text(
+        label,
+        style: context.typo.subtitle.copyWith(color: colors.text),
       ),
+      trailing: GlassListTile.chevron,
+      onTap: onTap,
+    );
+  }
+}
+
+/// Row with an icon + label header and an inline control below it.
+class _SettingTile extends StatelessWidget {
+  const _SettingTile({
+    required this.icon,
+    required this.label,
+    required this.child,
+  });
+
+  final IconData icon;
+  final String label;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return GlassListTile(
+      leading: Icon(icon, size: 20, color: colors.text),
+      title: Text(
+        label,
+        style: context.typo.subtitle.copyWith(color: colors.text),
+      ),
+      subtitle: Padding(padding: const EdgeInsets.only(top: 12), child: child),
     );
   }
 }

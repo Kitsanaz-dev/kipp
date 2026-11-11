@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kipp/features/expense/domain/value_objects/date_range.dart';
 import 'package:kipp/features/expense/presentation/widgets/period_switcher.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 import '../../helpers/pump_app.dart';
 
@@ -36,8 +37,14 @@ class _HostState extends State<_Host> {
   );
 }
 
-IconButton _button(WidgetTester tester, IconData icon) => tester.widget(
-  find.ancestor(of: find.byIcon(icon), matching: find.byType(IconButton)),
+/// The prev/next button, found by its tooltip ('Previous page' / 'Next page').
+GlassIconButton _button(WidgetTester tester, IconData icon) => tester.widget(
+  find.descendant(
+    of: find.byTooltip(
+      icon == Icons.chevron_left ? 'Previous page' : 'Next page',
+    ),
+    matching: find.byType(GlassIconButton),
+  ),
 );
 
 Future<void> _tapChevron(WidgetTester tester, IconData icon) async {
@@ -159,5 +166,31 @@ void main() {
     await tester.pump(const Duration(milliseconds: 250));
     await tester.pumpAndSettle();
     expect(find.text('March 2026'), findsOneWidget);
+  });
+
+  testWidgets('next is disabled at the current period and enables after '
+      'stepping back', (tester) async {
+    final now = DateTime(2026, 11, 9);
+    await pumpApp(
+      tester,
+      _Host(
+        unit: PeriodUnit.week,
+        initial: now,
+        first: DateTime(2026, 1),
+        last: now,
+      ),
+    );
+
+    expect(_button(tester, Icons.chevron_right).onPressed, isNull);
+    expect(_button(tester, Icons.chevron_left).onPressed, isNotNull);
+
+    await _tapChevron(tester, Icons.chevron_left);
+    expect(_button(tester, Icons.chevron_right).onPressed, isNotNull);
+
+    // Tapping a disabled glass button does nothing.
+    await _tapChevron(tester, Icons.chevron_right);
+    expect(_button(tester, Icons.chevron_right).onPressed, isNull);
+    await _tapChevron(tester, Icons.chevron_right);
+    expect(find.text('Nov 9 – Nov 15, 2026'), findsOneWidget);
   });
 }

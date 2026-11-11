@@ -6,7 +6,7 @@ part of 'expense_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$expenseRepositoryHash() => r'b920689a693bd9e3b0f4a54426d9203b40e56496';
+String _$expenseRepositoryHash() => r'c9dd0bf427f8fe499487732a7c0aab51edb7c39f';
 
 /// See also [expenseRepository].
 @ProviderFor(expenseRepository)
@@ -24,7 +24,7 @@ final expenseRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ExpenseRepositoryRef = AutoDisposeProviderRef<ExpenseRepository>;
-String _$expensesByDayTypeHash() => r'998097304835683b382009f6950dc8dc64a56514';
+String _$expensesByDayTypeHash() => r'fec4521bbbdb82cfcd6ca8156ac2621ed74538cf';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -178,7 +178,7 @@ class _ExpensesByDayTypeProviderElement
   PeriodFilter get filter => (origin as ExpensesByDayTypeProvider).filter;
 }
 
-String _$expenseSummaryHash() => r'803e655b5a2917952342094f1372cb4061a75216';
+String _$expenseSummaryHash() => r'26255bd0643828228de3b1c37843e707a5050b28';
 
 /// ຄິດໄລ່ income/expense sum ຈາກ list ທີ່ filter ແລ້ວ
 ///
@@ -314,7 +314,7 @@ class _ExpenseSummaryProviderElement
   PeriodFilter get filter => (origin as ExpenseSummaryProvider).filter;
 }
 
-String _$expensesInRangeHash() => r'793fda4d87a7f39d8ad8a9b635fdd5884c489833';
+String _$expensesInRangeHash() => r'69c97a358b7ed18ffd19837f15c34ccb3c277ce0';
 
 /// Transactions inside [range], in source order (newest first).
 ///
@@ -446,7 +446,7 @@ class _ExpensesInRangeProviderElement
   DateRange get range => (origin as ExpensesInRangeProvider).range;
 }
 
-String _$periodSummaryHash() => r'f0499210148f747fab3cdd1ed5cea06c3f4565ba';
+String _$periodSummaryHash() => r'55067811fde8d358729db42412028659c9681d7b';
 
 /// Totals, category breakdown and top expenses for [range].
 ///
@@ -578,7 +578,7 @@ class _PeriodSummaryProviderElement
   DateRange get range => (origin as PeriodSummaryProvider).range;
 }
 
-String _$periodChartDataHash() => r'a33ae5ada77d8d0ca475937543cf089b8779139c';
+String _$periodChartDataHash() => r'50b15a906669dc953c6039b9b05898d1a2679027';
 
 /// Zero-filled chart buckets for [range] (hourly / daily / monthly, see
 /// [ExpenseStats.chartTotals]), oldest first.
@@ -718,7 +718,7 @@ class _PeriodChartDataProviderElement
 }
 
 String _$earliestExpenseMonthHash() =>
-    r'50cf55065639e6613e964122a22947ea20e90351';
+    r'563a87d93dbdb40d9b28793adc817984c7db64f1';
 
 /// First day of the month of the oldest transaction, or of the current month
 /// when there are none (never later than the current month). Used to bound

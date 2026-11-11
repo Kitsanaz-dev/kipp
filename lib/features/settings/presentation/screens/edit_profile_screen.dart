@@ -10,11 +10,13 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:kipp/core/constant/radius.dart';
 import 'package:kipp/core/extensions/build_context_ext.dart';
-import 'package:kipp/core/widgets/adaptive_spinner.dart';
+import 'package:kipp/core/widgets/glass_cta_button.dart';
 import 'package:kipp/core/widgets/app_snackbar.dart';
+import 'package:kipp/core/widgets/glass_body.dart';
 import 'package:kipp/core/widgets/user_avatar.dart';
 import 'package:kipp/features/auth/presentation/providers/auth_provider.dart';
 import 'package:kipp/features/expense/presentation/widgets/kipp_app_bar.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -45,31 +47,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Future<void> _showPhotoOptions() async {
-    await showCupertinoModalPopup<void>(
+    await showGlassActionSheet<void>(
       context: context,
-      builder: (sheetContext) => CupertinoActionSheet(
-        actions: [
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(sheetContext);
-              _pickImage(ImageSource.camera);
-            },
-            child: Text(context.text.takePhoto),
-          ),
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(sheetContext);
-              _pickImage(ImageSource.gallery);
-            },
-            child: Text(context.text.chooseFromGallery),
-          ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          isDefaultAction: true,
-          onPressed: () => Navigator.pop(sheetContext),
-          child: Text(context.text.cancel),
+      cancelLabel: context.text.cancel,
+      actions: [
+        GlassActionSheetAction(
+          label: context.text.takePhoto,
+          onPressed: () => _pickImage(ImageSource.camera),
         ),
-      ),
+        GlassActionSheetAction(
+          label: context.text.chooseFromGallery,
+          onPressed: () => _pickImage(ImageSource.gallery),
+        ),
+      ],
     );
   }
 
@@ -112,7 +102,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         }
       }
 
-      await ref.read(authProvider.notifier).updateProfile(
+      await ref
+          .read(authProvider.notifier)
+          .updateProfile(
             name: _nameCtrl.text.trim(),
             avatarPath: newAvatarPath,
           );
@@ -150,125 +142,107 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       _initialised = true;
     }
 
-    return Scaffold(
+    return GlassScaffold(
+      backgroundColor: colors.background,
+      extendBody: false,
       appBar: KippAppBar(
         title: context.text.editProfile,
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: Icon(
-            CupertinoIcons.back,
-            color: colors.onPrimary,
-            size: 28,
-          ),
-        ),
+        leading: const KippBackButton(),
       ),
-      body: user == null
-          ? const Center(child: CupertinoActivityIndicator())
-          : SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Center(
-                        child: GestureDetector(
-                          onTap: _showPhotoOptions,
-                          child: Column(
-                            children: [
-                              UserAvatar(
-                                path: _pendingImagePath ?? _avatarPath,
-                                radius: 48,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                context.text.changePhoto,
-                                style: context.typo.bodySmall.copyWith(
-                                  color: colors.primary,
-                                  fontWeight: FontWeight.w600,
+      body: GlassBody(
+        child: user == null
+            ? const Center(child: CupertinoActivityIndicator())
+            : SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Center(
+                          child: GestureDetector(
+                            onTap: _showPhotoOptions,
+                            child: Column(
+                              children: [
+                                UserAvatar(
+                                  path: _pendingImagePath ?? _avatarPath,
+                                  radius: 48,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Text(
-                          context.text.fullName,
-                          style: context.typo.subtitle.copyWith(
-                            color: colors.text,
-                          ),
-                        ),
-                      ),
-                      TextFormField(
-                        controller: _nameCtrl,
-                        style: context.typo.body.copyWith(color: colors.text),
-                        decoration: InputDecoration(
-                          hintText: context.text.enterYourName,
-                          hintStyle: context.typo.body.copyWith(
-                            color: colors.hint,
-                          ),
-                          prefixIcon: Icon(
-                            CupertinoIcons.person,
-                            color: colors.subtext,
-                            size: 20,
-                          ),
-                          filled: true,
-                          fillColor: colors.hintContainer,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: AppRadius.lgAll,
-                            borderSide: BorderSide.none,
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderRadius: AppRadius.lgAll,
-                            borderSide: BorderSide(color: colors.danger),
-                          ),
-                        ),
-                        validator: (v) {
-                          if (v == null || v.trim().length < 2) {
-                            return context.text.nameMinLength;
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 32),
-
-                      SizedBox(
-                        height: 54,
-                        child: ElevatedButton(
-                          onPressed: _isSaving ? null : _save,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colors.primary,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: AppRadius.xlAll,
-                            ),
-                          ),
-                          child: _isSaving
-                              ? AdaptiveSpinner(
-                                  size: 22,
-                                  color: colors.onPrimary,
-                                )
-                              : Text(
-                                  context.text.save,
-                                  style: context.typo.title.copyWith(
-                                    color: colors.onPrimary,
+                                const SizedBox(height: 8),
+                                Text(
+                                  context.text.changePhoto,
+                                  style: context.typo.bodySmall.copyWith(
+                                    color: colors.primary,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 32),
+
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Text(
+                            context.text.fullName,
+                            style: context.typo.subtitle.copyWith(
+                              color: colors.text,
+                            ),
+                          ),
+                        ),
+                        TextFormField(
+                          controller: _nameCtrl,
+                          style: context.typo.body.copyWith(color: colors.text),
+                          decoration: InputDecoration(
+                            hintText: context.text.enterYourName,
+                            hintStyle: context.typo.body.copyWith(
+                              color: colors.hint,
+                            ),
+                            prefixIcon: Icon(
+                              CupertinoIcons.person,
+                              color: colors.subtext,
+                              size: 20,
+                            ),
+                            filled: true,
+                            fillColor: colors.hintContainer,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: AppRadius.lgAll,
+                              borderSide: BorderSide.none,
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: AppRadius.lgAll,
+                              borderSide: BorderSide(color: colors.danger),
+                            ),
+                          ),
+                          validator: (v) {
+                            if (v == null || v.trim().length < 2) {
+                              return context.text.nameMinLength;
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 32),
+                        GlassCtaButton(
+                          onPressed: _save,
+                          isLoading: _isSaving,
+                          child: Text(
+                            context.text.save,
+                            style: context.typo.title.copyWith(
+                              color: colors.onPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+      ),
     );
   }
 }
